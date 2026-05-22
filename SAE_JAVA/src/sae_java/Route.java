@@ -9,39 +9,47 @@ package sae_java;
  * @author compteadmin
  */
 public class Route {
+
     String name;
     double fiabilité;
     int distance;
     int durée;
     private Sommet sDépart;
-    private Sommet sArrivée;
+    String sArrivée;
 
-    public Route(String name, double fiabilité, int distance, int durée, Sommet sDépart, Sommet sArrivée) {
+    public Route(String name, double fiabilité, int distance, int durée, Sommet sD, String sA) {
         this.name = name;
         this.fiabilité = fiabilité;
         this.distance = distance;
         this.durée = durée;
-        this.sDépart = sDépart;
-        this.sArrivée = sArrivée;
+        this.sDépart = sD;
+        this.sArrivée = sA;
     }
-
-    
 
     public String getName() {
         return name;
     }
 
-    public double getValuation() {
-        return valuation;
+    public double getFiabilité() {
+        return fiabilité;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public int getDurée() {
+        return durée;
     }
 
     public Sommet getsDépart() {
         return sDépart;
     }
 
-    public Sommet getsArrivée() {
+    public String getsArrivée() {
         return sArrivée;
     }
+
     
-    
+
 }
