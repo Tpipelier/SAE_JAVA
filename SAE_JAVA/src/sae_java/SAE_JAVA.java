@@ -31,8 +31,9 @@ public class SAE_JAVA {
                     System.out.println("Nom : "+tabR[i][j].getName()+" sa fiabilite est de :"+tabR[i][j].getFiabilité()+" sa distance du sommet "+tabS[i].getNom()+" au sommet :"+tabS[j].getNom()+ " est de : "+tabR[i][j].getDistance()+" la duree du trajet est de : "+tabR[i][j].getDurée());}
             }
         }
-        
-        
+
+        GrapheVisuel graphe = new GrapheVisuel("graphe1", tabS, tabR);
+        graphe.afficher();
     }      
     public static int compteSommet(String nomFichier) {
         int cpt = 0;
