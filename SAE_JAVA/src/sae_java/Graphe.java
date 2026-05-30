@@ -220,7 +220,7 @@ public class Graphe {
                     int distance = random.nextInt(41) + 10;
                     int duree = random.nextInt(111) + 10;
 
-                    setRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), "S" + i + 1));
+                    setRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), "S" + (j + 1)));
                     setDuree(tabR[i][j], duree);
                     numRoute++;
                 }
