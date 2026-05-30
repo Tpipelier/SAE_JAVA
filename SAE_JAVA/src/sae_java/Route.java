@@ -42,6 +42,18 @@ public class Route {
         return durée;
     }
 
+    /**
+     * Durée estimée du trajet (en minutes pondérées). La durée standard est
+     * pénalisée par un malus d'autant plus important que la route est peu
+     * fiable. Formule : durée × (20 - fiabilité) / 10, la fiabilité étant
+     * exprimée sur une échelle de 1 (10 %) à 10 (100 %).
+     *
+     * @return la durée estimée prenant en compte la fiabilité
+     */
+    public double getDuréeEstimée() {
+        return durée * (20 - fiabilité) / 10.0;
+    }
+
     public Sommet getsDépart() {
         return sDépart;
     }

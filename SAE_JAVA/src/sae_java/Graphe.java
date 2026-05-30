@@ -6,24 +6,66 @@ package sae_java;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
-import static sae_java.SAE_JAVA.compteSommet;
 
 /**
  *
- * @author walid
+ * @author Theo Pipelier
  */
 public class Graphe {
 
-    private Sommet[] tabS;
-    private Route[][] tabR;
-    private int nbSommets;
+    int nbSommet;
+    Sommet[] tabS;
+    Route[][] tabR;
+    HashMap<Route, Integer> durees;
 
-    public Graphe(int nbSommets) {
-        this.nbSommets = nbSommets;
-        this.tabS = new Sommet[nbSommets];
-        this.tabR = new Route[nbSommets][nbSommets];
+    public Graphe() throws FileNotFoundException {
+        this.nbSommet = 0;
+        this.tabS = null;
+        this.tabR = null;
+        this.durees = null;
+
+    }
+
+    public static int compteSommet(String nomFichier) {
+        int cpt = 0;
+        try {
+            // Le fichier d'entrée
+            FileInputStream file = new FileInputStream(nomFichier);
+            Scanner scanner = new Scanner(file);
+
+            // On compte les sommets : une ligne par sommet, en ignorant les
+            // commentaires (//) et les lignes vides.
+            while (scanner.hasNextLine()) {
+                String ligne = scanner.nextLine();
+                if (!ligne.startsWith("//") && !ligne.isBlank()) {
+                    cpt++;
+                }
+            }
+            scanner.close();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 0;
+        }
+
+        return cpt;
+
+    }
+
+    public int getNbSommet() {
+        return nbSommet;
+    }
+
+    public Sommet getSommet(int numeroSommet) {
+        return tabS[numeroSommet];
+    }
+
+    public Route getRoute(int numeroSommetD, int numeroSommetA) {
+        return tabR[numeroSommetD][numeroSommetA];
     }
 
     public Sommet[] getTabS() {
@@ -34,28 +76,124 @@ public class Graphe {
         return tabR;
     }
 
-    public int getNbSommets() {
-        return nbSommets;
+    public HashMap<Route, Integer> getDurees() {
+        return this.durees;
     }
 
-    public Sommet getSommet(int i) {
-        return tabS[i];
+    public void setSommet(int numeroSommet, Sommet S) {
+        this.tabS[numeroSommet] = S;
     }
 
-    public Route getRoute(int i, int j) {
-        return tabR[i][j];
+    public void setRoute(int numeroSommetD, int numeroSommetA, Route R) {
+        this.tabR[numeroSommetD][numeroSommetA] = R;
     }
 
-    public void setSommet(int i, Sommet s) {
-        tabS[i] = s;
+    public void setDuree(Route R, int duree) {
+        this.durees.put(R, duree);
     }
 
-    public void setRoute(int i, int j, Route r) {
-        tabR[i][j] = r;
+    public void chargerGraphes(String nomFichier) throws FileNotFoundException {
+        this.nbSommet = compteSommet(nomFichier);
+        this.tabS = new Sommet[nbSommet];
+        this.tabR = new Route[nbSommet][nbSommet];
+        this.durees = new HashMap<>();
+
+        // Le fichier d'entrée
+        FileInputStream fichier = new FileInputStream(nomFichier);
+        Scanner scanner = new Scanner(fichier);
+
+        int i = 0;
+        int numRoute = 0;
+        while (scanner.hasNextLine()) {
+            String ligne = scanner.nextLine();
+
+            // On ignore les commentaires (//) et les lignes vides.
+            if (ligne.startsWith("//") || ligne.isBlank()) {
+                continue;
+            }
+
+            String[] tokens = ligne.split(";");
+            setSommet(i, new Sommet(tokens[0], tokens[1]));
+            for (int j = 2; j < tokens.length; j++) {
+                if (!tokens[j].equals("0")) {
+                    String[] triplet = tokens[j].split(",");
+                    setRoute(i, j - 2, new Route("R" + numRoute, Double.parseDouble(triplet[0]), Integer.parseInt(triplet[1]), Integer.parseInt(triplet[2]), tabS[i], "S" + (j - 1)));
+                    setDuree(tabR[i][j - 2], Integer.parseInt(triplet[2]));
+                }
+                numRoute++;
+            }
+            i++;
+        }
+        scanner.close();
+
     }
 
-    public static Graphe genererGrapheAleatoire(int nbSommets) {
-        Graphe graphe = new Graphe(nbSommets);
+    public void afficheContenuGraphe() {
+        String ligne = "";
+        for (int i = 0; i < this.nbSommet; i++) {
+            for (int j = 0; j < this.nbSommet; j++) {
+                if (this.tabR[i][j] != null) {
+                    ligne = "Nom : " + this.tabR[i][j].getName() + " sa fiabilite est de :" + this.tabR[i][j].getFiabilité() + " sa distance du sommet " + this.tabS[i].getNom() + " au sommet :" + this.tabS[j].getNom() + " est de : " + this.tabR[i][j].getDistance() + " la duree du trajet est de : " + this.tabR[i][j].getDurée() + "\n";
+                    System.out.println(ligne);
+                }
+            }
+        }
+
+    }
+
+    public List<Integer> plusCourtChemin(int source, int destination) {
+        int n = this.nbSommet;
+        int[] distances = new int[n];
+        int[] pred = new int[n];
+        boolean[] visite = new boolean[n];
+
+        for (int i = 0; i < n; i++) {
+            distances[i] = Integer.MAX_VALUE;
+            pred[i] = -1;
+        }
+        distances[source] = 0;
+
+        for (int k = 0; k < n; k++) {
+            int u = -1;
+            int min = Integer.MAX_VALUE;
+            for (int i = 0; i < n; i++) {
+                if (!visite[i] && distances[i] < min) {
+                    min = distances[i];
+                    u = i;
+                }
+            }
+            if (u == -1) break;
+            visite[u] = true;
+
+            for (int v = 0; v < n; v++) {
+                if (visite[v]) continue;
+                Route r = tabR[u][v];
+                if (r == null) r = tabR[v][u]; // graphe non orienté
+                if (r == null) continue;
+                int alt = distances[u] + r.getDurée();
+                if (alt < distances[v]) {
+                    distances[v] = alt;
+                    pred[v] = u;
+                }
+            }
+        }
+
+        List<Integer> chemin = new ArrayList<>();
+        int courant = destination;
+        while (courant != -1) {
+            chemin.add(0, courant);
+            courant = pred[courant];
+        }
+        if (chemin.isEmpty() || chemin.get(0) != source) chemin.clear();
+        return chemin;
+    }
+
+    public void genererGrapheAleatoire(int nbSommets) {
+        this.nbSommet = nbSommets;
+        this.tabS = new Sommet[nbSommet];
+        this.tabR = new Route[nbSommet][nbSommet];
+        this.durees = new HashMap<>();
+
         Random random = new Random();
         int numRoute = 0;
 
@@ -71,25 +209,23 @@ public class Graphe {
                 type = "N";
             }
 
-            graphe.setSommet(i, new Sommet("S" + (i + 1), type));
+            setSommet(i, new Sommet("S" + (i + 1), type));
         }
-
         // 2. Création des arêtes avec probabilité 1/5
         for (int i = 0; i < nbSommets; i++) {
             for (int j = i + 1; j < nbSommets; j++) {
                 if (random.nextInt(5) == 0) {
-                    double fiabilite = (random.nextInt(9) + 2) / 10.0;
+                    // Fiabilité sur une échelle de 2 à 10 (comme dans les CSV).
+                    double fiabilite = random.nextInt(9) + 2;
                     int distance = random.nextInt(41) + 10;
                     int duree = random.nextInt(111) + 10;
 
-                    Route r = new Route("R" + numRoute, fiabilite, distance, duree, graphe.getSommet(i), graphe.getSommet(j).getNom());
-                    graphe.setRoute(i, j, r);
+                    setRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), "S" + i + 1));
+                    setDuree(tabR[i][j], duree);
                     numRoute++;
                 }
             }
         }
-
-        return graphe;
     }
 
 }

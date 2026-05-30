@@ -6,30 +6,9 @@ import org.graphstream.graph.implementations.SingleGraph;
 
 public class GrapheVisuel extends SingleGraph {
 
-    public GrapheVisuel(String id, Graphe graphe) {
+    public GrapheVisuel(String id, Sommet[] tabS, Route[][] tabR) {
         super(id);
-        construireGraphe(graphe);
-    }
-
-    private void construireGraphe(Graphe graphe) {
-        for (int i = 0; i < graphe.getNbSommets(); i++) {
-            Sommet s = graphe.getSommet(i);
-            if (s != null) {
-                Node n = addNode(s.getNom());
-                n.setAttribute("ui.label", s.getNom() + " (" + s.getType() + ")");
-            }
-        }
-
-        for (int i = 0; i < graphe.getNbSommets(); i++) {
-            for (int j = i + 1; j < graphe.getNbSommets(); j++) {
-                Route r = graphe.getRoute(i, j);
-                if (r != null) {
-                    String idArete = graphe.getSommet(i).getNom() + "-" + graphe.getSommet(j).getNom();
-                    Edge e = addEdge(idArete, graphe.getSommet(i).getNom(), graphe.getSommet(j).getNom());
-                    e.setAttribute("ui.label", r.getDistance() + " km");
-                }
-            }
-        }
+        construireGraphe(tabS, tabR);
     }
 
     private void construireGraphe(Sommet[] tabS, Route[][] tabR) {
@@ -47,11 +26,14 @@ public class GrapheVisuel extends SingleGraph {
                     String idArete = tabS[i].getNom() + "-" + tabS[j].getNom();
                     Edge e = addEdge(idArete, tabS[i].getNom(), tabS[j].getNom());
                     e.setAttribute("ui.label", r.getDistance() + "km");
+                    // Poids utilisés par Dijkstra (cf. classe Recherche).
+                    e.setAttribute("duree", r.getDurée());
+                    e.setAttribute("dureeEstimee", r.getDuréeEstimée());
                 }
             }
         }
     }
-    
+
     public void afficher() {
         display();
     }
