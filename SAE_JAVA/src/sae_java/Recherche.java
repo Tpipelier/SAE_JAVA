@@ -85,7 +85,7 @@ public class Recherche {
 
         @Override
         public String toString() {
-            return sommets + " (" + cout + " min)";
+            return sommets + " (" + Math.round(cout) + " min)";
         }
     }
 }

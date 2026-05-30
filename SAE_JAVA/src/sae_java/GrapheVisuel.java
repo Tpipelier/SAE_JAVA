@@ -26,7 +26,7 @@ public class GrapheVisuel extends SingleGraph {
                     String idArete = tabS[i].getNom() + "-" + tabS[j].getNom();
                     Edge e = addEdge(idArete, tabS[i].getNom(), tabS[j].getNom());
                     e.setAttribute("ui.label", r.getDistance() + "km");
-                    // Poids utilisés par Dijkstra (cf. classe Recherche).
+                    // Pour Dijkstra 
                     e.setAttribute("duree", r.getDurée());
                     e.setAttribute("dureeEstimee", r.getDuréeEstimée());
                 }

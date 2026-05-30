@@ -6,9 +6,7 @@ package sae_java;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -139,53 +137,6 @@ public class Graphe {
             }
         }
 
-    }
-
-    public List<Integer> plusCourtChemin(int source, int destination) {
-        int n = this.nbSommet;
-        int[] distances = new int[n];
-        int[] pred = new int[n];
-        boolean[] visite = new boolean[n];
-
-        for (int i = 0; i < n; i++) {
-            distances[i] = Integer.MAX_VALUE;
-            pred[i] = -1;
-        }
-        distances[source] = 0;
-
-        for (int k = 0; k < n; k++) {
-            int u = -1;
-            int min = Integer.MAX_VALUE;
-            for (int i = 0; i < n; i++) {
-                if (!visite[i] && distances[i] < min) {
-                    min = distances[i];
-                    u = i;
-                }
-            }
-            if (u == -1) break;
-            visite[u] = true;
-
-            for (int v = 0; v < n; v++) {
-                if (visite[v]) continue;
-                Route r = tabR[u][v];
-                if (r == null) r = tabR[v][u]; // graphe non orienté
-                if (r == null) continue;
-                int alt = distances[u] + r.getDurée();
-                if (alt < distances[v]) {
-                    distances[v] = alt;
-                    pred[v] = u;
-                }
-            }
-        }
-
-        List<Integer> chemin = new ArrayList<>();
-        int courant = destination;
-        while (courant != -1) {
-            chemin.add(0, courant);
-            courant = pred[courant];
-        }
-        if (chemin.isEmpty() || chemin.get(0) != source) chemin.clear();
-        return chemin;
     }
 
     public void genererGrapheAleatoire(int nbSommets) {
