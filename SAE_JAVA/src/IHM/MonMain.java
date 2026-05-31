@@ -4,13 +4,18 @@
  */
 package IHM;
 
+import java.io.FileNotFoundException;
+import sae_java.Graphe;
+import sae_java.GrapheVisuel;
+
 /**
  *
  * @author alexi
  */
 public class MonMain {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         FenetrePrincipale f = new FenetrePrincipale("Ma Fenetre");
+        
     }
 }
