@@ -7,16 +7,12 @@ package IHM;
 import java.awt.BorderLayout;
 import static java.awt.BorderLayout.WEST;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 
 /**
  *
@@ -54,7 +50,6 @@ public class FenetrePrincipale extends JFrame {
         boutonRavitailler = new JButton("Ravitailler");
         boutonNotifications = new JButton("Notifications");
 
-        
         appliquerStyleBouton(boutonChargerCarte);
         appliquerStyleBouton(boutonRavitailler);
         appliquerStyleBouton(boutonNotifications);
@@ -92,10 +87,14 @@ public class FenetrePrincipale extends JFrame {
         panneauDeroulant.setBackground(new Color(0x3C3C3C));//Choix de la couleur de fond du panneau déroulant, il sera gris foncé
 
     }
-    
+
     private void appliquerStyleBouton(JButton bouton) {
         bouton.setBackground(new Color(0x3C3C3C));
         bouton.setForeground(Color.WHITE);
         bouton.setFocusPainted(false);
+    }
+
+    private void afficherGraphe() {
+        
     }
 }
