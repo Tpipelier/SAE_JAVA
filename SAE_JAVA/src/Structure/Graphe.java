@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package sae_java;
+package Structure;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -29,23 +29,23 @@ public class Graphe {
 
     }
 
-    public static int compteSommet(String nomFichier) {
+    public static int compteSommet(String nomFichier) throws FileNotFoundException {
         int cpt = 0;
-        try {
-            // Le fichier d'entrée
-            FileInputStream file = new FileInputStream(nomFichier);
-            Scanner scanner = new Scanner(file);
 
-            //renvoie true tant qu'il y a une autre ligne à lire
-            while (scanner.hasNext()) {
+        // Le fichier d'entrée
+        FileInputStream file = new FileInputStream(nomFichier);
+        Scanner scanner = new Scanner(file);
+
+        //renvoie true tant qu'il y a une autre ligne à lire
+        while (scanner.hasNext()) {
+            String ligne = scanner.nextLine();
+            // On ne compte que les lignes de données utiles (pas les commentaires)
+            if (!ligne.isEmpty() && !ligne.startsWith("//")) {
                 cpt++;
-                scanner.nextLine();
             }
-            scanner.close();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return 0;
+            scanner.nextLine();
         }
+        scanner.close();
 
         return cpt;
 
@@ -95,26 +95,41 @@ public class Graphe {
 
         // Le fichier d'entrée
         FileInputStream fichier = new FileInputStream(nomFichier);
-        Scanner scanner = new Scanner(fichier);
+        Scanner scannerTabS = new Scanner(fichier);
 
-        //renvoie true tant qu'il y a une autre ligne à lire
         int i = 0;
-        int numRoute = 0;
-        while (scanner.hasNext()) {
+        while (scannerTabS.hasNext()) {
 
-            String ligne = scanner.nextLine();
+            String ligne = scannerTabS.nextLine();
             String[] tokens = ligne.split(";");
-            if (ligne.compareTo("// Graphe planaire maximal;") != 0 && ligne.compareTo("// 10 sommets") != 0) {
+            try {
                 setSommet(i, new Sommet(tokens[0], tokens[1]));
+                i++;
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.err.println("Erreur : La ligne du fichier CSV ne contient pas assez d'éléments pour créer le sommet à l'index " + i);
+            }
+        }
+        scannerTabS.close();
+        FileInputStream fileTabR = new FileInputStream(nomFichier);
+        Scanner scannerTabR = new Scanner(fileTabR);
+        i = 0;
+        int numRoute = 0;
+        while (scannerTabR.hasNext()) {
+
+            String ligne = scannerTabR.nextLine();
+            String[] tokens = ligne.split(";");
+            if (!ligne.startsWith("//")) {
+
                 for (int j = 2; j < tokens.length; j++) {
 
                     if (tokens[j].compareTo("0") != 0) {
-
-                        String[] triplet = tokens[j].split(",");
-                        setRoute(i, j - 2, new Route("R" + numRoute, Double.parseDouble(triplet[0]), Integer.parseInt(triplet[1]), Integer.parseInt(triplet[2]), tabS[i], "S" + (j - 2)));
-                        setDuree(tabR[i][j - 2], Integer.parseInt(triplet[2]));
-
-                    } else {
+                        try {
+                            String[] triplet = tokens[j].split(",");
+                            setRoute(i, j - 2, new Route("R" + numRoute, Double.parseDouble(triplet[0]), Integer.parseInt(triplet[1]), Integer.parseInt(triplet[2]), tabS[i], tabS[j - 2]));
+                            setDuree(tabR[i][j - 2], Integer.parseInt(triplet[2]));
+                        } catch (NumberFormatException e) {
+                            System.out.println("Route corrompue sur la ligne suivante : " + ligne + " (Raison : " + e.getMessage() + ")");
+                        }
 
                     }
                     numRoute++;
@@ -125,7 +140,7 @@ public class Graphe {
 
             }
         }
-        scanner.close();
+        scannerTabR.close();
 
     }
 
@@ -172,8 +187,7 @@ public class Graphe {
                     double fiabilite = (random.nextInt(9) + 2) / 10.0;
                     int distance = random.nextInt(41) + 10;
                     int duree = random.nextInt(111) + 10;
-
-                    setRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), "S" + i + 1));
+                    setRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), this.getSommet(i + 1)));
                     setDuree(tabR[i][j], duree);
                     numRoute++;
                 }

@@ -1,5 +1,7 @@
-package sae_java;
+package IHM;
 
+import Structure.Sommet;
+import Structure.Route;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
