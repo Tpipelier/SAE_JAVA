@@ -142,9 +142,15 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 GrapheVisuel grapheVisuel = new GrapheVisuel("nom du graphe", g.getTabS(), g.getTabR());
                 afficherGraphe(grapheVisuel);
             } catch (FileNotFoundException ex) {
-                System.out.println("Erreur, le fichier est introuvable");
+                JOptionPane.showMessageDialog(panneauGlobal,
+                        "le texte entrée est invalide",
+                        "Erreur",
+                        JOptionPane.ERROR_MESSAGE);
             } catch (NumberFormatException ex) {
-                System.out.println("Erreur, le texte saisie est invalide");
+                JOptionPane.showMessageDialog(panneauGlobal,
+                        "le texte entrée est invalide",
+                        "Erreur",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
