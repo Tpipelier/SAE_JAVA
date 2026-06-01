@@ -2,9 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package MainTests;
+package IHM;
 
-import IHM.FenetrePrincipale;
+import java.io.FileNotFoundException;
+import sae_java.Graphe;
+import sae_java.GrapheVisuel;
 
 /**
  *
@@ -12,7 +14,8 @@ import IHM.FenetrePrincipale;
  */
 public class MonMain {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         FenetrePrincipale f = new FenetrePrincipale("Ma Fenetre");
+        
     }
 }
