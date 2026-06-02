@@ -68,6 +68,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         boutonNotifications = new JButton("Notifications");
         panneauGlobal = new JPanel();
 
+        boutonChargerCarte.addActionListener(this);
         boutonGrapheAleatoire.addActionListener(this);
 
         this.setContentPane(panneauGlobal);
@@ -121,16 +122,14 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
     public void afficherGraphe(GrapheVisuel g) {
 
-        if(grapheActuel != null){
+        if (grapheActuel != null) {
             panneauGlobal.remove(grapheActuel);
         }
-        
+
         Viewer viewer = new Viewer((Graph) g, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
         View view = viewer.addDefaultView(false);   // false indicates "no JFrame".
-        
-        view.setMouseManager(new DefaultMouseManager());//pour réactiver l'interaction avec le graphe.
-        
+
         grapheActuel = (Component) view;
         panneauGlobal.add((Component) view, BorderLayout.CENTER);
 
@@ -153,12 +152,30 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 afficherGraphe(grapheVisuel);
             } catch (FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(panneauGlobal,
-                        "le texte entrée est invalide",
+                        "le ficchier est introuvable",
                         "Erreur",
                         JOptionPane.ERROR_MESSAGE);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(panneauGlobal,
                         "le texte entrée est invalide",
+                        "Erreur",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if (e.getSource() == boutonChargerCarte) {
+            try {
+                String nomFichier = JOptionPane.showInputDialog(panneauGlobal,
+                        "Quel est le chemin du fichier que vous voulez charger ?",
+                        "Chargement d'un graphe",
+                        JOptionPane.PLAIN_MESSAGE);
+                Graphe g;
+                g = new Graphe();
+                g.chargerGraphes(nomFichier);
+                GrapheVisuel grapheVisuel = new GrapheVisuel("nom du graphe", g.getTabS(), g.getTabR());
+                afficherGraphe(grapheVisuel);
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(panneauGlobal,
+                        "le ficchier est introuvable",
                         "Erreur",
                         JOptionPane.ERROR_MESSAGE);
             }
