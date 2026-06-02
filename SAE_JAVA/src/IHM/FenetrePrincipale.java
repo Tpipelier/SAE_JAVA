@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import org.graphstream.graph.Graph;
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
+import org.graphstream.ui.view.util.DefaultMouseManager;
 import sae_java.Graphe;
 import sae_java.GrapheVisuel;
 
@@ -35,6 +36,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private JButton boutonRavitailler;
     private JButton boutonNotifications;
     private JPanel panneauGlobal;
+    private Component grapheActuel;
 
     /**
      * Constructeur de FenetrePrincipale
@@ -119,9 +121,17 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
     public void afficherGraphe(GrapheVisuel g) {
 
+        if(grapheActuel != null){
+            panneauGlobal.remove(grapheActuel);
+        }
+        
         Viewer viewer = new Viewer((Graph) g, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
         View view = viewer.addDefaultView(false);   // false indicates "no JFrame".
+        
+        view.setMouseManager(new DefaultMouseManager());//pour réactiver l'interaction avec le graphe.
+        
+        grapheActuel = (Component) view;
         panneauGlobal.add((Component) view, BorderLayout.CENTER);
 
         panneauGlobal.revalidate(); // Recalcule la mise en page
