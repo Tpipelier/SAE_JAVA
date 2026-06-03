@@ -11,8 +11,7 @@ package Structure;
 public class Sommet {
     private String nom;
     private String type;
-
-
+    
     public Sommet(String nom,String type) {
         this.nom = nom;
         this.type=type;
