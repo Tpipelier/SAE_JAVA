@@ -2,8 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
-package sae_java;
+package Test_Unitaire;
 
+import IHM.GrapheVisuel;
+import Structure.Graphe;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
@@ -12,7 +14,7 @@ import java.util.Scanner;
  *
  * @author Theo Pipelier
  */
-public class SAE_JAVA {
+public class Test {
 
     /**
      * @param args the command line arguments
