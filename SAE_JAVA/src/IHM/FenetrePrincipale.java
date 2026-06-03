@@ -4,6 +4,7 @@
  */
 package IHM;
 
+import Structure.Graphe;
 import java.awt.BorderLayout;
 import static java.awt.BorderLayout.WEST;
 import java.awt.Color;
@@ -13,8 +14,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileNotFoundException;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -22,8 +25,6 @@ import org.graphstream.graph.Graph;
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.util.DefaultMouseManager;
-import sae_java.Graphe;
-import sae_java.GrapheVisuel;
 
 /**
  *
@@ -37,6 +38,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private JButton boutonNotifications;
     private JPanel panneauGlobal;
     private Component grapheActuel;
+    private JFileChooser fileChooser;
 
     /**
      * Constructeur de FenetrePrincipale
@@ -67,6 +69,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         boutonRavitailler = new JButton("Ravitailler");
         boutonNotifications = new JButton("Notifications");
         panneauGlobal = new JPanel();
+        fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File("./data"));
 
         boutonChargerCarte.addActionListener(this);
         boutonGrapheAleatoire.addActionListener(this);
@@ -149,6 +153,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 g = new Graphe();
                 g.genererGrapheAleatoire(nbSommets);
                 GrapheVisuel grapheVisuel = new GrapheVisuel("nom du graphe", g.getTabS(), g.getTabR());
+                grapheVisuel.setAttribute("ui.stylesheet", "url('css/styleGraphe.css')");
                 afficherGraphe(grapheVisuel);
             } catch (FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(panneauGlobal,
@@ -164,15 +169,19 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         }
         if (e.getSource() == boutonChargerCarte) {
             try {
-                String nomFichier = JOptionPane.showInputDialog(panneauGlobal,
-                        "Quel est le chemin du fichier que vous voulez charger ?",
-                        "Chargement d'un graphe",
-                        JOptionPane.PLAIN_MESSAGE);
-                Graphe g;
-                g = new Graphe();
-                g.chargerGraphes(nomFichier);
-                GrapheVisuel grapheVisuel = new GrapheVisuel("nom du graphe", g.getTabS(), g.getTabR());
-                afficherGraphe(grapheVisuel);
+
+                int resultat = fileChooser.showOpenDialog(this);
+
+                if (resultat == JFileChooser.APPROVE_OPTION) {
+                    String nomFichier = fileChooser.getSelectedFile().getAbsolutePath();
+                    
+                    Graphe g;
+                    g = new Graphe();
+                    g.chargerGraphes(nomFichier);
+                    GrapheVisuel grapheVisuel = new GrapheVisuel("nom du graphe", g.getTabS(), g.getTabR());
+                    grapheVisuel.setAttribute("ui.stylesheet", "url('css/styleGraphe.css')");
+                    afficherGraphe(grapheVisuel);
+                }
             } catch (FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(panneauGlobal,
                         "le ficchier est introuvable",

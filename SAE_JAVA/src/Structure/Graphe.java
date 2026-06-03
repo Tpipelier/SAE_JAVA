@@ -43,7 +43,6 @@ public class Graphe {
             if (!ligne.isEmpty() && !ligne.startsWith("//")) {
                 cpt++;
             }
-            scanner.nextLine();
         }
         scanner.close();
 
@@ -101,10 +100,14 @@ public class Graphe {
         while (scannerTabS.hasNext()) {
 
             String ligne = scannerTabS.nextLine();
-            String[] tokens = ligne.split(";");
             try {
+                if (!ligne.startsWith("//")) {
+                    String[] tokens = ligne.split(";");
+                
+
                 setSommet(i, new Sommet(tokens[0], tokens[1]));
                 i++;
+                }
             } catch (ArrayIndexOutOfBoundsException e) {
                 System.err.println("Erreur : La ligne du fichier CSV ne contient pas assez d'éléments pour créer le sommet à l'index " + i);
             }
@@ -117,16 +120,18 @@ public class Graphe {
         while (scannerTabR.hasNext()) {
 
             String ligne = scannerTabR.nextLine();
-            String[] tokens = ligne.split(";");
+
             if (!ligne.startsWith("//")) {
+
+                String[] tokens = ligne.split(";");
 
                 for (int j = 2; j < tokens.length; j++) {
 
                     if (tokens[j].compareTo("0") != 0) {
                         try {
                             String[] triplet = tokens[j].split(",");
-                            setRoute(i, j - 2, new Route("R" + numRoute, Double.parseDouble(triplet[0]), Integer.parseInt(triplet[1]), Integer.parseInt(triplet[2]), tabS[i], tabS[j - 2]));
-                            setDuree(tabR[i][j - 2], Integer.parseInt(triplet[2]));
+                            setRoute(i, j - 2, new Route("R" + numRoute, Double.parseDouble(triplet[0].trim()), Integer.parseInt(triplet[1].trim()), Integer.parseInt(triplet[2].trim()), tabS[i], tabS[j - 2]));
+                            setDuree(tabR[i][j - 2], Integer.parseInt(triplet[2].trim()));
                         } catch (NumberFormatException e) {
                             System.out.println("Route corrompue sur la ligne suivante : " + ligne + " (Raison : " + e.getMessage() + ")");
                         }
@@ -194,5 +199,4 @@ public class Graphe {
             }
         }
     }
-
 }

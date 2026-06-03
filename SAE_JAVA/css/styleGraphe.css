@@ -1,0 +1,30 @@
+graph {
+    fill-color: lightgray;         /* Couleur du fond (Hexadécimal ou nom) */
+}
+
+edge {
+    fill-color: #ECF0F1;         /* Couleur de la ligne */
+}
+
+node{
+	
+	
+	shape: circle;               /* Formes dispos : circle, box, diamond, cross, rounded-box */
+    size: 30px;
+    fill-color: #E74C3C;
+	
+}
+
+node.maternite {
+    fill-color: #2ecc71;
+}
+
+/* Couleur pour le type O (ex: Bleu) */
+node.blocOperatoire {
+    fill-color: #3498db;
+}
+
+/* Couleur pour le type P (ex: Violet) */
+node.nutrition {
+    fill-color: #9b59b6;
+}

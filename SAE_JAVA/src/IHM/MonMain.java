@@ -5,9 +5,6 @@
 package IHM;
 
 import java.io.FileNotFoundException;
-import sae_java.Graphe;
-import sae_java.GrapheVisuel;
-
 /**
  *
  * @author alexi
