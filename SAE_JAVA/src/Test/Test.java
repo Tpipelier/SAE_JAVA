@@ -4,6 +4,7 @@
  */
 package Test;
 
+import IHM.FenetrePrincipale;
 import IHM.GrapheVisuel;
 import Structure.Graphe;
 import java.io.FileInputStream;
@@ -22,15 +23,16 @@ public class Test {
      */
     public static void main(String[] args) throws FileNotFoundException {
         // TODO code application logic here
-        Graphe g=new Graphe();
-        g.genererGrapheAleatoire(20);
-        g.afficheContenuGraphe();
-        
-        
-        
-
-        GrapheVisuel grapheVisuel = new GrapheVisuel("graphe1", g.getTabS(), g.getTabR());
-        grapheVisuel.afficher();
+//        Graphe g=new Graphe();
+//        g.genererGrapheAleatoire(20);
+//        g.afficheContenuGraphe();
+//        
+//        
+//        
+//
+//        GrapheVisuel grapheVisuel = new GrapheVisuel("graphe1", g.getTabS(), g.getTabR());
+//        grapheVisuel.afficher();
+        FenetrePrincipale f = new FenetrePrincipale("Ma Fenetre");
     }      
     
 
