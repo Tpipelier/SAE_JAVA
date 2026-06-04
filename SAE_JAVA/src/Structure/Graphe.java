@@ -51,7 +51,6 @@ public class Graphe {
             if (!ligne.isEmpty() && !ligne.startsWith("//")) {
                 cpt++;
             }
-            scanner.nextLine();
         }
         scanner.close();
 
@@ -147,10 +146,13 @@ public class Graphe {
         while (scannerTabS.hasNext()) {
 
             String ligne = scannerTabS.nextLine();
-            String[] tokens = ligne.split(";");
             try {
-                ajouterSommet(i, new Sommet(tokens[0], tokens[1]));
-                i++;
+                if (!ligne.startsWith("//")) {
+                    String[] tokens = ligne.split(";");                
+                    ajouterSommet(i, new Sommet(tokens[0], tokens[1]));
+
+                    i++;
+                }
             } catch (ArrayIndexOutOfBoundsException e) {
                 System.err.println("Erreur : La ligne du fichier CSV ne contient pas assez d'éléments pour créer le sommet à l'index " + i);
             }
@@ -163,8 +165,10 @@ public class Graphe {
         while (scannerTabR.hasNext()) {
 
             String ligne = scannerTabR.nextLine();
-            String[] tokens = ligne.split(";");
+
             if (!ligne.startsWith("//")) {
+
+                String[] tokens = ligne.split(";");
 
                 for (int j = 2; j < tokens.length; j++) {
 
@@ -240,5 +244,4 @@ public class Graphe {
             }
         }
     }
-
 }

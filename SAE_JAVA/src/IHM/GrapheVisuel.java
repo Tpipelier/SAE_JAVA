@@ -18,6 +18,15 @@ public class GrapheVisuel extends SingleGraph {
             if (s != null) {
                 Node n = addNode(s.getNom());
                 n.setAttribute("ui.label", s.getNom() + " (" + s.getType() + ")");
+                
+                if ("M".equals(s.getType())) {
+                    n.setAttribute("ui.class", "maternite");
+                } else if ("O".equals(s.getType())) {
+                    n.setAttribute("ui.class", "blocOperatoire");
+                } else if ("N".equals(s.getType())) {
+                    n.setAttribute("ui.class", "nutrition");
+                }
+                
             }
         }
 

@@ -23,7 +23,7 @@ public class Test {
     public static void main(String[] args) throws FileNotFoundException {
         // TODO code application logic here
         Graphe g=new Graphe();
-        g.genererGrapheAleatoire(4);
+        g.genererGrapheAleatoire(20);
         g.afficheContenuGraphe();
         
         
