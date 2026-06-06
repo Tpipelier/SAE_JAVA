@@ -74,11 +74,11 @@ public class Graphe {
         return this.durees;
     }
 
-    public void setSommet(int numeroSommet, Sommet S) {
+    public void ajouterSommet(int numeroSommet, Sommet S) {
         this.tabS[numeroSommet] = S;
     }
 
-    public void setRoute(int numeroSommetD, int numeroSommetA, Route R) {
+    public void ajouterRoute(int numeroSommetD, int numeroSommetA, Route R) {
         this.tabR[numeroSommetD][numeroSommetA] = R;
     }
 
@@ -103,10 +103,9 @@ public class Graphe {
             try {
                 if (!ligne.startsWith("//")) {
                     String[] tokens = ligne.split(";");
-                
 
-                setSommet(i, new Sommet(tokens[0], tokens[1]));
-                i++;
+                    ajouterSommet(i, new Sommet(tokens[0].trim(), tokens[1].trim()));
+                    i++;
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
                 System.err.println("Erreur : La ligne du fichier CSV ne contient pas assez d'éléments pour créer le sommet à l'index " + i);
@@ -127,10 +126,10 @@ public class Graphe {
 
                 for (int j = 2; j < tokens.length; j++) {
 
-                    if (tokens[j].compareTo("0") != 0) {
+                    if (tokens[j].compareTo("0") != 0 && tokens[j].compareTo("") != 0) {
                         try {
                             String[] triplet = tokens[j].split(",");
-                            setRoute(i, j - 2, new Route("R" + numRoute, Double.parseDouble(triplet[0].trim()), Integer.parseInt(triplet[1].trim()), Integer.parseInt(triplet[2].trim()), tabS[i], tabS[j - 2]));
+                            ajouterRoute(i, j - 2, new Route("R" + numRoute, Double.parseDouble(triplet[0].trim()), Integer.parseInt(triplet[1].trim()), Integer.parseInt(triplet[2].trim()), tabS[i], tabS[j - 2]));
                             setDuree(tabR[i][j - 2], Integer.parseInt(triplet[2].trim()));
                         } catch (NumberFormatException e) {
                             System.out.println("Route corrompue sur la ligne suivante : " + ligne + " (Raison : " + e.getMessage() + ")");
@@ -183,7 +182,7 @@ public class Graphe {
                 type = "N";
             }
 
-            setSommet(i, new Sommet("S" + (i + 1), type));
+            ajouterSommet(i, new Sommet("S" + (i + 1), type));
         }
         // 2. Création des arêtes avec probabilité 1/5
         for (int i = 0; i < nbSommets; i++) {
@@ -192,7 +191,7 @@ public class Graphe {
                     double fiabilite = (random.nextInt(9) + 2) / 10.0;
                     int distance = random.nextInt(41) + 10;
                     int duree = random.nextInt(111) + 10;
-                    setRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), this.getSommet(i + 1)));
+                    ajouterRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), this.getSommet(i + 1)));
                     setDuree(tabR[i][j], duree);
                     numRoute++;
                 }

@@ -28,3 +28,7 @@ node.blocOperatoire {
 node.nutrition {
     fill-color: #9b59b6;
 }
+
+edge.danger {
+    fill-color: #fca402;
+}

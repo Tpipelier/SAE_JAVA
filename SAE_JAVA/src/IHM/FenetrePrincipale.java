@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -39,6 +40,17 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private JPanel panneauGlobal;
     private Component grapheActuel;
     private JFileChooser fileChooser;
+    private JCheckBox cbMaternite;
+    private JCheckBox cbBlocOperatoire;
+    private JCheckBox cbNutrition;
+    private JCheckBox cbCamions;
+    private JCheckBox cbRoutes;
+    private JCheckBox cbRoutesDangereuses;
+    private JCheckBox cbRoutesDangereusesCouleur;
+    private JCheckBox cbDistances;
+    private JCheckBox cbFiabilite;
+    private JCheckBox cbIDSommet;
+    private JCheckBox cbTypeSommet;
 
     /**
      * Constructeur de FenetrePrincipale
@@ -71,50 +83,77 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         panneauGlobal = new JPanel();
         fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("./data"));
+        cbMaternite = new JCheckBox("Maternités");
+        cbBlocOperatoire = new JCheckBox("Maternités");
+        cbNutrition = new JCheckBox("Maternités");
+        cbCamions = new JCheckBox("Maternités");
+        cbRoutes = new JCheckBox("Maternités");
+        cbRoutesDangereuses = new JCheckBox("Maternités");
+        cbRoutesDangereusesCouleur = new JCheckBox("Maternités");
+        cbDistances = new JCheckBox("Maternités");
+        cbFiabilite = new JCheckBox("Maternités");
+        cbIDSommet = new JCheckBox("Maternités");
+        cbTypeSommet = new JCheckBox("Maternités");
 
-        boutonChargerCarte.addActionListener(this);
-        boutonGrapheAleatoire.addActionListener(this);
+        boutonChargerCarte.addActionListener(
+                this);
+        boutonGrapheAleatoire.addActionListener(
+                this);
 
         this.setContentPane(panneauGlobal);
-        panneauGlobal.setLayout(new BorderLayout());
+
+        panneauGlobal.setLayout(
+                new BorderLayout());
 
         appliquerStyleBouton(boutonChargerCarte);
+
         appliquerStyleBouton(boutonGrapheAleatoire);
+
         appliquerStyleBouton(boutonRavitailler);
+
         appliquerStyleBouton(boutonNotifications);
 
         JPanel panneauDeroulant = new JPanel();
         JPanel vide = new JPanel();
 
-        panneauDeroulant.setLayout(new GridBagLayout());
+        panneauDeroulant.setLayout(
+                new GridBagLayout());
         GridBagConstraints gb = new GridBagConstraints();
         gb.anchor = GridBagConstraints.NORTHWEST;
 
         gb.gridx = 0;
         gb.gridy = 0;
         gb.weighty = 0;
+
         panneauDeroulant.add(boutonChargerCarte, gb);
         gb.gridx = 0;
         gb.gridy = 1;
+
         panneauDeroulant.add(boutonGrapheAleatoire, gb);
         gb.gridx = 0;
         gb.gridy = 2;
+
         panneauDeroulant.add(boutonRavitailler, gb);
         gb.gridx = 0;
         gb.gridy = 3;
         gb.weighty = 1;
         gb.fill = GridBagConstraints.BOTH;
+
         panneauDeroulant.add(vide, gb);
         gb.gridx = 0;
         gb.gridy = 4;
         gb.weighty = 0;
+
         panneauDeroulant.add(boutonNotifications, gb);
 
-        panneauDeroulant.setPreferredSize(new Dimension(200, 0));
+        panneauDeroulant.setPreferredSize(
+                new Dimension(200, 0));
         panneauGlobal.add(panneauDeroulant, WEST);
 
-        vide.setBackground(new Color(0x3C3C3C));//Choix de la couleur de fond du panneau déroulant, il sera gris foncé
-        panneauDeroulant.setBackground(new Color(0x3C3C3C));//Choix de la couleur de fond du panneau déroulant, il sera gris foncé
+        vide.setBackground(
+                new Color(0x3C3C3C));//Choix de la couleur de fond du panneau déroulant, il sera gris foncé
+        panneauDeroulant.setBackground(
+                new Color(0x3C3C3C));//Choix de la couleur de fond du panneau déroulant, il sera gris foncé
 
     }
 
@@ -174,7 +213,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
                 if (resultat == JFileChooser.APPROVE_OPTION) {
                     String nomFichier = fileChooser.getSelectedFile().getAbsolutePath();
-                    
+
                     Graphe g;
                     g = new Graphe();
                     g.chargerGraphes(nomFichier);
