@@ -20,7 +20,10 @@ public class Graphe {
     Sommet[] tabS;
     Route[][] tabR;
     HashMap<Route, Integer> durees;
-
+    /**
+     * 
+     * @throws FileNotFoundException 
+     */
     public Graphe() throws FileNotFoundException {
         this.nbSommet = 0;
         this.tabS = null;
@@ -28,7 +31,12 @@ public class Graphe {
         this.durees = null;
 
     }
-
+    /**
+     * 
+     * @param nomFichier
+     * @return cpt
+     * @throws FileNotFoundException 
+     */
     public static int compteSommet(String nomFichier) throws FileNotFoundException {
         int cpt = 0;
 
@@ -49,43 +57,81 @@ public class Graphe {
         return cpt;
 
     }
-
+    /**
+     * 
+     * @return int
+     */
     public int getNbSommet() {
         return nbSommet;
     }
-
+    /**
+     * 
+     * @param numeroSommet
+     * @return Sommet
+     */
     public Sommet getSommet(int numeroSommet) {
         return tabS[numeroSommet];
     }
-
+    /**
+     * 
+     * @param numeroSommetD
+     * @param numeroSommetA
+     * @return Route
+     */
     public Route getRoute(int numeroSommetD, int numeroSommetA) {
         return tabR[numeroSommetD][numeroSommetA];
     }
-
+    /**
+     * 
+     * @return Sommet[]
+     */
     public Sommet[] getTabS() {
         return tabS;
     }
-
+    /**
+     * 
+     * @return Route[][]
+     */
     public Route[][] getTabR() {
         return tabR;
     }
-
+    /**
+     * 
+     * @return HashMap
+     */
     public HashMap<Route, Integer> getDurees() {
         return this.durees;
     }
-
-    public void ajouterSommet(int numeroSommet, Sommet S) {
-        this.tabS[numeroSommet] = S;
+    /**
+     * 
+     * @param numeroSommet
+     * @param Sommet 
+     */
+    public void ajouterSommet(int numeroSommet, Sommet Sommet) {
+        this.tabS[numeroSommet] = Sommet;
     }
-
-    public void ajouterRoute(int numeroSommetD, int numeroSommetA, Route R) {
-        this.tabR[numeroSommetD][numeroSommetA] = R;
+    /**
+     * 
+     * @param numeroSommetD
+     * @param numeroSommetA
+     * @param Route 
+     */
+    public void ajouterRoute(int numeroSommetD, int numeroSommetA, Route Route) {
+        this.tabR[numeroSommetD][numeroSommetA] = Route;
     }
-
-    public void setDuree(Route R, int duree) {
+    /**
+     * 
+     * @param R
+     * @param duree 
+     */
+    public void ajouterDuree(Route R, int duree) {
         this.durees.put(R, duree);
     }
-
+    /**
+     * 
+     * @param nomFichier
+     * @throws FileNotFoundException 
+     */
     public void chargerGraphes(String nomFichier) throws FileNotFoundException {
         this.nbSommet = compteSommet(nomFichier);
         this.tabS = new Sommet[nbSommet];
@@ -129,8 +175,13 @@ public class Graphe {
                     if (tokens[j].compareTo("0") != 0 && tokens[j].compareTo("") != 0) {
                         try {
                             String[] triplet = tokens[j].split(",");
+<<<<<<< HEAD
                             ajouterRoute(i, j - 2, new Route("R" + numRoute, Double.parseDouble(triplet[0].trim()), Integer.parseInt(triplet[1].trim()), Integer.parseInt(triplet[2].trim()), tabS[i], tabS[j - 2]));
                             setDuree(tabR[i][j - 2], Integer.parseInt(triplet[2].trim()));
+=======
+                            ajouterRoute(i, j - 2, new Route("R" + numRoute, Double.parseDouble(triplet[0]), Integer.parseInt(triplet[1]), Integer.parseInt(triplet[2]), tabS[i], tabS[j - 2]));
+                            ajouterDuree(tabR[i][j - 2], Integer.parseInt(triplet[2]));
+>>>>>>> origin/Theo
                         } catch (NumberFormatException e) {
                             System.out.println("Route corrompue sur la ligne suivante : " + ligne + " (Raison : " + e.getMessage() + ")");
                         }
@@ -192,7 +243,11 @@ public class Graphe {
                     int distance = random.nextInt(41) + 10;
                     int duree = random.nextInt(111) + 10;
                     ajouterRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), this.getSommet(i + 1)));
+<<<<<<< HEAD
                     setDuree(tabR[i][j], duree);
+=======
+                    ajouterDuree(tabR[i][j], duree);
+>>>>>>> origin/Theo
                     numRoute++;
                 }
             }
