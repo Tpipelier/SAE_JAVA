@@ -6,6 +6,7 @@ package IHM;
 
 import Structure.Graphe;
 import java.awt.BorderLayout;
+import static java.awt.BorderLayout.EAST;
 import static java.awt.BorderLayout.WEST;
 import java.awt.Color;
 import java.awt.Component;
@@ -149,11 +150,12 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         panneauDeroulant.add(boutonNotifications, gb);
 
         panneauDeroulant.setPreferredSize(new Dimension(250, 0));
-        panneauGlobal.add(panneauDeroulant, WEST);
+        panneauGlobal.add(panneauDeroulant, EAST);
 
         vide.setBackground(new Color(0x3C3C3C));//Choix de la couleur de fond du panneau déroulant, il sera gris foncé
         panneauDeroulant.setBackground(new Color(0x3C3C3C));//Choix de la couleur de fond du panneau déroulant, il sera gris foncé
 
+        this.setMinimumSize(new Dimension(1000,500));
     }
 
     private void appliquerStyleBouton(JButton bouton) {
