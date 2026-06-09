@@ -10,7 +10,7 @@ node{
 	
 	
 	shape: circle;               /* Formes dispos : circle, box, diamond, cross, rounded-box */
-    size: 30px;
+    size: 20px;
     fill-color: #E74C3C;
 	
 }
