@@ -25,7 +25,9 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.util.DefaultMouseManager;
@@ -36,6 +38,7 @@ import org.graphstream.ui.view.util.DefaultMouseManager;
  */
 public class FenetrePrincipale extends JFrame implements ActionListener {
 
+    private GrapheVisuel grapheVisuel;
     private JButton boutonChargerCarte;
     private JButton boutonGrapheAleatoire;
     private JButton boutonRavitailler;
@@ -44,8 +47,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private Component grapheActuel;
     private JFileChooser fileChooser;
     private ArrayList<JCheckBox> listecb;
-    private String[] strcb = {"Maternités","Blocs opératoires","Centres de nutrition","Camions"
-            ,"Routes","Colorier les routes dangereuses","Distances","Fiabilité","ID des sommets","Type des sommets"};
+    private String[] strcb = {"Maternités", "Blocs opératoires", "Centres de nutrition", "Camions",
+        "Routes", "Colorier les routes dangereuses", "Distances", "Fiabilité", "ID des sommets", "Type des sommets"};
+
     /**
      * Constructeur de FenetrePrincipale
      *
@@ -58,7 +62,6 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         this.setLocationRelativeTo(null); // Position à l’écran
         this.setVisible(true);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        
 
         initComposants();
 
@@ -79,14 +82,13 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("./data"));
         listecb = new ArrayList<>();
-        for(int i = 0;i< strcb.length;i++){
+        for (int i = 0; i < strcb.length; i++) {
             JCheckBox cb = new JCheckBox(strcb[i]);
             cb.setBackground(new Color(0x3C3C3C));
             cb.setForeground(Color.WHITE);
+            cb.addActionListener(this);
             listecb.add(cb);
         }
-        
-        
 
         boutonChargerCarte.addActionListener(
                 this);
@@ -113,37 +115,36 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         GridBagConstraints gb = new GridBagConstraints();
         gb.anchor = GridBagConstraints.NORTHWEST;
         gb.fill = GridBagConstraints.HORIZONTAL;
-        
+
         gb.insets = new java.awt.Insets(20, 0, 5, 0);//padding
         gb.gridx = 0;
         gb.gridy = 0;
         gb.weighty = 0;
         panneauDeroulant.add(boutonChargerCarte, gb);
-        
+
         gb.insets = new java.awt.Insets(5, 0, 5, 0);//padding
         gb.gridx = 0;
         gb.gridy += 1;
         panneauDeroulant.add(boutonGrapheAleatoire, gb);
-        
-        gb.insets = new java.awt.Insets(5,0,20,0);//padding
+
+        gb.insets = new java.awt.Insets(5, 0, 20, 0);//padding
         gb.gridx = 0;
         gb.gridy += 1;
         panneauDeroulant.add(boutonRavitailler, gb);
-        
-        for(int i = 0;i< listecb.size();i++){
+
+        for (int i = 0; i < listecb.size(); i++) {
             gb.gridy += 1;
-            gb.insets = new java.awt.Insets(0,0,0,0);//padding
-            panneauDeroulant.add(listecb.get(i),gb);
+            gb.insets = new java.awt.Insets(0, 0, 0, 0);//padding
+            panneauDeroulant.add(listecb.get(i), gb);
         }
-        
-        
+
         gb.gridx = 0;
         gb.gridy += 1;
         gb.weighty = 1;
         gb.fill = GridBagConstraints.BOTH;
         panneauDeroulant.add(vide, gb);
-        
-        gb.insets = new java.awt.Insets(5,0,20,0);//padding
+
+        gb.insets = new java.awt.Insets(5, 0, 20, 0);//padding
         gb.gridx = 0;
         gb.gridy += 1;
         gb.weighty = 0;
@@ -155,7 +156,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         vide.setBackground(new Color(0x3C3C3C));//Choix de la couleur de fond du panneau déroulant, il sera gris foncé
         panneauDeroulant.setBackground(new Color(0x3C3C3C));//Choix de la couleur de fond du panneau déroulant, il sera gris foncé
 
-        this.setMinimumSize(new Dimension(1000,500));
+        this.setMinimumSize(new Dimension(1000, 500));
     }
 
     private void appliquerStyleBouton(JButton bouton) {
@@ -192,9 +193,15 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 Graphe g;
                 g = new Graphe();
                 g.genererGrapheAleatoire(nbSommets);
-                GrapheVisuel grapheVisuel = new GrapheVisuel("nom du graphe", g.getTabS(), g.getTabR());
+                grapheVisuel = new GrapheVisuel("nom du graphe", g.getTabS(), g.getTabR());
                 grapheVisuel.setAttribute("ui.stylesheet", "url('css/styleGraphe.css')");
                 afficherGraphe(grapheVisuel);
+                for (int i = 0; i < 5; i++) {
+                    listecb.get(i).setSelected(true);
+                }
+                for (int i = 5; i < 10; i++) {
+                    listecb.get(i).setSelected(false);
+                }
             } catch (FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(panneauGlobal,
                         "le ficchier est introuvable",
@@ -218,15 +225,126 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                     Graphe g;
                     g = new Graphe();
                     g.chargerGraphes(nomFichier);
-                    GrapheVisuel grapheVisuel = new GrapheVisuel("nom du graphe", g.getTabS(), g.getTabR());
+                    grapheVisuel = new GrapheVisuel("nom du graphe", g.getTabS(), g.getTabR());
                     grapheVisuel.setAttribute("ui.stylesheet", "url('css/styleGraphe.css')");
                     afficherGraphe(grapheVisuel);
+                    for (int i = 0; i < 5; i++) {
+                        listecb.get(i).setSelected(true);
+                    }
+                    for (int i = 5; i < 10; i++) {
+                        listecb.get(i).setSelected(false);
+                    }
                 }
             } catch (FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(panneauGlobal,
-                        "le ficchier est introuvable",
+                        "le fichier est introuvable",
                         "Erreur",
                         JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        if (e.getSource() == listecb.get(0)) {
+            if (!listecb.get(0).isSelected()) {
+                for (Node sommet : grapheVisuel.getEachNode()) {
+                    String uiClass = sommet.getAttribute("ui.class");
+
+                    if ("maternite".equals(uiClass)) {
+                        sommet.setAttribute("ui.hide");
+                    }
+                }
+            } else {
+                for (Node sommet : grapheVisuel.getEachNode()) {
+                    String uiClass = sommet.getAttribute("ui.class");
+
+                    if ("maternite".equals(uiClass)) {
+                        sommet.removeAttribute("ui.hide");
+                    }
+                }
+            }
+        }
+        if (e.getSource() == listecb.get(1)) {
+            if (!listecb.get(1).isSelected()) {
+                for (Node sommet : grapheVisuel.getEachNode()) {
+                    String uiClass = sommet.getAttribute("ui.class");
+
+                    if ("blocOperatoire".equals(uiClass)) {
+                        sommet.setAttribute("ui.hide");
+                    }
+                }
+            } else {
+                for (Node sommet : grapheVisuel.getEachNode()) {
+                    String uiClass = sommet.getAttribute("ui.class");
+
+                    if ("blocOperatoire".equals(uiClass)) {
+                        sommet.removeAttribute("ui.hide");
+                    }
+                }
+            }
+        }
+        if (e.getSource() == listecb.get(2)) {
+            if (!listecb.get(2).isSelected()) {
+                for (Node sommet : grapheVisuel.getEachNode()) {
+                    String uiClass = sommet.getAttribute("ui.class");
+
+                    if ("nutrition".equals(uiClass)) {
+                        sommet.setAttribute("ui.hide");
+                    }
+                }
+            } else {
+                for (Node sommet : grapheVisuel.getEachNode()) {
+                    String uiClass = sommet.getAttribute("ui.class");
+
+                    if ("nutrition".equals(uiClass)) {
+                        sommet.removeAttribute("ui.hide");
+                    }
+                }
+            }
+        }
+        if (e.getSource() == listecb.get(4)) {
+            if (!listecb.get(4).isSelected()) {
+                for (Edge route : grapheVisuel.getEachEdge()) {
+                    route.setAttribute("ui.hide");
+                }
+            } else {
+                for (Edge route : grapheVisuel.getEachEdge()) {
+                    route.removeAttribute("ui.hide");
+                }
+            }
+        }
+        if (e.getSource() == listecb.get(5)) {
+            if (listecb.get(5).isSelected()) {
+                String saisie = JOptionPane.showInputDialog(panneauGlobal,
+                        "En dessous de quel probabilité sur 10 considerez vous une route comme dangereuse ?",
+                        "Affichage des routes dangereuses",
+                        JOptionPane.PLAIN_MESSAGE);
+                if (saisie != null && !saisie.trim().isEmpty()) {
+                    try {
+                        int danger = Integer.parseInt(saisie);
+
+                        for (Edge route : grapheVisuel.getEachEdge()) {
+
+                            Object attr = route.getAttribute("fiabilite");//Conseiller par l'IA pour récuperer la fiabilité et ne marche pas sans.
+
+                            if (attr instanceof Number) {
+                                int fiabilite = ((Number) attr).intValue();
+
+                                if (fiabilite < danger) {
+                                    route.setAttribute("ui.class", "danger");
+                                } else {
+                                    route.removeAttribute("ui.class");
+                                }
+                            }
+                        }
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(panneauGlobal, "Veuillez entrer un nombre valide.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                        listecb.get(5).setSelected(false);
+                    }
+                } else {
+                    listecb.get(5).setSelected(false);
+                }
+            }else{
+                for (Edge route : grapheVisuel.getEachEdge()) {
+                    route.removeAttribute("ui.class");
+                }
             }
         }
     }
