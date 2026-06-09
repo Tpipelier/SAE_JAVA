@@ -175,13 +175,9 @@ public class Graphe {
                     if (tokens[j].compareTo("0") != 0 && tokens[j].compareTo("") != 0) {
                         try {
                             String[] triplet = tokens[j].split(",");
-<<<<<<< HEAD
                             ajouterRoute(i, j - 2, new Route("R" + numRoute, Double.parseDouble(triplet[0].trim()), Integer.parseInt(triplet[1].trim()), Integer.parseInt(triplet[2].trim()), tabS[i], tabS[j - 2]));
-                            setDuree(tabR[i][j - 2], Integer.parseInt(triplet[2].trim()));
-=======
-                            ajouterRoute(i, j - 2, new Route("R" + numRoute, Double.parseDouble(triplet[0]), Integer.parseInt(triplet[1]), Integer.parseInt(triplet[2]), tabS[i], tabS[j - 2]));
-                            ajouterDuree(tabR[i][j - 2], Integer.parseInt(triplet[2]));
->>>>>>> origin/Theo
+                            ajouterDuree(tabR[i][j - 2], Integer.parseInt(triplet[2].trim()));
+
                         } catch (NumberFormatException e) {
                             System.out.println("Route corrompue sur la ligne suivante : " + ligne + " (Raison : " + e.getMessage() + ")");
                         }
@@ -243,11 +239,7 @@ public class Graphe {
                     int distance = random.nextInt(41) + 10;
                     int duree = random.nextInt(111) + 10;
                     ajouterRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), this.getSommet(i + 1)));
-<<<<<<< HEAD
-                    setDuree(tabR[i][j], duree);
-=======
                     ajouterDuree(tabR[i][j], duree);
->>>>>>> origin/Theo
                     numRoute++;
                 }
             }
