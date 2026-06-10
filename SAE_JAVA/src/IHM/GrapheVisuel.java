@@ -38,7 +38,7 @@ public class GrapheVisuel extends SingleGraph {
                     Edge e = addEdge(idArete, tabS[i].getNom(), tabS[j].getNom());
                     e.setAttribute("ui.label", r.getDistance() + "km");
                     
-                    if (r.getFiabilité() < 3) {
+                    if (r.getFiabilité() < 0.3) {
                     e.setAttribute("ui.class", "danger");
                     }
                 }
