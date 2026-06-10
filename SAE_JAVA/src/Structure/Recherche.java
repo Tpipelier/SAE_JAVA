@@ -1,4 +1,4 @@
-package sae_java;
+package Structure;
 
 import java.util.ArrayList;
 import java.util.List;
