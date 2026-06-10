@@ -148,9 +148,9 @@ public class Graphe {
             String ligne = scannerTabS.nextLine();
             try {
                 if (!ligne.startsWith("//")) {
-                    String[] tokens = ligne.split(";");
-
+                    String[] tokens = ligne.split(";");                
                     ajouterSommet(i, new Sommet(tokens[0].trim(), tokens[1].trim()));
+
                     i++;
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -172,9 +172,15 @@ public class Graphe {
 
                 for (int j = 2; j < tokens.length; j++) {
 
+<<<<<<< HEAD
                     if (tokens[j].compareTo("0") != 0 && tokens[j].compareTo("") != 0) {
                         try {
                             String[] triplet = tokens[j].split(",");
+=======
+                    if (tokens[j].compareTo("0") != 0 && tokens[j].compareTo("")!=0){
+                        try {
+                            String[] triplet = tokens[j].trim().split(",");
+>>>>>>> origin/Theo
                             ajouterRoute(i, j - 2, new Route("R" + numRoute, Double.parseDouble(triplet[0].trim()), Integer.parseInt(triplet[1].trim()), Integer.parseInt(triplet[2].trim()), tabS[i], tabS[j - 2]));
                             ajouterDuree(tabR[i][j - 2], Integer.parseInt(triplet[2].trim()));
                         } catch (NumberFormatException e) {
@@ -182,6 +188,7 @@ public class Graphe {
                         }
 
                     }
+                        
                     numRoute++;
 
                 }
@@ -193,7 +200,7 @@ public class Graphe {
         scannerTabR.close();
 
     }
-
+    
     public void afficheContenuGraphe() {
         String ligne = "";
         for (int i = 0; i < this.nbSommet; i++) {
