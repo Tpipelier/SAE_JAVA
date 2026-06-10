@@ -20,7 +20,7 @@ public class SAE_JAVA {
      */
     public static void main(String[] args) throws FileNotFoundException {
         Graphe g = new Graphe();
-        g.chargerGraphes("data/graphe1.csv");
+        g.genererGrapheAleatoire(20);
 
         GrapheVisuel grapheVisuel = new GrapheVisuel("graphe1", g.getTabS(), g.getTabR());
 

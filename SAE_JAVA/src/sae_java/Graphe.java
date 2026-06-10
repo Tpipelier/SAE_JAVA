@@ -144,7 +144,6 @@ public class Graphe {
         this.tabS = new Sommet[nbSommet];
         this.tabR = new Route[nbSommet][nbSommet];
         this.durees = new HashMap<>();
-
         Random random = new Random();
         int numRoute = 0;
 
@@ -159,24 +158,34 @@ public class Graphe {
             } else {
                 type = "N";
             }
-
             setSommet(i, new Sommet("S" + (i + 1), type));
         }
-        // 2. Création des arêtes avec probabilité 1/5
+
+        // 2. Arbre couvrant : garantit que le graphe est CONNEXE (aucun sommet isolé)
+        //    Chaque sommet i (>=1) est relié à un sommet déjà placé (j < i).
+        for (int i = 1; i < nbSommets; i++) {
+            int j = random.nextInt(i); // j est forcément < i
+            numRoute = creerRoute(j, i, random, numRoute); // j < i => respecte tabR[min][max]
+        }
+
+        // 3. Arêtes supplémentaires avec probabilité 1/5 (sans écraser celles de l'arbre)
         for (int i = 0; i < nbSommets; i++) {
             for (int j = i + 1; j < nbSommets; j++) {
-                if (random.nextInt(5) == 0) {
-                    // Fiabilité sur une échelle de 2 à 10 (comme dans les CSV).
-                    double fiabilite = random.nextInt(9) + 2;
-                    int distance = random.nextInt(41) + 10;
-                    int duree = random.nextInt(111) + 10;
-
-                    setRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), "S" + (j + 1)));
-                    setDuree(tabR[i][j], duree);
-                    numRoute++;
+                if (tabR[i][j] == null && random.nextInt(5) == 0) {
+                    numRoute = creerRoute(i, j, random, numRoute);
                 }
             }
         }
+    }
+
+// Helper : crée une route entre i et j (avec i < j) et renvoie le prochain numéro de route
+    private int creerRoute(int i, int j, Random random, int numRoute) {
+        double fiabilite = random.nextInt(9) + 2;   // échelle 2 à 10
+        int distance = random.nextInt(41) + 10;
+        int duree = random.nextInt(111) + 10;
+        setRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), "S" + (j + 1)));
+        setDuree(tabR[i][j], duree);
+        return numRoute + 1;
     }
 
 }
