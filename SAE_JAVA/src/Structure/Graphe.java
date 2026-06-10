@@ -235,7 +235,7 @@ public class Graphe {
         for (int i = 0; i < nbSommets; i++) {
             for (int j = i + 1; j < nbSommets; j++) {
                 if (random.nextInt(5) == 0) {
-                    double fiabilite = (random.nextInt(9) + 2) / 10.0;
+                    int fiabilite = (random.nextInt(9) + 2) ;
                     int distance = random.nextInt(41) + 10;
                     int duree = random.nextInt(111) + 10;
                     ajouterRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), this.getSommet(i + 1)));

@@ -15,6 +15,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ import javax.swing.JRadioButton;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import org.graphstream.ui.graphicGraph.GraphicElement;
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.util.DefaultMouseManager;
@@ -48,7 +51,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private JFileChooser fileChooser;
     private ArrayList<JCheckBox> listecb;
     private String[] strcb = {"Maternités", "Blocs opératoires", "Centres de nutrition", "Camions",
-        "Routes", "Colorier les routes dangereuses", "Distances", "Fiabilité", "ID des sommets", "Type des sommets"};
+        "Routes", "Colorier les routes dangereuses", "Distances", "Durée", "Fiabilité", "ID des sommets", "Type des sommets"};
 
     /**
      * Constructeur de FenetrePrincipale
@@ -90,15 +93,12 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             listecb.add(cb);
         }
 
-        boutonChargerCarte.addActionListener(
-                this);
-        boutonGrapheAleatoire.addActionListener(
-                this);
+        boutonChargerCarte.addActionListener(this);
+        boutonGrapheAleatoire.addActionListener(this);
 
         this.setContentPane(panneauGlobal);
 
-        panneauGlobal.setLayout(
-                new BorderLayout());
+        panneauGlobal.setLayout(new BorderLayout());
 
         appliquerStyleBouton(boutonChargerCarte);
 
@@ -175,6 +175,24 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         viewer.enableAutoLayout();
         View view = viewer.addDefaultView(false);   // false indicates "no JFrame".
 
+        //
+        view.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                double x = e.getX();
+                double y = e.getY();
+                
+                
+                GraphicElement element = view.findNodeOrSpriteAt(x, y);//Donné par l'ennoncer
+                if (element != null) {//Donné par l'ennoncer
+                    Node n = g.getNode(element.getId());//Donné par l'ennoncer
+                    
+                    SommetClique f = new SommetClique(FenetrePrincipale.this,n);
+                }
+            }
+        });
+        //
+
         grapheActuel = (Component) view;
         panneauGlobal.add((Component) view, BorderLayout.CENTER);
 
@@ -199,7 +217,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 for (int i = 0; i < 5; i++) {
                     listecb.get(i).setSelected(true);
                 }
-                for (int i = 5; i < 10; i++) {
+                for (int i = 5; i < listecb.size(); i++) {
                     listecb.get(i).setSelected(false);
                 }
             } catch (FileNotFoundException ex) {
@@ -231,7 +249,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                     for (int i = 0; i < 5; i++) {
                         listecb.get(i).setSelected(true);
                     }
-                    for (int i = 5; i < 10; i++) {
+                    for (int i = 5; i < listecb.size(); i++) {
                         listecb.get(i).setSelected(false);
                     }
                 }
@@ -341,7 +359,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 } else {
                     listecb.get(5).setSelected(false);
                 }
-            }else{
+            } else {
                 for (Edge route : grapheVisuel.getEachEdge()) {
                     route.removeAttribute("ui.class");
                 }
