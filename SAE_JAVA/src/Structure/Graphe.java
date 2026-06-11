@@ -6,9 +6,13 @@ package Structure;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
+import Structure.Sommet;
+import Structure.Route;
 
 /**
  *
@@ -202,13 +206,11 @@ public class Graphe {
         }
 
     }
-
     public void genererGrapheAleatoire(int nbSommets) {
         this.nbSommet = nbSommets;
         this.tabS = new Sommet[nbSommet];
         this.tabR = new Route[nbSommet][nbSommet];
         this.durees = new HashMap<>();
-
         Random random = new Random();
         int numRoute = 0;
 
@@ -223,22 +225,160 @@ public class Graphe {
             } else {
                 type = "N";
             }
-
             ajouterSommet(i, new Sommet("S" + (i + 1), type));
         }
-        // 2. Création des arêtes avec probabilité 1/5
+
+        // 2. Arbre couvrant : garantit que le graphe est CONNEXE (aucun sommet isolé)
+        //    Chaque sommet i (>=1) est relié à un sommet déjà placé (j < i).
+        for (int i = 1; i < nbSommets; i++) {
+            int j = random.nextInt(i); // j est forcément < i
+            numRoute = creerRoute(j, i, random, numRoute); // j < i => respecte tabR[min][max]
+        }
+
+        // 3. Arêtes supplémentaires avec probabilité 1/5 (sans écraser celles de l'arbre)
         for (int i = 0; i < nbSommets; i++) {
             for (int j = i + 1; j < nbSommets; j++) {
-                if (random.nextInt(5) == 0) {
-                    double fiabilite = (random.nextInt(9) + 2) / 10.0;
-                    int distance = random.nextInt(41) + 10;
-                    int duree = random.nextInt(111) + 10;
-                    ajouterRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), this.getSommet(i + 1)));
-                    ajouterDuree(tabR[i][j], duree);
-                    numRoute++;
+                if (tabR[i][j] == null && random.nextInt(5) == 0) {
+                    numRoute = creerRoute(i, j, random, numRoute);
                 }
             }
         }
+    }
+
+// Helper : crée une route entre i et j (avec i < j) et renvoie le prochain numéro de route
+    private int creerRoute(int i, int j, Random random, int numRoute) {
+        double fiabilite = random.nextInt(9) + 2;   // échelle 2 à 10
+        int distance = random.nextInt(41) + 10;
+        int duree = random.nextInt(111) + 10;
+        ajouterRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), this.getSommet(j)));
+        ajouterDuree(tabR[i][j], duree);
+        return numRoute + 1;
+    }
+
+    /**
+     * Renvoie l'indice d'un sommet dans tabS (-1 s'il n'existe pas).
+     */
+    public int indexDeSommet(Sommet s) {
+        for (int i = 0; i < this.nbSommet; i++) {
+            if (this.tabS[i] == s) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Renvoie les routes partant du sommet donne (vers les maternites, blocs
+     * operatoires et centres de nutrition), triees par distance croissante.
+     */
+    public List<Route> distancesCroissantes(Sommet depart) {
+        List<Route> routes = new ArrayList<>();
+        int idx = indexDeSommet(depart);
+
+        for (int j = 0; idx != -1 && j < this.nbSommet; j++) {
+            // Graphe non oriente : route stockee en [idx][j] ou [j][idx]
+            Route r = (this.tabR[idx][j] != null) ? this.tabR[idx][j] : this.tabR[j][idx];
+            if (r != null) {
+                routes.add(r);
+            }
+        }
+
+        routes.sort((a, b) -> a.getDistance() - b.getDistance());
+        return routes;
+    }
+
+    /**
+     * Petit resultat associant un sommet d'arrivee a la distance la plus
+     * courte depuis le sommet de depart. Donne acces au nom et au type.
+     */
+    public static class DistanceVers {
+
+        private final Sommet sommet;
+        private final int distance;
+
+        public DistanceVers(Sommet sommet, int distance) {
+            this.sommet = sommet;
+            this.distance = distance;
+        }
+
+        public Sommet getSommet() {
+            return sommet;
+        }
+
+        public String getNom() {
+            return sommet.getNom();
+        }
+
+        public String getType() {
+            return sommet.getType();
+        }
+
+        public int getDistance() {
+            return distance;
+        }
+
+        @Override
+        public String toString() {
+            return sommet.getNom() + " (" + sommet.getType() + ") : " + distance;
+        }
+    }
+
+    /**
+     * Calcule, depuis le sommet donne, la distance la plus courte (Dijkstra
+     * pondere par la distance des routes) vers tous les autres sommets, puis
+     * renvoie ces resultats (nom, type et distance) tries par ordre croissant.
+     */
+    public List<DistanceVers> distancesCroissantesVersTous(Sommet depart) {
+        List<DistanceVers> resultats = new ArrayList<>();
+        int source = indexDeSommet(depart);
+        if (source == -1) {
+            return resultats;
+        }
+
+        int[] dist = new int[this.nbSommet];
+        boolean[] visite = new boolean[this.nbSommet];
+        for (int i = 0; i < this.nbSommet; i++) {
+            dist[i] = Integer.MAX_VALUE;
+        }
+        dist[source] = 0;
+
+        for (int n = 0; n < this.nbSommet; n++) {
+            // On choisit le sommet non visite le plus proche
+            int u = -1;
+            for (int i = 0; i < this.nbSommet; i++) {
+                if (!visite[i] && (u == -1 || dist[i] < dist[u])) {
+                    u = i;
+                }
+            }
+            visite[u] = true;
+
+            // Mise a jour des voisins de u
+            for (int v = 0; v < this.nbSommet; v++) {
+                Route r = (this.tabR[u][v] != null) ? this.tabR[u][v] : this.tabR[v][u];
+                if (r != null && dist[u] + r.getDistance() < dist[v]) {
+                    dist[v] = dist[u] + r.getDistance();
+                }
+            }
+        }
+
+        // On garde les autres sommets atteignables (avec leur nom et leur type)
+        for (int i = 0; i < this.nbSommet; i++) {
+            if (i != source && dist[i] != Integer.MAX_VALUE) {
+                resultats.add(new DistanceVers(this.tabS[i], dist[i]));
+            }
+        }
+
+        // Tri par distance croissante (tri a bulles)
+        for (int i = 0; i < resultats.size(); i++) {
+            for (int j = 0; j < resultats.size() - 1 - i; j++) {
+                if (resultats.get(j).getDistance() > resultats.get(j + 1).getDistance()) {
+                    DistanceVers tmp = resultats.get(j);
+                    resultats.set(j, resultats.get(j + 1));
+                    resultats.set(j + 1, tmp);
+                }
+            }
+        }
+        return resultats;
     }
 
 }
