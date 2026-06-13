@@ -37,7 +37,14 @@ public class GrapheVisuel extends SingleGraph {
                     String idArete = tabS[i].getNom() + "-" + tabS[j].getNom();
                     Edge e = addEdge(idArete, tabS[i].getNom(), tabS[j].getNom());
                     e.setAttribute("ui.label", r.getDistance() + "km");
+<<<<<<< HEAD
                     e.setAttribute("fiabilite", r.getFiabilité());
+=======
+                    // Poids utilises par la classe Recherche (Dijkstra)
+                    e.setAttribute("duree", r.getDurée());
+                    // Duree estimee : penalisee quand la fiabilite est faible
+                    e.setAttribute("dureeEstimee", r.getDurée() * 10.0 / r.getFiabilité());
+>>>>>>> origin/walid
                 }
             }
         }

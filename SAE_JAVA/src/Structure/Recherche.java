@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+=======
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+>>>>>>> origin/walid
 package Structure;
 
 import java.util.ArrayList;
@@ -8,10 +15,8 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 
 /**
- * Recherche du plus court chemin entre deux centres avec le Dijkstra
- * de la librairie GraphStream.
  *
- * @author SAE_JAVA
+ * @author walid
  */
 public class Recherche {
 
@@ -89,3 +94,4 @@ public class Recherche {
         }
     }
 }
+
