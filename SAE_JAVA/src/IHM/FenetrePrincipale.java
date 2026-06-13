@@ -179,15 +179,16 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         view.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                double x = e.getX();
-                double y = e.getY();
-                
-                
-                GraphicElement element = view.findNodeOrSpriteAt(x, y);//Donné par l'ennoncer
-                if (element != null) {//Donné par l'ennoncer
-                    Node n = g.getNode(element.getId());//Donné par l'ennoncer
-                    
-                    SommetClique f = new SommetClique(FenetrePrincipale.this,n);
+                if (javax.swing.SwingUtilities.isRightMouseButton(e)) {
+                    double x = e.getX();
+                    double y = e.getY();
+
+                    GraphicElement element = view.findNodeOrSpriteAt(x, y);//Donné par l'ennoncer
+                    if (element != null) {//Donné par l'ennoncer
+                        Node n = g.getNode(element.getId());//Donné par l'ennoncer
+
+                        SommetClique f = new SommetClique(FenetrePrincipale.this, n);
+                    }
                 }
             }
         });
