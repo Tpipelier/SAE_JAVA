@@ -24,6 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -44,14 +45,15 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private GrapheVisuel grapheVisuel;
     private JButton boutonChargerCarte;
     private JButton boutonGrapheAleatoire;
-    private JButton boutonRavitailler;
-    private JButton boutonNotifications;
     private JPanel panneauGlobal;
     private Component grapheActuel;
     private JFileChooser fileChooser;
     private ArrayList<JCheckBox> listecb;
-    private String[] strcb = {"Maternités", "Blocs opératoires", "Centres de nutrition", "Camions",
+    private String[] strcb = {"Maternités", "Blocs opératoires", "Centres de nutrition",
         "Routes", "Colorier les routes dangereuses", "Distances", "Durée", "Fiabilité", "ID des sommets", "Type des sommets"};
+    private JLabel labelM;
+    private JLabel labelO;
+    private JLabel labelN;
 
     /**
      * Constructeur de FenetrePrincipale
@@ -79,8 +81,6 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
         boutonChargerCarte = new JButton("Charger une carte");
         boutonGrapheAleatoire = new JButton("Créer un graphe aléatoire");
-        boutonRavitailler = new JButton("Ravitailler");
-        boutonNotifications = new JButton("Notifications");
         panneauGlobal = new JPanel();
         fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("./data"));
@@ -92,6 +92,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             cb.addActionListener(this);
             listecb.add(cb);
         }
+        labelM = new JLabel("Nombre de maternités : 0");
+        labelN = new JLabel("Nombre de centres de nutrition : 0");
+        labelO = new JLabel("Nombre de blocs opératoires : 0");
 
         boutonChargerCarte.addActionListener(this);
         boutonGrapheAleatoire.addActionListener(this);
@@ -101,12 +104,10 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         panneauGlobal.setLayout(new BorderLayout());
 
         appliquerStyleBouton(boutonChargerCarte);
-
         appliquerStyleBouton(boutonGrapheAleatoire);
-
-        appliquerStyleBouton(boutonRavitailler);
-
-        appliquerStyleBouton(boutonNotifications);
+        labelM.setForeground(Color.WHITE);
+        labelN.setForeground(Color.WHITE);
+        labelO.setForeground(Color.WHITE);
 
         JPanel panneauDeroulant = new JPanel();
         JPanel vide = new JPanel();
@@ -122,15 +123,11 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         gb.weighty = 0;
         panneauDeroulant.add(boutonChargerCarte, gb);
 
-        gb.insets = new java.awt.Insets(5, 0, 5, 0);//padding
+        gb.insets = new java.awt.Insets(5, 0, 50, 0);//padding
         gb.gridx = 0;
         gb.gridy += 1;
         panneauDeroulant.add(boutonGrapheAleatoire, gb);
-
-        gb.insets = new java.awt.Insets(5, 0, 20, 0);//padding
         gb.gridx = 0;
-        gb.gridy += 1;
-        panneauDeroulant.add(boutonRavitailler, gb);
 
         for (int i = 0; i < listecb.size(); i++) {
             gb.gridy += 1;
@@ -138,17 +135,19 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             panneauDeroulant.add(listecb.get(i), gb);
         }
 
-        gb.gridx = 0;
-        gb.gridy += 1;
-        gb.weighty = 1;
-        gb.fill = GridBagConstraints.BOTH;
-        panneauDeroulant.add(vide, gb);
+        gb.insets = new java.awt.Insets(50, 0, 0, 0);//padding
 
-        gb.insets = new java.awt.Insets(5, 0, 20, 0);//padding
-        gb.gridx = 0;
         gb.gridy += 1;
-        gb.weighty = 0;
-        panneauDeroulant.add(boutonNotifications, gb);
+        panneauDeroulant.add(labelM, gb);
+        gb.insets = new java.awt.Insets(5, 0, 0, 0);//padding
+        gb.gridy += 1;
+        panneauDeroulant.add(labelN, gb);
+        gb.gridy += 1;
+        panneauDeroulant.add(labelO, gb);
+
+        gb.fill = GridBagConstraints.BOTH;
+        gb.weighty = 1;
+        panneauDeroulant.add(vide, gb);
 
         panneauDeroulant.setPreferredSize(new Dimension(250, 0));
         panneauGlobal.add(panneauDeroulant, EAST);
@@ -215,12 +214,29 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 grapheVisuel = new GrapheVisuel("nom du graphe", g.getTabS(), g.getTabR());
                 grapheVisuel.setAttribute("ui.stylesheet", "url('css/styleGraphe.css')");
                 afficherGraphe(grapheVisuel);
-                for (int i = 0; i < 5; i++) {
+                int nbrM = 0;
+                int nbrN = 0;
+                int nbrO = 0;
+                for (Node sommet : grapheVisuel.getEachNode()) {
+                    if (sommet.getAttribute("type").toString().equals("M")) {
+                        nbrM++;
+                    } else if (sommet.getAttribute("type").toString().equals("N")) {
+                        nbrN++;
+                    } else if (sommet.getAttribute("type").toString().equals("O")) {
+                        nbrO++;
+                    }
+                }
+                labelM.setText("Nombre de maternités : " + nbrM);
+                labelN.setText("Nombre de centres de nutrition : " + nbrN);
+                labelO.setText("Nombre de blocs opératoires : " + nbrO);
+                for (int i = 0; i < 4; i++) {
                     listecb.get(i).setSelected(true);
                 }
-                for (int i = 5; i < listecb.size(); i++) {
+                for (int i = 4; i < 8; i++) {
                     listecb.get(i).setSelected(false);
                 }
+                listecb.get(8).setSelected(true);
+                listecb.get(9).setSelected(true);
             } catch (FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(panneauGlobal,
                         "le ficchier est introuvable",
@@ -247,12 +263,29 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                     grapheVisuel = new GrapheVisuel("nom du graphe", g.getTabS(), g.getTabR());
                     grapheVisuel.setAttribute("ui.stylesheet", "url('css/styleGraphe.css')");
                     afficherGraphe(grapheVisuel);
-                    for (int i = 0; i < 5; i++) {
+                    int nbrM = 0;
+                    int nbrN = 0;
+                    int nbrO = 0;
+                    for (Node sommet : grapheVisuel.getEachNode()) {
+                        if (sommet.getAttribute("type").toString().equals("M")) {
+                            nbrM++;
+                        } else if (sommet.getAttribute("type").toString().equals("N")) {
+                            nbrN++;
+                        } else if (sommet.getAttribute("type").toString().equals("O")) {
+                            nbrO++;
+                        }
+                    }
+                    labelM.setText("Nombre de maternités : " + nbrM);
+                    labelN.setText("Nombre de centres de nutrition : " + nbrN);
+                    labelO.setText("Nombre de blocs opératoires : " + nbrO);
+                    for (int i = 0; i < 4; i++) {
                         listecb.get(i).setSelected(true);
                     }
-                    for (int i = 5; i < listecb.size(); i++) {
+                    for (int i = 4; i < 8; i++) {
                         listecb.get(i).setSelected(false);
                     }
+                    listecb.get(8).setSelected(true);
+                    listecb.get(9).setSelected(true);
                 }
             } catch (FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(panneauGlobal,
@@ -318,8 +351,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 }
             }
         }
-        if (e.getSource() == listecb.get(4)) {
-            if (!listecb.get(4).isSelected()) {
+        if (e.getSource() == listecb.get(3)) {
+            if (!listecb.get(3).isSelected()) {
                 for (Edge route : grapheVisuel.getEachEdge()) {
                     route.setAttribute("ui.hide");
                 }
@@ -329,8 +362,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 }
             }
         }
-        if (e.getSource() == listecb.get(5)) {
-            if (listecb.get(5).isSelected()) {
+        if (e.getSource() == listecb.get(4)) {
+            if (listecb.get(4).isSelected()) {
                 String saisie = JOptionPane.showInputDialog(panneauGlobal,
                         "En dessous de quel probabilité sur 10 considerez vous une route comme dangereuse ?",
                         "Affichage des routes dangereuses",
@@ -355,14 +388,79 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                         }
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(panneauGlobal, "Veuillez entrer un nombre valide.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                        listecb.get(5).setSelected(false);
+                        listecb.get(4).setSelected(false);
                     }
                 } else {
-                    listecb.get(5).setSelected(false);
+                    listecb.get(4).setSelected(false);
                 }
             } else {
                 for (Edge route : grapheVisuel.getEachEdge()) {
                     route.removeAttribute("ui.class");
+                }
+            }
+        }
+        if (e.getSource() == listecb.get(5)) {
+            listecb.get(7).setSelected(false);
+            listecb.get(6).setSelected(false);
+            if (listecb.get(5).isSelected()) {
+                for (Edge route : grapheVisuel.getEachEdge()) {
+                    String ditance = route.getAttribute("distance").toString();
+                    route.setAttribute("ui.label", ditance + "km");
+                }
+            } else {
+                for (Edge route : grapheVisuel.getEachEdge()) {
+                    route.removeAttribute("ui.label");
+                }
+            }
+        }
+        if (e.getSource() == listecb.get(6)) {
+            listecb.get(7).setSelected(false);
+            listecb.get(5).setSelected(false);
+            if (listecb.get(6).isSelected()) {
+                for (Edge route : grapheVisuel.getEachEdge()) {
+                    String duree = route.getAttribute("duree").toString();
+                    route.setAttribute("ui.label", duree + "mins");
+                }
+            } else {
+                for (Edge route : grapheVisuel.getEachEdge()) {
+                    route.removeAttribute("ui.label");
+                }
+            }
+        }
+        if (e.getSource() == listecb.get(7)) {
+            listecb.get(5).setSelected(false);
+            listecb.get(6).setSelected(false);
+            if (listecb.get(7).isSelected()) {
+                for (Edge route : grapheVisuel.getEachEdge()) {
+                    String fiabilite = route.getAttribute("fiabilite").toString();
+                    route.setAttribute("ui.label", fiabilite + "/10");
+                }
+            } else {
+                for (Edge route : grapheVisuel.getEachEdge()) {
+                    route.removeAttribute("ui.label");
+                }
+            }
+        }
+        if (e.getSource() == listecb.get(8) || e.getSource() == listecb.get(9)) {
+            if (listecb.get(8).isSelected() && listecb.get(9).isSelected()) {
+                for (Node sommet : grapheVisuel.getEachNode()) {
+                    String id = sommet.getAttribute("id").toString();
+                    String type = sommet.getAttribute("type").toString();
+                    sommet.setAttribute("ui.label", id + " (" + type + ")");
+                }
+            } else if (listecb.get(8).isSelected()) {
+                for (Node sommet : grapheVisuel.getEachNode()) {
+                    String id = sommet.getAttribute("id").toString();
+                    sommet.setAttribute("ui.label", id);
+                }
+            } else if (listecb.get(9).isSelected()) {
+                for (Node sommet : grapheVisuel.getEachNode()) {
+                    String type = sommet.getAttribute("type").toString();
+                    sommet.setAttribute("ui.label", "(" + type + ")");
+                }
+            } else {
+                for (Node sommet : grapheVisuel.getEachNode()) {
+                    sommet.removeAttribute("ui.label");
                 }
             }
         }

@@ -1,10 +1,8 @@
-<<<<<<< HEAD
-=======
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
->>>>>>> origin/walid
 package Structure;
 
 import java.util.ArrayList;

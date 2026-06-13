@@ -17,7 +17,10 @@ public class GrapheVisuel extends SingleGraph {
         for (Sommet s : tabS) {
             if (s != null) {
                 Node n = addNode(s.getNom());
-                n.setAttribute("ui.label", s.getNom() + " (" + s.getType() + ")");
+                
+                String id = s.getNom();
+                String type = s.getType();
+                n.setAttribute("ui.label", id+ " ("+ type + ")");
                 
                 if ("M".equals(s.getType())) {
                     n.setAttribute("ui.class", "maternite");
@@ -26,6 +29,8 @@ public class GrapheVisuel extends SingleGraph {
                 } else if ("N".equals(s.getType())) {
                     n.setAttribute("ui.class", "nutrition");
                 }
+                n.setAttribute("type", s.getType());
+                n.setAttribute("id", s.getNom());
                 
             }
         }
@@ -36,15 +41,15 @@ public class GrapheVisuel extends SingleGraph {
                 if (r != null && i < j) {
                     String idArete = tabS[i].getNom() + "-" + tabS[j].getNom();
                     Edge e = addEdge(idArete, tabS[i].getNom(), tabS[j].getNom());
-                    e.setAttribute("ui.label", r.getDistance() + "km");
-<<<<<<< HEAD
+                    
+                    
+                    e.setAttribute("distance", r.getDistance());
+                    
                     e.setAttribute("fiabilite", r.getFiabilité());
-=======
                     // Poids utilises par la classe Recherche (Dijkstra)
                     e.setAttribute("duree", r.getDurée());
                     // Duree estimee : penalisee quand la fiabilite est faible
                     e.setAttribute("dureeEstimee", r.getDurée() * 10.0 / r.getFiabilité());
->>>>>>> origin/walid
                 }
             }
         }

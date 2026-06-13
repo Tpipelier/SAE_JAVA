@@ -243,7 +243,7 @@ public class Graphe {
         // 3. Arêtes supplémentaires avec probabilité 1/5 (sans écraser celles de l'arbre)
         for (int i = 0; i < nbSommets; i++) {
             for (int j = i + 1; j < nbSommets; j++) {
-<<<<<<< HEAD
+//<<<<<<< HEAD
                 if (random.nextInt(5) == 0) {
                     int fiabilite = (random.nextInt(9) + 2) ;
                     int distance = random.nextInt(41) + 10;
@@ -251,16 +251,14 @@ public class Graphe {
                     ajouterRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), this.getSommet(i + 1)));
                     ajouterDuree(tabR[i][j], duree);
                     numRoute++;
-=======
-                if (tabR[i][j] == null && random.nextInt(5) == 0) {
-                    numRoute = creerRoute(i, j, random, numRoute);
->>>>>>> origin/walid
+//=======
+//                if (tabR[i][j] == null && random.nextInt(5) == 0) {
+//                    numRoute = creerRoute(i, j, random, numRoute);
+//>>>>>>> origin/walid
                 }
             }
         }
     }
-<<<<<<< HEAD
-=======
 
 // Helper : crée une route entre i et j (avec i < j) et renvoie le prochain numéro de route
     private int creerRoute(int i, int j, Random random, int numRoute) {
@@ -398,5 +396,4 @@ public class Graphe {
         return resultats;
     }
 
->>>>>>> origin/walid
 }
