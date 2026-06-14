@@ -4,11 +4,13 @@
  */
 package IHM;
 
+import Structure.Graphe;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -31,7 +33,7 @@ public class SommetClique extends JDialog implements ActionListener {
     private JButton btDistance;
     private JButton btDuree;
 
-    public SommetClique(JFrame f, Node n) {
+    public SommetClique(FenetrePrincipale f,Node n) {
         super(f, "Sommet " + n.getId());
         this.sommetCliqué = n;
 
@@ -85,6 +87,7 @@ public class SommetClique extends JDialog implements ActionListener {
         tab.setValueAt("Type du centre", 0, 1);
         tab.setValueAt("Durée", 0, 2);
         tab.setValueAt("Durée estimée", 0, 3);
+        
         
         
         

@@ -60,7 +60,7 @@ public class Recherche {
             return null;
         }
 
-        List<String> sommets = new ArrayList<>();
+        ArrayList<String> sommets = new ArrayList<>();
         for (Node n : chemin.getNodePath()) {
             sommets.add(n.getId());
         }
@@ -70,15 +70,15 @@ public class Recherche {
     /** Résultat d'une recherche : les centres traversés et le coût total. */
     public static class Itineraire {
 
-        private final List<String> sommets;
+        private final ArrayList<String> sommets;
         private final double cout;
 
-        public Itineraire(List<String> sommets, double cout) {
+        public Itineraire(ArrayList<String> sommets, double cout) {
             this.sommets = sommets;
             this.cout = cout;
         }
 
-        public List<String> getSommets() {
+        public ArrayList<String> getSommets() {
             return sommets;
         }
 

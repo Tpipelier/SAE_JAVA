@@ -4,6 +4,7 @@ graph {
 
 edge {
     fill-color: #ECF0F1;         /* Couleur de la ligne */
+    size: 2px;
 }
 
 node{
@@ -35,4 +36,10 @@ edge.danger {
 
 edge.safe {
      fill-color: #ECF0F1;
+     size: 2px;
+}
+
+edge.selectionnerPCC {
+    fill-color: #023cfc;
+    size: 5px;
 }

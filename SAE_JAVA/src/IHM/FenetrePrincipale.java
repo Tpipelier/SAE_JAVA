@@ -5,6 +5,7 @@
 package IHM;
 
 import Structure.Graphe;
+import Structure.Recherche;
 import java.awt.BorderLayout;
 import static java.awt.BorderLayout.EAST;
 import static java.awt.BorderLayout.WEST;
@@ -20,14 +21,20 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -45,6 +52,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private GrapheVisuel grapheVisuel;
     private JButton boutonChargerCarte;
     private JButton boutonGrapheAleatoire;
+    private JButton boutonCalculerItineraire;
+    private JButton boutonCalculerItineraireEstimee;
     private JPanel panneauGlobal;
     private Component grapheActuel;
     private JFileChooser fileChooser;
@@ -54,6 +63,10 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private JLabel labelM;
     private JLabel labelO;
     private JLabel labelN;
+    private JComboBox depart;
+    private JComboBox arrivee;
+    private JScrollPane panneauDeroulantListe;
+    private JTextArea texte;
 
     /**
      * Constructeur de FenetrePrincipale
@@ -81,6 +94,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
         boutonChargerCarte = new JButton("Charger une carte");
         boutonGrapheAleatoire = new JButton("Créer un graphe aléatoire");
+        boutonCalculerItineraire = new JButton("Calculer l'itinéraire");
+        boutonCalculerItineraireEstimee = new JButton("Calculer l'itinéraire estimée");
+        panneauDeroulantListe = new JScrollPane();
         panneauGlobal = new JPanel();
         fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("./data"));
@@ -95,9 +111,24 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         labelM = new JLabel("Nombre de maternités : 0");
         labelN = new JLabel("Nombre de centres de nutrition : 0");
         labelO = new JLabel("Nombre de blocs opératoires : 0");
+        texte = new JTextArea(200, 50);
+        texte.setEditable(false);
+        texte.setEditable(false);
+        texte.setBackground(new Color(0xC2C2C2));
+        texte.setForeground(Color.BLACK);
+        //texte.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+
+        depart = new JComboBox();
+        depart.setBackground(new Color(0xC2C2C2));
+        depart.setForeground(Color.BLACK);
+        arrivee = new JComboBox();
+        arrivee.setBackground(new Color(0xC2C2C2));
+        arrivee.setForeground(Color.BLACK);
 
         boutonChargerCarte.addActionListener(this);
         boutonGrapheAleatoire.addActionListener(this);
+        boutonCalculerItineraire.addActionListener(this);
+        boutonCalculerItineraireEstimee.addActionListener(this);
 
         this.setContentPane(panneauGlobal);
 
@@ -105,12 +136,44 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
         appliquerStyleBouton(boutonChargerCarte);
         appliquerStyleBouton(boutonGrapheAleatoire);
+        appliquerStyleBouton(boutonCalculerItineraire);
+        appliquerStyleBouton(boutonCalculerItineraireEstimee);
         labelM.setForeground(Color.WHITE);
         labelN.setForeground(Color.WHITE);
         labelO.setForeground(Color.WHITE);
 
         JPanel panneauDeroulant = new JPanel();
+        JPanel panneauDijkstra = new JPanel();
         JPanel vide = new JPanel();
+        JSeparator separateur1 = new JSeparator();
+        JSeparator separateur2 = new JSeparator();
+        JSeparator separateur3 = new JSeparator();
+        separateur1.setForeground(new Color(0xC2C2C2));
+        separateur2.setForeground(new Color(0xC2C2C2));
+        separateur3.setForeground(new Color(0xC2C2C2));
+
+        panneauDijkstra.setLayout(new GridBagLayout());
+        GridBagConstraints gbDijkstra = new GridBagConstraints();
+        gbDijkstra.insets = new java.awt.Insets(10, 10, 10, 10);
+        gbDijkstra.fill = GridBagConstraints.HORIZONTAL;
+        gbDijkstra.gridx = 0;
+        gbDijkstra.gridy = 0;
+        gbDijkstra.weightx = 1;
+        panneauDijkstra.add(depart, gbDijkstra);
+        gbDijkstra.gridx = 1;
+        gbDijkstra.gridy = 0;
+        panneauDijkstra.add(arrivee, gbDijkstra);
+        gbDijkstra.gridwidth = 2;
+        gbDijkstra.gridx = 0;
+        gbDijkstra.gridy = 1;
+        panneauDijkstra.add(boutonCalculerItineraire, gbDijkstra);
+        gbDijkstra.gridx = 0;
+        gbDijkstra.gridy = 2;
+        panneauDijkstra.add(boutonCalculerItineraireEstimee, gbDijkstra);
+        gbDijkstra.gridwidth = 2;
+        gbDijkstra.gridx = 0;
+        gbDijkstra.gridy = 3;
+        panneauDijkstra.add(texte, gbDijkstra);
 
         panneauDeroulant.setLayout(new GridBagLayout());
         GridBagConstraints gb = new GridBagConstraints();
@@ -123,11 +186,13 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         gb.weighty = 0;
         panneauDeroulant.add(boutonChargerCarte, gb);
 
-        gb.insets = new java.awt.Insets(5, 0, 50, 0);//padding
+        gb.insets = new java.awt.Insets(5, 0, 25, 0);//padding
         gb.gridx = 0;
         gb.gridy += 1;
         panneauDeroulant.add(boutonGrapheAleatoire, gb);
         gb.gridx = 0;
+        gb.gridy += 1;
+        panneauDeroulant.add(separateur1, gb);
 
         for (int i = 0; i < listecb.size(); i++) {
             gb.gridy += 1;
@@ -135,7 +200,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             panneauDeroulant.add(listecb.get(i), gb);
         }
 
-        gb.insets = new java.awt.Insets(50, 0, 0, 0);//padding
+        gb.insets = new java.awt.Insets(25, 0, 0, 0);//padding
+        gb.gridy += 1;
+        panneauDeroulant.add(separateur2, gb);
 
         gb.gridy += 1;
         panneauDeroulant.add(labelM, gb);
@@ -144,16 +211,30 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         panneauDeroulant.add(labelN, gb);
         gb.gridy += 1;
         panneauDeroulant.add(labelO, gb);
+        gb.insets = new java.awt.Insets(25, 0, 0, 0);//padding
+        gb.gridy += 1;
+        panneauDeroulant.add(separateur3, gb);
+        gb.gridy += 1;
+        panneauDeroulant.add(panneauDijkstra, gb);
 
         gb.fill = GridBagConstraints.BOTH;
         gb.weighty = 1;
         panneauDeroulant.add(vide, gb);
 
-        panneauDeroulant.setPreferredSize(new Dimension(250, 0));
-        panneauGlobal.add(panneauDeroulant, EAST);
+        panneauDeroulant.setPreferredSize(new Dimension(250, 700));
+        panneauDeroulantListe.setViewportView(panneauDeroulant);
+        panneauDeroulantListe.setBorder(null);
+
+        panneauDeroulantListe.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        panneauDeroulantListe.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        panneauDeroulantListe.setPreferredSize(new Dimension(250, 0));
+        panneauDeroulantListe.getVerticalScrollBar().setUnitIncrement(16);
+
+        panneauGlobal.add(panneauDeroulantListe, EAST);
 
         vide.setBackground(new Color(0x3C3C3C));//Choix de la couleur de fond du panneau déroulant, il sera gris foncé
         panneauDeroulant.setBackground(new Color(0x3C3C3C));//Choix de la couleur de fond du panneau déroulant, il sera gris foncé
+        panneauDijkstra.setBackground(new Color(0x3C3C3C));//Choix de la couleur de fond du panneau déroulant, il sera gris foncé
 
         this.setMinimumSize(new Dimension(1000, 500));
     }
@@ -186,7 +267,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                     if (element != null) {//Donné par l'ennoncer
                         Node n = g.getNode(element.getId());//Donné par l'ennoncer
 
-                        SommetClique f = new SommetClique(FenetrePrincipale.this, n);
+                        SommetClique sommetClique = new SommetClique(FenetrePrincipale.this, n);
                     }
                 }
             }
@@ -217,6 +298,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 int nbrM = 0;
                 int nbrN = 0;
                 int nbrO = 0;
+                depart.removeAllItems();
+                arrivee.removeAllItems();
                 for (Node sommet : grapheVisuel.getEachNode()) {
                     if (sommet.getAttribute("type").toString().equals("M")) {
                         nbrM++;
@@ -225,6 +308,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                     } else if (sommet.getAttribute("type").toString().equals("O")) {
                         nbrO++;
                     }
+
+                    depart.addItem(sommet.getAttribute("id"));
+                    arrivee.addItem(sommet.getAttribute("id"));
                 }
                 labelM.setText("Nombre de maternités : " + nbrM);
                 labelN.setText("Nombre de centres de nutrition : " + nbrN);
@@ -266,6 +352,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                     int nbrM = 0;
                     int nbrN = 0;
                     int nbrO = 0;
+                    depart.removeAllItems();
+                    arrivee.removeAllItems();
                     for (Node sommet : grapheVisuel.getEachNode()) {
                         if (sommet.getAttribute("type").toString().equals("M")) {
                             nbrM++;
@@ -274,6 +362,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                         } else if (sommet.getAttribute("type").toString().equals("O")) {
                             nbrO++;
                         }
+
+                        depart.addItem(sommet.getAttribute("id"));
+                        arrivee.addItem(sommet.getAttribute("id"));
                     }
                     labelM.setText("Nombre de maternités : " + nbrM);
                     labelN.setText("Nombre de centres de nutrition : " + nbrN);
@@ -463,6 +554,38 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                     sommet.removeAttribute("ui.label");
                 }
             }
+        }
+        if (e.getSource() == boutonCalculerItineraire) {
+            for (Edge route : grapheVisuel.getEachEdge()) {
+                route.addAttribute("ui.class", "safe");
+            }
+            Recherche recherche = new Recherche(grapheVisuel);
+            String res = "List des sommets du plus court chemin : \n\n";
+            ArrayList<String> strListe = recherche.plusCourtCheminDuree(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getSommets();
+            for (int i = 0; i < strListe.size()-1; i++) {
+                res = res + strListe.get(i) + "\n";
+                Node SommetDepart = grapheVisuel.getNode(strListe.get(i));
+                Node SommetArivee = grapheVisuel.getNode(strListe.get(i+1));
+                Edge route = SommetDepart.getEdgeBetween(SommetArivee);
+                route.addAttribute("ui.class", "selectionnerPCC");
+            }
+            texte.setText(res);
+        }
+        if (e.getSource() == boutonCalculerItineraireEstimee) {
+            for (Edge route : grapheVisuel.getEachEdge()) {
+                route.addAttribute("ui.class", "safe");
+            }
+            Recherche recherche = new Recherche(grapheVisuel);
+            String res = "List des sommets du plus court chemin : \n\n";
+            ArrayList<String> strListe = recherche.plusCourtCheminDureeEstimee(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getSommets();
+            for (int i = 0; i < strListe.size()-1; i++) {
+                res = res + strListe.get(i) + "\n";
+                Node SommetDepart = grapheVisuel.getNode(strListe.get(i));
+                Node SommetArivee = grapheVisuel.getNode(strListe.get(i+1));
+                Edge route = SommetDepart.getEdgeBetween(SommetArivee);
+                route.addAttribute("ui.class", "selectionnerPCC");
+            }
+            texte.setText(res);
         }
     }
 }
