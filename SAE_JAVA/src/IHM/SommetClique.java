@@ -7,6 +7,7 @@ package IHM;
 import Structure.Graphe;
 import Structure.Sommet;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -30,7 +31,9 @@ public class SommetClique extends JDialog implements ActionListener {
     private Node nodeCliqué;
     private JLabel texte;
     private JLabel textetab;
-    private JTable tableau;
+    private JTable tableauBase;
+    private JTable tableauDistance;
+    private JTable tableauDuree;
     private JButton btDistance;
     private JButton btDuree;
     private Graphe graphe;
@@ -57,11 +60,15 @@ public class SommetClique extends JDialog implements ActionListener {
 
         }
         textetab = new JLabel("Les centres les plus proches du sommet " + nodeCliqué.getId() + " sont : ");
-        tableau = remplirTableauBase(new JTable(7, 4));
-        btDistance = new JButton("Afficher le tableau des durées");
-        btDuree = new JButton("Afficher le tableau des distances");
+        tableauBase = remplirTableauBase(new JTable(7, 4));
+        tableauDistance = remplirGrandTableau(new JTable(graphe.getNbSommet()+2, 3),"Distances");
+        tableauDuree = remplirGrandTableau(new JTable(graphe.getNbSommet()+2, 3),"Durees");
+        btDistance = new JButton("Afficher le tableau des distances");
+        btDuree = new JButton("Afficher le tableau des durées");
         btDistance.addActionListener(this);
         btDuree.addActionListener(this);
+        
+        choisirTailleColonnes();
 
         JPanel panneauGlobal = new JPanel();
         this.setContentPane(panneauGlobal);
@@ -76,12 +83,27 @@ public class SommetClique extends JDialog implements ActionListener {
         gb.gridy += 1;
         panneauGlobal.add(textetab, gb);
         gb.gridy += 1;
-        panneauGlobal.add(tableau, gb);
+        panneauGlobal.add(tableauBase, gb);
         gb.gridy += 1;
         panneauGlobal.add(btDistance, gb);
         gb.gridy += 1;
         panneauGlobal.add(btDuree, gb);
         this.pack();
+    }
+    
+    private void choisirTailleColonnes(){
+        tableauBase.getColumnModel().getColumn(0).setPreferredWidth(75);
+        tableauBase.getColumnModel().getColumn(1).setPreferredWidth(150);
+        tableauBase.getColumnModel().getColumn(2).setPreferredWidth(75);
+        tableauBase.getColumnModel().getColumn(3).setPreferredWidth(150);
+        
+        tableauDistance.getColumnModel().getColumn(0).setPreferredWidth(300);
+        tableauDistance.getColumnModel().getColumn(1).setPreferredWidth(75);
+        tableauDistance.getColumnModel().getColumn(2).setPreferredWidth(150);
+        
+        tableauDuree.getColumnModel().getColumn(0).setPreferredWidth(300);
+        tableauDuree.getColumnModel().getColumn(1).setPreferredWidth(75);
+        tableauDuree.getColumnModel().getColumn(2).setPreferredWidth(150);
     }
 
     private JTable remplirTableauBase(JTable tab) {
@@ -96,7 +118,7 @@ public class SommetClique extends JDialog implements ActionListener {
         boolean typeMInseree = false;
         boolean typeOInseree = false;
         boolean typeNInseree = false;
-        for (int i = 0; i < graphe.getNbSommet() && !sortie; i++) {
+        for (int i = 0; i < graphe.getNbSommet()-1 && !sortie; i++) {
             if (lst.get(i).getType().equals("M") && !typeMInseree) {
                 tab.setValueAt(lst.get(i).getNom(), 1, 0);
                 tab.setValueAt(lst.get(i).getType(), 1, 1);
@@ -123,14 +145,12 @@ public class SommetClique extends JDialog implements ActionListener {
             }
         }
         
-        System.out.println(lst);
-        
         lst = graphe.distancesCroissantesVersTous(sommetClique, "DureeEstimee");
          sortie = false;
          typeMInseree = false;
          typeOInseree = false;
          typeNInseree = false;
-        for (int i = 0; i < graphe.getNbSommet() && !sortie; i++) {
+        for (int i = 0; i < graphe.getNbSommet()-1 && !sortie; i++) {
             if (lst.get(i).getType().equals("M") && !typeMInseree) {
                 tab.setValueAt(lst.get(i).getNom(), 2, 0);
                 tab.setValueAt(lst.get(i).getType(), 2, 1);
@@ -156,25 +176,67 @@ public class SommetClique extends JDialog implements ActionListener {
                 sortie = true;
             }
         }
-        
-         System.out.println(lst);
 
+        return tab;
+    }
+    
+    private JTable remplirGrandTableau(JTable tab,String type) {
+        
+        Sommet sommetClique = new Sommet(nodeCliqué.getAttribute("id"), nodeCliqué.getAttribute("type"));
+        List<Graphe.DistanceVers> lst = graphe.distancesCroissantesVersTous(sommetClique, type);
+        int position = 1;
+        String text1;
+        String text3;
+        if(type.equals("Durees")){
+             text1 = "Durées";
+             text3 = "Durées (min)";
+        }else {
+             text1 = "Distances";
+             text3 = "Distance (km)";
+        }
+        
+        tab.setValueAt(text1+" aux maternitées", 0, 0);
+        tab.setValueAt("ID", 0, 1);
+        tab.setValueAt(text3, 0, 2);
+        for (int i = 0; i < graphe.getNbSommet()-1; i++) {
+            if (lst.get(i).getType().equals("M")) {
+                tab.setValueAt(lst.get(i).getNom(), position, 1);
+                tab.setValueAt(lst.get(i).getDistance(), position, 2);
+                position++;
+            }
+        }
+        tab.setValueAt(text1+" aux centres de nutritions", position, 0);
+        tab.setValueAt("ID", position, 1);
+        tab.setValueAt(text3, position, 2);
+        position++;
+        for (int i = 0; i < graphe.getNbSommet()-1; i++) {
+            if (lst.get(i).getType().equals("N")) {
+                tab.setValueAt(lst.get(i).getNom(), position, 1);
+                tab.setValueAt(lst.get(i).getDistance(), position, 2);
+                position++;
+            }
+        }
+        tab.setValueAt(text1+" aux blocs opératoires", position, 0);
+        tab.setValueAt("ID", position, 1);
+        tab.setValueAt(text3, position, 2);
+        position++;
+        for (int i = 0; i < graphe.getNbSommet()-1; i++) {
+            if (lst.get(i).getType().equals("O")) {
+                tab.setValueAt(lst.get(i).getNom(), position, 1);
+                tab.setValueAt(lst.get(i).getDistance(), position, 2);
+                position++;
+            }
+        }
         return tab;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btDistance) {
-            JOptionPane.showMessageDialog(this,
-                    "Fonctionnalité pas encore crée",
-                    "Erreur",
-                    JOptionPane.ERROR_MESSAGE);
+            TableauSommet tableauSommet = new TableauSommet(tableauDistance);
         }
         if (e.getSource() == btDuree) {
-            JOptionPane.showMessageDialog(this,
-                    "Fonctionnalité pas encore crée",
-                    "Erreur",
-                    JOptionPane.ERROR_MESSAGE);
+            TableauSommet tableauSommet = new TableauSommet(tableauDuree);
         }
     }
 }
