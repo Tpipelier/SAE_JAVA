@@ -560,32 +560,34 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 route.addAttribute("ui.class", "safe");
             }
             Recherche recherche = new Recherche(grapheVisuel);
-            String res = "List des sommets du plus court chemin : \n\n";
+            String res = "Le plus court chemin : \n\n";
             ArrayList<String> strListe = recherche.plusCourtCheminDuree(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getSommets();
-            for (int i = 0; i < strListe.size()-1; i++) {
+            for (int i = 0; i < strListe.size() - 1; i++) {
                 res = res + strListe.get(i) + "\n";
                 Node SommetDepart = grapheVisuel.getNode(strListe.get(i));
-                Node SommetArivee = grapheVisuel.getNode(strListe.get(i+1));
+                Node SommetArivee = grapheVisuel.getNode(strListe.get(i + 1));
                 Edge route = SommetDepart.getEdgeBetween(SommetArivee);
                 route.addAttribute("ui.class", "selectionnerPCC");
             }
-            texte.setText(res);
+            String cout = String.valueOf(Math.round(recherche.plusCourtCheminDureeEstimee(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getCout()));
+            texte.setText(res + "\n Ce trajet prend : " + cout + " min");
         }
         if (e.getSource() == boutonCalculerItineraireEstimee) {
             for (Edge route : grapheVisuel.getEachEdge()) {
                 route.addAttribute("ui.class", "safe");
             }
             Recherche recherche = new Recherche(grapheVisuel);
-            String res = "List des sommets du plus court chemin : \n\n";
+            String res = "Le plus court chemin : \n\n";
             ArrayList<String> strListe = recherche.plusCourtCheminDureeEstimee(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getSommets();
-            for (int i = 0; i < strListe.size()-1; i++) {
+            for (int i = 0; i < strListe.size() - 1; i++) {
                 res = res + strListe.get(i) + "\n";
                 Node SommetDepart = grapheVisuel.getNode(strListe.get(i));
-                Node SommetArivee = grapheVisuel.getNode(strListe.get(i+1));
+                Node SommetArivee = grapheVisuel.getNode(strListe.get(i + 1));
                 Edge route = SommetDepart.getEdgeBetween(SommetArivee);
                 route.addAttribute("ui.class", "selectionnerPCC");
             }
-            texte.setText(res);
+            String cout = String.valueOf(Math.round(recherche.plusCourtCheminDureeEstimee(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getCout()));
+            texte.setText(res + "\n Ce trajet prend : " + cout + " min");
         }
     }
 }
