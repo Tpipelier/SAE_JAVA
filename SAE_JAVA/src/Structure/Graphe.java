@@ -24,9 +24,10 @@ public class Graphe {
     Sommet[] tabS;
     Route[][] tabR;
     HashMap<Route, Integer> durees;
+
     /**
-     * 
-     * @throws FileNotFoundException 
+     *
+     * @throws FileNotFoundException
      */
     public Graphe() throws FileNotFoundException {
         this.nbSommet = 0;
@@ -35,11 +36,12 @@ public class Graphe {
         this.durees = null;
 
     }
+
     /**
-     * 
+     *
      * @param nomFichier
      * @return cpt
-     * @throws FileNotFoundException 
+     * @throws FileNotFoundException
      */
     public static int compteSommet(String nomFichier) throws FileNotFoundException {
         int cpt = 0;
@@ -61,23 +63,26 @@ public class Graphe {
         return cpt;
 
     }
+
     /**
-     * 
+     *
      * @return int
      */
     public int getNbSommet() {
         return nbSommet;
     }
+
     /**
-     * 
+     *
      * @param numeroSommet
      * @return Sommet
      */
     public Sommet getSommet(int numeroSommet) {
         return tabS[numeroSommet];
     }
+
     /**
-     * 
+     *
      * @param numeroSommetD
      * @param numeroSommetA
      * @return Route
@@ -85,56 +90,63 @@ public class Graphe {
     public Route getRoute(int numeroSommetD, int numeroSommetA) {
         return tabR[numeroSommetD][numeroSommetA];
     }
+
     /**
-     * 
+     *
      * @return Sommet[]
      */
     public Sommet[] getTabS() {
         return tabS;
     }
+
     /**
-     * 
+     *
      * @return Route[][]
      */
     public Route[][] getTabR() {
         return tabR;
     }
+
     /**
-     * 
+     *
      * @return HashMap
      */
     public HashMap<Route, Integer> getDurees() {
         return this.durees;
     }
+
     /**
-     * 
+     *
      * @param numeroSommet
-     * @param Sommet 
+     * @param Sommet
      */
     public void ajouterSommet(int numeroSommet, Sommet Sommet) {
         this.tabS[numeroSommet] = Sommet;
     }
+
     /**
-     * 
+     *
      * @param numeroSommetD
      * @param numeroSommetA
-     * @param Route 
+     * @param Route
      */
     public void ajouterRoute(int numeroSommetD, int numeroSommetA, Route Route) {
         this.tabR[numeroSommetD][numeroSommetA] = Route;
     }
+
     /**
-     * 
+     *
      * @param R
-     * @param duree 
+     * @param duree
      */
     public void ajouterDuree(Route R, int duree) {
         this.durees.put(R, duree);
     }
+
     /**
-     * 
+     *
      * @param nomFichier
-     * @throws FileNotFoundException 
+     * @throws FileNotFoundException
      */
     public void chargerGraphes(String nomFichier) throws FileNotFoundException {
         this.nbSommet = compteSommet(nomFichier);
@@ -152,7 +164,7 @@ public class Graphe {
             String ligne = scannerTabS.nextLine();
             try {
                 if (!ligne.startsWith("//")) {
-                    String[] tokens = ligne.split(";");                
+                    String[] tokens = ligne.split(";");
                     ajouterSommet(i, new Sommet(tokens[0].trim(), tokens[1].trim()));
 
                     i++;
@@ -175,7 +187,7 @@ public class Graphe {
                 String[] tokens = ligne.split(";");
 
                 for (int j = 2; j < tokens.length; j++) {
-                    if (tokens[j].compareTo("0") != 0 && tokens[j].compareTo("")!=0){
+                    if (tokens[j].compareTo("0") != 0 && tokens[j].compareTo("") != 0) {
                         try {
                             String[] triplet = tokens[j].trim().split(",");
                             ajouterRoute(i, j - 2, new Route("R" + numRoute, Double.parseDouble(triplet[0].trim()), Integer.parseInt(triplet[1].trim()), Integer.parseInt(triplet[2].trim()), tabS[i], tabS[j - 2]));
@@ -186,7 +198,7 @@ public class Graphe {
                         }
 
                     }
-                        
+
                     numRoute++;
 
                 }
@@ -198,7 +210,7 @@ public class Graphe {
         scannerTabR.close();
 
     }
-    
+
     public void afficheContenuGraphe() {
         String ligne = "";
         for (int i = 0; i < this.nbSommet; i++) {
@@ -211,6 +223,7 @@ public class Graphe {
         }
 
     }
+
     public void genererGrapheAleatoire(int nbSommets) {
         this.nbSommet = nbSommets;
         this.tabS = new Sommet[nbSommet];
@@ -245,7 +258,7 @@ public class Graphe {
             for (int j = i + 1; j < nbSommets; j++) {
 //<<<<<<< HEAD
                 if (random.nextInt(5) == 0) {
-                    int fiabilite = (random.nextInt(9) + 2) ;
+                    int fiabilite = (random.nextInt(9) + 2);
                     int distance = random.nextInt(41) + 10;
                     int duree = random.nextInt(111) + 10;
                     ajouterRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), this.getSommet(i + 1)));
@@ -275,7 +288,7 @@ public class Graphe {
      */
     public int indexDeSommet(Sommet s) {
         for (int i = 0; i < this.nbSommet; i++) {
-            if (this.tabS[i] == s) {
+            if (this.tabS[i].getNom().equals(s.getNom()) && this.tabS[i].getType().equals(s.getType())) {
                 return i;
             }
         }
@@ -289,31 +302,47 @@ public class Graphe {
     public List<Route> distancesCroissantes(Sommet depart) {
         List<Route> routes = new ArrayList<>();
         int idx = indexDeSommet(depart);
-
-        for (int j = 0; idx != -1 && j < this.nbSommet; j++) {
-            // Graphe non oriente : route stockee en [idx][j] ou [j][idx]
-            Route r = (this.tabR[idx][j] != null) ? this.tabR[idx][j] : this.tabR[j][idx];
+        if (idx == -1) {
+            return routes;
+        }
+        for (int j = 0; j < this.nbSommet; j++) {
+            Route r = this.tabR[idx][j];
+            if (r == null) {
+                r = this.tabR[j][idx];
+            }
             if (r != null) {
                 routes.add(r);
             }
         }
-
-        routes.sort((a, b) -> a.getDistance() - b.getDistance());
+        // Tri à bulles par distance croissante
+        for (int i = 0; i < routes.size() - 1; i++) {
+            for (int k = 0; k < routes.size() - 1 - i; k++) {
+                if (routes.get(k).getDurée() > routes.get(k + 1).getDurée()) {
+                    Route temp = routes.get(k);
+                    routes.set(k, routes.get(k + 1));
+                    routes.set(k + 1, temp);
+                }
+            }
+        }
         return routes;
     }
 
     /**
-     * Petit resultat associant un sommet d'arrivee a la distance la plus
-     * courte depuis le sommet de depart. Donne acces au nom et au type.
+     * Petit resultat associant un sommet d'arrivee a la distance la plus courte
+     * depuis le sommet de depart. Donne acces au nom et au type.
      */
     public static class DistanceVers {
 
         private final Sommet sommet;
         private final int distance;
+        private final int duree;
+        private final int dureeEstimee;
 
-        public DistanceVers(Sommet sommet, int distance) {
+        public DistanceVers(Sommet sommet, int distance, int duree, int dureeEstimee) {
             this.sommet = sommet;
             this.distance = distance;
+            this.duree = duree;
+            this.dureeEstimee = dureeEstimee;
         }
 
         public Sommet getSommet() {
@@ -332,9 +361,17 @@ public class Graphe {
             return distance;
         }
 
+        public int getDuree() {
+            return duree;
+        }
+
+        public int getDureeEstimee() {
+            return dureeEstimee;
+        }
+
         @Override
         public String toString() {
-            return sommet.getNom() + " (" + sommet.getType() + ") : " + distance;
+            return sommet.getNom() + " (" + sommet.getType() + ") : " + distance + "km" + " : " + duree + "min" + " : " + dureeEstimee + "min estimee\n";
         }
     }
 
@@ -343,7 +380,7 @@ public class Graphe {
      * pondere par la distance des routes) vers tous les autres sommets, puis
      * renvoie ces resultats (nom, type et distance) tries par ordre croissant.
      */
-    public List<DistanceVers> distancesCroissantesVersTous(Sommet depart) {
+    public List<DistanceVers> distancesCroissantesVersTous(Sommet depart, String typeTrie) {
         List<DistanceVers> resultats = new ArrayList<>();
         int source = indexDeSommet(depart);
         if (source == -1) {
@@ -351,17 +388,23 @@ public class Graphe {
         }
 
         int[] dist = new int[this.nbSommet];
+        int[] duree = new int[this.nbSommet];
+        int[] dureeEstimee = new int[this.nbSommet];
         boolean[] visite = new boolean[this.nbSommet];
         for (int i = 0; i < this.nbSommet; i++) {
             dist[i] = Integer.MAX_VALUE;
+            duree[i] = Integer.MAX_VALUE;
+            dureeEstimee[i] = Integer.MAX_VALUE;
         }
         dist[source] = 0;
+        duree[source] = 0;
+        dureeEstimee[source] = 0;
 
         for (int n = 0; n < this.nbSommet; n++) {
             // On choisit le sommet non visite le plus proche
             int u = -1;
             for (int i = 0; i < this.nbSommet; i++) {
-                if (!visite[i] && (u == -1 || dist[i] < dist[u])) {
+                if (!visite[i] && (u == -1 || duree[i] < duree[u])) {
                     u = i;
                 }
             }
@@ -370,26 +413,50 @@ public class Graphe {
             // Mise a jour des voisins de u
             for (int v = 0; v < this.nbSommet; v++) {
                 Route r = (this.tabR[u][v] != null) ? this.tabR[u][v] : this.tabR[v][u];
-                if (r != null && dist[u] + r.getDistance() < dist[v]) {
+                if (r != null && duree[u] + r.getDurée() < duree[v]) {
                     dist[v] = dist[u] + r.getDistance();
+                    duree[v] = duree[u] + r.getDurée();
+                    dureeEstimee[v] = (int) (dureeEstimee[u] + r.getDurée() * (20 - r.getFiabilité()) / 10);
                 }
             }
         }
 
         // On garde les autres sommets atteignables (avec leur nom et leur type)
         for (int i = 0; i < this.nbSommet; i++) {
-            if (i != source && dist[i] != Integer.MAX_VALUE) {
-                resultats.add(new DistanceVers(this.tabS[i], dist[i]));
+            if (i != source && duree[i] != Integer.MAX_VALUE) {
+                resultats.add(new DistanceVers(this.tabS[i], dist[i], duree[i], dureeEstimee[i]));
             }
         }
 
         // Tri par distance croissante (tri a bulles)
-        for (int i = 0; i < resultats.size(); i++) {
-            for (int j = 0; j < resultats.size() - 1 - i; j++) {
-                if (resultats.get(j).getDistance() > resultats.get(j + 1).getDistance()) {
-                    DistanceVers tmp = resultats.get(j);
-                    resultats.set(j, resultats.get(j + 1));
-                    resultats.set(j + 1, tmp);
+        if (typeTrie.equals("Duree")) {
+            for (int i = 0; i < resultats.size(); i++) {
+                for (int j = 0; j < resultats.size() - 1 - i; j++) {
+                    if (resultats.get(j).getDuree() > resultats.get(j + 1).getDuree()) {
+                        DistanceVers tmp = resultats.get(j);
+                        resultats.set(j, resultats.get(j + 1));
+                        resultats.set(j + 1, tmp);
+                    }
+                }
+            }
+        }else if (typeTrie.equals("DureeEstimee")) {
+            for (int i = 0; i < resultats.size(); i++) {
+                for (int j = 0; j < resultats.size() - 1 - i; j++) {
+                    if (resultats.get(j).getDureeEstimee() > resultats.get(j + 1).getDureeEstimee()) {
+                        DistanceVers tmp = resultats.get(j);
+                        resultats.set(j, resultats.get(j + 1));
+                        resultats.set(j + 1, tmp);
+                    }
+                }
+            }
+        }else {
+            for (int i = 0; i < resultats.size(); i++) {
+                for (int j = 0; j < resultats.size() - 1 - i; j++) {
+                    if (resultats.get(j).getDistance() > resultats.get(j + 1).getDistance()) {
+                        DistanceVers tmp = resultats.get(j);
+                        resultats.set(j, resultats.get(j + 1));
+                        resultats.set(j + 1, tmp);
+                    }
                 }
             }
         }
