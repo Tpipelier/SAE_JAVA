@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.Scanner;
 import Structure.Sommet;
 import Structure.Route;
+import java.util.Comparator;
 
 /**
  *
@@ -24,9 +25,10 @@ public class Graphe {
     Sommet[] tabS;
     Route[][] tabR;
     HashMap<Route, Integer> durees;
+
     /**
-     * 
-     * @throws FileNotFoundException 
+     *
+     * @throws FileNotFoundException
      */
     public Graphe() throws FileNotFoundException {
         this.nbSommet = 0;
@@ -35,11 +37,12 @@ public class Graphe {
         this.durees = null;
 
     }
+
     /**
-     * 
+     *
      * @param nomFichier
      * @return cpt
-     * @throws FileNotFoundException 
+     * @throws FileNotFoundException
      */
     public static int compteSommet(String nomFichier) throws FileNotFoundException {
         int cpt = 0;
@@ -62,23 +65,26 @@ public class Graphe {
         return cpt;
 
     }
+
     /**
-     * 
+     *
      * @return int
      */
     public int getNbSommet() {
         return nbSommet;
     }
+
     /**
-     * 
+     *
      * @param numeroSommet
      * @return Sommet
      */
     public Sommet getSommet(int numeroSommet) {
         return tabS[numeroSommet];
     }
+
     /**
-     * 
+     *
      * @param numeroSommetD
      * @param numeroSommetA
      * @return Route
@@ -86,56 +92,63 @@ public class Graphe {
     public Route getRoute(int numeroSommetD, int numeroSommetA) {
         return tabR[numeroSommetD][numeroSommetA];
     }
+
     /**
-     * 
+     *
      * @return Sommet[]
      */
     public Sommet[] getTabS() {
         return tabS;
     }
+
     /**
-     * 
+     *
      * @return Route[][]
      */
     public Route[][] getTabR() {
         return tabR;
     }
+
     /**
-     * 
+     *
      * @return HashMap
      */
     public HashMap<Route, Integer> getDurees() {
         return this.durees;
     }
+
     /**
-     * 
+     *
      * @param numeroSommet
-     * @param Sommet 
+     * @param Sommet
      */
     public void ajouterSommet(int numeroSommet, Sommet Sommet) {
         this.tabS[numeroSommet] = Sommet;
     }
+
     /**
-     * 
+     *
      * @param numeroSommetD
      * @param numeroSommetA
-     * @param Route 
+     * @param Route
      */
     public void ajouterRoute(int numeroSommetD, int numeroSommetA, Route Route) {
         this.tabR[numeroSommetD][numeroSommetA] = Route;
     }
+
     /**
-     * 
+     *
      * @param R
-     * @param duree 
+     * @param duree
      */
     public void ajouterDuree(Route R, int duree) {
         this.durees.put(R, duree);
     }
+
     /**
-     * 
+     *
      * @param nomFichier
-     * @throws FileNotFoundException 
+     * @throws FileNotFoundException
      */
     public void chargerGraphes(String nomFichier) throws FileNotFoundException {
         this.nbSommet = compteSommet(nomFichier);
@@ -206,6 +219,7 @@ public class Graphe {
         }
 
     }
+
     public void genererGrapheAleatoire(int nbSommets) {
         this.nbSommet = nbSommets;
         this.tabS = new Sommet[nbSommet];
@@ -256,7 +270,7 @@ public class Graphe {
     }
 
     /**
-     * Renvoie l'indice d'un sommet dans tabS (-1 s'il n'existe pas).
+    Renvoie l'indice d'un sommet dans tabS (-1 s'il n'existe pas).
      */
     public int indexDeSommet(Sommet s) {
         for (int i = 0; i < this.nbSommet; i++) {
@@ -268,28 +282,40 @@ public class Graphe {
     }
 
     /**
-     * Renvoie les routes partant du sommet donne (vers les maternites, blocs
-     * operatoires et centres de nutrition), triees par distance croissante.
+     Renvoie les routes partant du sommet donne (vers les maternites, blocs
+     operatoires et centres de nutrition), triees par distance croissante.
      */
     public List<Route> distancesCroissantes(Sommet depart) {
         List<Route> routes = new ArrayList<>();
         int idx = indexDeSommet(depart);
-
-        for (int j = 0; idx != -1 && j < this.nbSommet; j++) {
-            // Graphe non oriente : route stockee en [idx][j] ou [j][idx]
-            Route r = (this.tabR[idx][j] != null) ? this.tabR[idx][j] : this.tabR[j][idx];
+        if (idx == -1) {
+            return routes;
+        }
+        for (int j = 0; j < this.nbSommet; j++) {
+            Route r = this.tabR[idx][j];
+            if (r == null) {
+                r = this.tabR[j][idx];
+            }
             if (r != null) {
                 routes.add(r);
             }
         }
-
-        routes.sort((a, b) -> a.getDistance() - b.getDistance());
+        // Tri à bulles par distance croissante
+        for (int i = 0; i < routes.size() - 1; i++) {
+            for (int k = 0; k < routes.size() - 1 - i; k++) {
+                if (routes.get(k).getDistance() > routes.get(k + 1).getDistance()) {
+                    Route temp = routes.get(k);
+                    routes.set(k, routes.get(k + 1));
+                    routes.set(k + 1, temp);
+                }
+            }
+        }
         return routes;
     }
 
     /**
-     * Petit resultat associant un sommet d'arrivee a la distance la plus
-     * courte depuis le sommet de depart. Donne acces au nom et au type.
+     Petit resultat associant un sommet d'arrivee a la distance la plus courte
+     depuis le sommet de depart. Donne acces au nom et au type.
      */
     public static class DistanceVers {
 
@@ -324,9 +350,9 @@ public class Graphe {
     }
 
     /**
-     * Calcule, depuis le sommet donne, la distance la plus courte (Dijkstra
-     * pondere par la distance des routes) vers tous les autres sommets, puis
-     * renvoie ces resultats (nom, type et distance) tries par ordre croissant.
+     Calcule, depuis le sommet donne, la distance la plus courte (Dijkstra
+     pondere par la distance des routes) vers tous les autres sommets, puis
+     renvoie ces resultats (nom, type et distance) tries par ordre croissant.
      */
     public List<DistanceVers> distancesCroissantesVersTous(Sommet depart) {
         List<DistanceVers> resultats = new ArrayList<>();
