@@ -1,3 +1,8 @@
+
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package Structure;
 
 import java.util.ArrayList;
@@ -8,10 +13,8 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 
 /**
- * Recherche du plus court chemin entre deux centres avec le Dijkstra
- * de la librairie GraphStream.
  *
- * @author SAE_JAVA
+ * @author walid
  */
 public class Recherche {
 
@@ -57,7 +60,7 @@ public class Recherche {
             return null;
         }
 
-        List<String> sommets = new ArrayList<>();
+        ArrayList<String> sommets = new ArrayList<>();
         for (Node n : chemin.getNodePath()) {
             sommets.add(n.getId());
         }
@@ -67,15 +70,15 @@ public class Recherche {
     /** Résultat d'une recherche : les centres traversés et le coût total. */
     public static class Itineraire {
 
-        private final List<String> sommets;
+        private final ArrayList<String> sommets;
         private final double cout;
 
-        public Itineraire(List<String> sommets, double cout) {
+        public Itineraire(ArrayList<String> sommets, double cout) {
             this.sommets = sommets;
             this.cout = cout;
         }
 
-        public List<String> getSommets() {
+        public ArrayList<String> getSommets() {
             return sommets;
         }
 
@@ -89,3 +92,4 @@ public class Recherche {
         }
     }
 }
+

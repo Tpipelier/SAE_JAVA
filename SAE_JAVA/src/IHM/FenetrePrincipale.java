@@ -5,6 +5,7 @@
 package IHM;
 
 import Structure.Graphe;
+import Structure.Recherche;
 import java.awt.BorderLayout;
 import static java.awt.BorderLayout.EAST;
 import static java.awt.BorderLayout.WEST;
@@ -20,13 +21,20 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTextArea;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -44,14 +52,21 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private GrapheVisuel grapheVisuel;
     private JButton boutonChargerCarte;
     private JButton boutonGrapheAleatoire;
-    private JButton boutonRavitailler;
-    private JButton boutonNotifications;
+    private JButton boutonCalculerItineraire;
+    private JButton boutonCalculerItineraireEstimee;
     private JPanel panneauGlobal;
     private Component grapheActuel;
     private JFileChooser fileChooser;
     private ArrayList<JCheckBox> listecb;
-    private String[] strcb = {"Maternités", "Blocs opératoires", "Centres de nutrition", "Camions",
+    private String[] strcb = {"Maternités", "Blocs opératoires", "Centres de nutrition",
         "Routes", "Colorier les routes dangereuses", "Distances", "Durée", "Fiabilité", "ID des sommets", "Type des sommets"};
+    private JLabel labelM;
+    private JLabel labelO;
+    private JLabel labelN;
+    private JComboBox depart;
+    private JComboBox arrivee;
+    private JScrollPane panneauDeroulantListe;
+    private JTextArea texte;
 
     /**
      * Constructeur de FenetrePrincipale
@@ -79,8 +94,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
         boutonChargerCarte = new JButton("Charger une carte");
         boutonGrapheAleatoire = new JButton("Créer un graphe aléatoire");
-        boutonRavitailler = new JButton("Ravitailler");
-        boutonNotifications = new JButton("Notifications");
+        boutonCalculerItineraire = new JButton("Calculer l'itinéraire");
+        boutonCalculerItineraireEstimee = new JButton("Calculer l'itinéraire estimée");
+        panneauDeroulantListe = new JScrollPane();
         panneauGlobal = new JPanel();
         fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File("./data"));
@@ -92,24 +108,72 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             cb.addActionListener(this);
             listecb.add(cb);
         }
+        labelM = new JLabel("Nombre de maternités : 0");
+        labelN = new JLabel("Nombre de centres de nutrition : 0");
+        labelO = new JLabel("Nombre de blocs opératoires : 0");
+        texte = new JTextArea(200, 50);
+        texte.setEditable(false);
+        texte.setEditable(false);
+        texte.setBackground(new Color(0xC2C2C2));
+        texte.setForeground(Color.BLACK);
+        //texte.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+
+        depart = new JComboBox();
+        depart.setBackground(new Color(0xC2C2C2));
+        depart.setForeground(Color.BLACK);
+        arrivee = new JComboBox();
+        arrivee.setBackground(new Color(0xC2C2C2));
+        arrivee.setForeground(Color.BLACK);
 
         boutonChargerCarte.addActionListener(this);
         boutonGrapheAleatoire.addActionListener(this);
+        boutonCalculerItineraire.addActionListener(this);
+        boutonCalculerItineraireEstimee.addActionListener(this);
 
         this.setContentPane(panneauGlobal);
 
         panneauGlobal.setLayout(new BorderLayout());
 
         appliquerStyleBouton(boutonChargerCarte);
-
         appliquerStyleBouton(boutonGrapheAleatoire);
-
-        appliquerStyleBouton(boutonRavitailler);
-
-        appliquerStyleBouton(boutonNotifications);
+        appliquerStyleBouton(boutonCalculerItineraire);
+        appliquerStyleBouton(boutonCalculerItineraireEstimee);
+        labelM.setForeground(Color.WHITE);
+        labelN.setForeground(Color.WHITE);
+        labelO.setForeground(Color.WHITE);
 
         JPanel panneauDeroulant = new JPanel();
+        JPanel panneauDijkstra = new JPanel();
         JPanel vide = new JPanel();
+        JSeparator separateur1 = new JSeparator();
+        JSeparator separateur2 = new JSeparator();
+        JSeparator separateur3 = new JSeparator();
+        separateur1.setForeground(new Color(0xC2C2C2));
+        separateur2.setForeground(new Color(0xC2C2C2));
+        separateur3.setForeground(new Color(0xC2C2C2));
+
+        panneauDijkstra.setLayout(new GridBagLayout());
+        GridBagConstraints gbDijkstra = new GridBagConstraints();
+        gbDijkstra.insets = new java.awt.Insets(10, 10, 10, 10);
+        gbDijkstra.fill = GridBagConstraints.HORIZONTAL;
+        gbDijkstra.gridx = 0;
+        gbDijkstra.gridy = 0;
+        gbDijkstra.weightx = 1;
+        panneauDijkstra.add(depart, gbDijkstra);
+        gbDijkstra.gridx = 1;
+        gbDijkstra.gridy = 0;
+        panneauDijkstra.add(arrivee, gbDijkstra);
+        gbDijkstra.gridwidth = 2;
+        gbDijkstra.gridx = 0;
+        gbDijkstra.gridy = 1;
+        panneauDijkstra.add(boutonCalculerItineraire, gbDijkstra);
+        gbDijkstra.gridx = 0;
+        gbDijkstra.gridy = 2;
+        panneauDijkstra.add(boutonCalculerItineraireEstimee, gbDijkstra);
+        gbDijkstra.gridwidth = 2;
+        gbDijkstra.gridx = 0;
+        gbDijkstra.gridy = 3;
+        panneauDijkstra.add(texte, gbDijkstra);
 
         panneauDeroulant.setLayout(new GridBagLayout());
         GridBagConstraints gb = new GridBagConstraints();
@@ -122,15 +186,13 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         gb.weighty = 0;
         panneauDeroulant.add(boutonChargerCarte, gb);
 
-        gb.insets = new java.awt.Insets(5, 0, 5, 0);//padding
+        gb.insets = new java.awt.Insets(5, 0, 25, 0);//padding
         gb.gridx = 0;
         gb.gridy += 1;
         panneauDeroulant.add(boutonGrapheAleatoire, gb);
-
-        gb.insets = new java.awt.Insets(5, 0, 20, 0);//padding
         gb.gridx = 0;
         gb.gridy += 1;
-        panneauDeroulant.add(boutonRavitailler, gb);
+        panneauDeroulant.add(separateur1, gb);
 
         for (int i = 0; i < listecb.size(); i++) {
             gb.gridy += 1;
@@ -138,23 +200,41 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             panneauDeroulant.add(listecb.get(i), gb);
         }
 
-        gb.gridx = 0;
+        gb.insets = new java.awt.Insets(25, 0, 0, 0);//padding
         gb.gridy += 1;
-        gb.weighty = 1;
+        panneauDeroulant.add(separateur2, gb);
+
+        gb.gridy += 1;
+        panneauDeroulant.add(labelM, gb);
+        gb.insets = new java.awt.Insets(5, 0, 0, 0);//padding
+        gb.gridy += 1;
+        panneauDeroulant.add(labelN, gb);
+        gb.gridy += 1;
+        panneauDeroulant.add(labelO, gb);
+        gb.insets = new java.awt.Insets(25, 0, 0, 0);//padding
+        gb.gridy += 1;
+        panneauDeroulant.add(separateur3, gb);
+        gb.gridy += 1;
+        panneauDeroulant.add(panneauDijkstra, gb);
+
         gb.fill = GridBagConstraints.BOTH;
+        gb.weighty = 1;
         panneauDeroulant.add(vide, gb);
 
-        gb.insets = new java.awt.Insets(5, 0, 20, 0);//padding
-        gb.gridx = 0;
-        gb.gridy += 1;
-        gb.weighty = 0;
-        panneauDeroulant.add(boutonNotifications, gb);
+        panneauDeroulant.setPreferredSize(new Dimension(250, 700));
+        panneauDeroulantListe.setViewportView(panneauDeroulant);
+        panneauDeroulantListe.setBorder(null);
 
-        panneauDeroulant.setPreferredSize(new Dimension(250, 0));
-        panneauGlobal.add(panneauDeroulant, EAST);
+        panneauDeroulantListe.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        panneauDeroulantListe.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        panneauDeroulantListe.setPreferredSize(new Dimension(250, 0));
+        panneauDeroulantListe.getVerticalScrollBar().setUnitIncrement(16);
+
+        panneauGlobal.add(panneauDeroulantListe, EAST);
 
         vide.setBackground(new Color(0x3C3C3C));//Choix de la couleur de fond du panneau déroulant, il sera gris foncé
         panneauDeroulant.setBackground(new Color(0x3C3C3C));//Choix de la couleur de fond du panneau déroulant, il sera gris foncé
+        panneauDijkstra.setBackground(new Color(0x3C3C3C));//Choix de la couleur de fond du panneau déroulant, il sera gris foncé
 
         this.setMinimumSize(new Dimension(1000, 500));
     }
@@ -179,15 +259,16 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         view.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                double x = e.getX();
-                double y = e.getY();
-                
-                
-                GraphicElement element = view.findNodeOrSpriteAt(x, y);//Donné par l'ennoncer
-                if (element != null) {//Donné par l'ennoncer
-                    Node n = g.getNode(element.getId());//Donné par l'ennoncer
-                    
-                    SommetClique f = new SommetClique(FenetrePrincipale.this,n);
+                if (javax.swing.SwingUtilities.isRightMouseButton(e)) {
+                    double x = e.getX();
+                    double y = e.getY();
+
+                    GraphicElement element = view.findNodeOrSpriteAt(x, y);//Donné par l'ennoncer
+                    if (element != null) {//Donné par l'ennoncer
+                        Node n = g.getNode(element.getId());//Donné par l'ennoncer
+
+                        SommetClique sommetClique = new SommetClique(FenetrePrincipale.this, n);
+                    }
                 }
             }
         });
@@ -214,12 +295,34 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 grapheVisuel = new GrapheVisuel("nom du graphe", g.getTabS(), g.getTabR());
                 grapheVisuel.setAttribute("ui.stylesheet", "url('css/styleGraphe.css')");
                 afficherGraphe(grapheVisuel);
-                for (int i = 0; i < 5; i++) {
+                int nbrM = 0;
+                int nbrN = 0;
+                int nbrO = 0;
+                depart.removeAllItems();
+                arrivee.removeAllItems();
+                for (Node sommet : grapheVisuel.getEachNode()) {
+                    if (sommet.getAttribute("type").toString().equals("M")) {
+                        nbrM++;
+                    } else if (sommet.getAttribute("type").toString().equals("N")) {
+                        nbrN++;
+                    } else if (sommet.getAttribute("type").toString().equals("O")) {
+                        nbrO++;
+                    }
+
+                    depart.addItem(sommet.getAttribute("id"));
+                    arrivee.addItem(sommet.getAttribute("id"));
+                }
+                labelM.setText("Nombre de maternités : " + nbrM);
+                labelN.setText("Nombre de centres de nutrition : " + nbrN);
+                labelO.setText("Nombre de blocs opératoires : " + nbrO);
+                for (int i = 0; i < 4; i++) {
                     listecb.get(i).setSelected(true);
                 }
-                for (int i = 5; i < listecb.size(); i++) {
+                for (int i = 4; i < 8; i++) {
                     listecb.get(i).setSelected(false);
                 }
+                listecb.get(8).setSelected(true);
+                listecb.get(9).setSelected(true);
             } catch (FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(panneauGlobal,
                         "le ficchier est introuvable",
@@ -246,12 +349,34 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                     grapheVisuel = new GrapheVisuel("nom du graphe", g.getTabS(), g.getTabR());
                     grapheVisuel.setAttribute("ui.stylesheet", "url('css/styleGraphe.css')");
                     afficherGraphe(grapheVisuel);
-                    for (int i = 0; i < 5; i++) {
+                    int nbrM = 0;
+                    int nbrN = 0;
+                    int nbrO = 0;
+                    depart.removeAllItems();
+                    arrivee.removeAllItems();
+                    for (Node sommet : grapheVisuel.getEachNode()) {
+                        if (sommet.getAttribute("type").toString().equals("M")) {
+                            nbrM++;
+                        } else if (sommet.getAttribute("type").toString().equals("N")) {
+                            nbrN++;
+                        } else if (sommet.getAttribute("type").toString().equals("O")) {
+                            nbrO++;
+                        }
+
+                        depart.addItem(sommet.getAttribute("id"));
+                        arrivee.addItem(sommet.getAttribute("id"));
+                    }
+                    labelM.setText("Nombre de maternités : " + nbrM);
+                    labelN.setText("Nombre de centres de nutrition : " + nbrN);
+                    labelO.setText("Nombre de blocs opératoires : " + nbrO);
+                    for (int i = 0; i < 4; i++) {
                         listecb.get(i).setSelected(true);
                     }
-                    for (int i = 5; i < listecb.size(); i++) {
+                    for (int i = 4; i < 8; i++) {
                         listecb.get(i).setSelected(false);
                     }
+                    listecb.get(8).setSelected(true);
+                    listecb.get(9).setSelected(true);
                 }
             } catch (FileNotFoundException ex) {
                 JOptionPane.showMessageDialog(panneauGlobal,
@@ -317,8 +442,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 }
             }
         }
-        if (e.getSource() == listecb.get(4)) {
-            if (!listecb.get(4).isSelected()) {
+        if (e.getSource() == listecb.get(3)) {
+            if (!listecb.get(3).isSelected()) {
                 for (Edge route : grapheVisuel.getEachEdge()) {
                     route.setAttribute("ui.hide");
                 }
@@ -328,8 +453,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 }
             }
         }
-        if (e.getSource() == listecb.get(5)) {
-            if (listecb.get(5).isSelected()) {
+        if (e.getSource() == listecb.get(4)) {
+            if (listecb.get(4).isSelected()) {
                 String saisie = JOptionPane.showInputDialog(panneauGlobal,
                         "En dessous de quel probabilité sur 10 considerez vous une route comme dangereuse ?",
                         "Affichage des routes dangereuses",
@@ -354,16 +479,113 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                         }
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(panneauGlobal, "Veuillez entrer un nombre valide.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                        listecb.get(5).setSelected(false);
+                        listecb.get(4).setSelected(false);
                     }
                 } else {
-                    listecb.get(5).setSelected(false);
+                    listecb.get(4).setSelected(false);
                 }
             } else {
                 for (Edge route : grapheVisuel.getEachEdge()) {
                     route.removeAttribute("ui.class");
                 }
             }
+        }
+        if (e.getSource() == listecb.get(5)) {
+            listecb.get(7).setSelected(false);
+            listecb.get(6).setSelected(false);
+            if (listecb.get(5).isSelected()) {
+                for (Edge route : grapheVisuel.getEachEdge()) {
+                    String ditance = route.getAttribute("distance").toString();
+                    route.setAttribute("ui.label", ditance + "km");
+                }
+            } else {
+                for (Edge route : grapheVisuel.getEachEdge()) {
+                    route.removeAttribute("ui.label");
+                }
+            }
+        }
+        if (e.getSource() == listecb.get(6)) {
+            listecb.get(7).setSelected(false);
+            listecb.get(5).setSelected(false);
+            if (listecb.get(6).isSelected()) {
+                for (Edge route : grapheVisuel.getEachEdge()) {
+                    String duree = route.getAttribute("duree").toString();
+                    route.setAttribute("ui.label", duree + "mins");
+                }
+            } else {
+                for (Edge route : grapheVisuel.getEachEdge()) {
+                    route.removeAttribute("ui.label");
+                }
+            }
+        }
+        if (e.getSource() == listecb.get(7)) {
+            listecb.get(5).setSelected(false);
+            listecb.get(6).setSelected(false);
+            if (listecb.get(7).isSelected()) {
+                for (Edge route : grapheVisuel.getEachEdge()) {
+                    String fiabilite = route.getAttribute("fiabilite").toString();
+                    route.setAttribute("ui.label", fiabilite + "/10");
+                }
+            } else {
+                for (Edge route : grapheVisuel.getEachEdge()) {
+                    route.removeAttribute("ui.label");
+                }
+            }
+        }
+        if (e.getSource() == listecb.get(8) || e.getSource() == listecb.get(9)) {
+            if (listecb.get(8).isSelected() && listecb.get(9).isSelected()) {
+                for (Node sommet : grapheVisuel.getEachNode()) {
+                    String id = sommet.getAttribute("id").toString();
+                    String type = sommet.getAttribute("type").toString();
+                    sommet.setAttribute("ui.label", id + " (" + type + ")");
+                }
+            } else if (listecb.get(8).isSelected()) {
+                for (Node sommet : grapheVisuel.getEachNode()) {
+                    String id = sommet.getAttribute("id").toString();
+                    sommet.setAttribute("ui.label", id);
+                }
+            } else if (listecb.get(9).isSelected()) {
+                for (Node sommet : grapheVisuel.getEachNode()) {
+                    String type = sommet.getAttribute("type").toString();
+                    sommet.setAttribute("ui.label", "(" + type + ")");
+                }
+            } else {
+                for (Node sommet : grapheVisuel.getEachNode()) {
+                    sommet.removeAttribute("ui.label");
+                }
+            }
+        }
+        if (e.getSource() == boutonCalculerItineraire) {
+            for (Edge route : grapheVisuel.getEachEdge()) {
+                route.addAttribute("ui.class", "safe");
+            }
+            Recherche recherche = new Recherche(grapheVisuel);
+            String res = "List des sommets du plus court chemin : \n\n";
+            ArrayList<String> strListe = recherche.plusCourtCheminDuree(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getSommets();
+            for (int i = 0; i < strListe.size()-1; i++) {
+                res = res + strListe.get(i) + "\n";
+                Node SommetDepart = grapheVisuel.getNode(strListe.get(i));
+                Node SommetArivee = grapheVisuel.getNode(strListe.get(i+1));
+                Edge route = SommetDepart.getEdgeBetween(SommetArivee);
+                route.addAttribute("ui.class", "selectionnerPCC");
+            }
+            texte.setText(res);
+        }
+        if (e.getSource() == boutonCalculerItineraireEstimee) {
+            for (Edge route : grapheVisuel.getEachEdge()) {
+                route.addAttribute("ui.class", "safe");
+            }
+            Recherche recherche = new Recherche(grapheVisuel);
+            String res = "List des sommets du plus court chemin : \n\n";
+            ArrayList<String> strListe = recherche.plusCourtCheminDureeEstimee(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getSommets();
+            for (int i = 0; i < strListe.size()-1; i++) {
+                res = res + strListe.get(i) + "\n";
+                Node SommetDepart = grapheVisuel.getNode(strListe.get(i));
+                Node SommetArivee = grapheVisuel.getNode(strListe.get(i+1));
+                Edge route = SommetDepart.getEdgeBetween(SommetArivee);
+                route.addAttribute("ui.class", "selectionnerPCC");
+            }
+            texte.setText(res);
         }
     }
 }
