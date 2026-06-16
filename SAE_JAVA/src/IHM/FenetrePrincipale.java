@@ -50,6 +50,7 @@ import org.graphstream.ui.view.util.DefaultMouseManager;
 public class FenetrePrincipale extends JFrame implements ActionListener {
 
     private GrapheVisuel grapheVisuel;
+    private Graphe graphe;
     private JButton boutonChargerCarte;
     private JButton boutonGrapheAleatoire;
     private JButton boutonCalculerItineraire;
@@ -245,6 +246,10 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         bouton.setFocusPainted(false);
     }
 
+    public Graphe getGraphe() {
+        return graphe;
+    }
+
     public void afficherGraphe(GrapheVisuel g) {
 
         if (grapheActuel != null) {
@@ -267,7 +272,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                     if (element != null) {//Donné par l'ennoncer
                         Node n = g.getNode(element.getId());//Donné par l'ennoncer
 
-                        SommetClique sommetClique = new SommetClique(FenetrePrincipale.this, n);
+                        SommetClique sommetClique = new SommetClique(FenetrePrincipale.this, n, graphe);
                     }
                 }
             }
@@ -289,10 +294,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                         "Combien de sommets voulez vous sur votre graphe ?",
                         "Création d'un graphe aléatoire",
                         JOptionPane.PLAIN_MESSAGE));
-                Graphe g;
-                g = new Graphe();
-                g.genererGrapheAleatoire(nbSommets);
-                grapheVisuel = new GrapheVisuel("nom du graphe", g.getTabS(), g.getTabR());
+                graphe = new Graphe();
+                graphe.genererGrapheAleatoire(nbSommets);
+                grapheVisuel = new GrapheVisuel("nom du graphe", graphe.getTabS(), graphe.getTabR());
                 grapheVisuel.setAttribute("ui.stylesheet", "url('css/styleGraphe.css')");
                 afficherGraphe(grapheVisuel);
                 int nbrM = 0;
@@ -343,10 +347,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 if (resultat == JFileChooser.APPROVE_OPTION) {
                     String nomFichier = fileChooser.getSelectedFile().getAbsolutePath();
 
-                    Graphe g;
-                    g = new Graphe();
-                    g.chargerGraphes(nomFichier);
-                    grapheVisuel = new GrapheVisuel("nom du graphe", g.getTabS(), g.getTabR());
+                    graphe = new Graphe();
+                    graphe.chargerGraphes(nomFichier);
+                    grapheVisuel = new GrapheVisuel("nom du graphe", graphe.getTabS(), graphe.getTabR());
                     grapheVisuel.setAttribute("ui.stylesheet", "url('css/styleGraphe.css')");
                     afficherGraphe(grapheVisuel);
                     int nbrM = 0;
