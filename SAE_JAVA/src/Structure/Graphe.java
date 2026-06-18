@@ -46,14 +46,14 @@ public class Graphe {
     public static int compteSommet(String nomFichier) throws FileNotFoundException {
         int cpt = 0;
 
-        // Le fichier d'entrée
+        // Le fichier d'entree
         FileInputStream file = new FileInputStream(nomFichier);
         Scanner scanner = new Scanner(file);
 
         //renvoie true tant qu'il y a une autre ligne à lire
         while (scanner.hasNext()) {
             String ligne = scanner.nextLine();
-            // On ne compte que les lignes de données utiles (pas les commentaires)
+            // On ne compte que les lignes de donnees utiles (pas les commentaires)
             if (!ligne.isEmpty() && !ligne.startsWith("//")) {
                 cpt++;
             }
@@ -154,7 +154,7 @@ public class Graphe {
         this.tabR = new Route[nbSommet][nbSommet];
         this.durees = new HashMap<>();
 
-        // Le fichier d'entrée
+        // Le fichier d'entree
         FileInputStream fichier = new FileInputStream(nomFichier);
         Scanner scannerTabS = new Scanner(fichier);
 
@@ -165,12 +165,12 @@ public class Graphe {
             try {
                 if (!ligne.startsWith("//")) {
                     String[] tokens = ligne.split(";");
-                    ajouterSommet(i, new Sommet(tokens[0].trim(), tokens[1].trim()));
+                    ajouterSommet(i, new Sommet(i, tokens[0].trim(), tokens[1].trim()));
 
                     i++;
                 }
             } catch (ArrayIndexOutOfBoundsException e) {
-                System.err.println("Erreur : La ligne du fichier CSV ne contient pas assez d'éléments pour créer le sommet à l'index " + i);
+                System.err.println("Erreur : La ligne du fichier CSV ne contient pas assez d'elements pour creer le sommet à l'index " + i);
             }
         }
         scannerTabS.close();
@@ -216,7 +216,7 @@ public class Graphe {
         for (int i = 0; i < this.nbSommet; i++) {
             for (int j = 0; j < this.nbSommet; j++) {
                 if (this.tabR[i][j] != null) {
-                    ligne = "Nom : " + this.tabR[i][j].getName() + " sa fiabilite est de :" + this.tabR[i][j].getFiabilité() + " sa distance du sommet " + this.tabS[i].getNom() + " au sommet :" + this.tabS[j].getNom() + " est de : " + this.tabR[i][j].getDistance() + " la duree du trajet est de : " + this.tabR[i][j].getDurée() + "\n";
+                    ligne = "Nom : " + this.tabR[i][j].getName() + " sa fiabilite est de :" + this.tabR[i][j].getFiabilite() + " sa distance du sommet " + this.tabS[i].getNom() + " au sommet :" + this.tabS[j].getNom() + " est de : " + this.tabR[i][j].getDistance() + " la duree du trajet est de : " + this.tabR[i][j].getDuree() + "\n";
                     System.out.println(ligne);
                 }
             }
@@ -232,7 +232,7 @@ public class Graphe {
         Random random = new Random();
         int numRoute = 0;
 
-        // 1. Création des sommets avec un type aléatoire
+        // 1. Creation des sommets avec un type aleatoire
         for (int i = 0; i < nbSommets; i++) {
             int tirage = random.nextInt(5);
             String type;
@@ -243,17 +243,17 @@ public class Graphe {
             } else {
                 type = "N";
             }
-            ajouterSommet(i, new Sommet("S" + (i + 1), type));
+            ajouterSommet(i, new Sommet(i,"S" + (i + 1), type));
         }
 
-        // 2. Arbre couvrant : garantit que le graphe est CONNEXE (aucun sommet isolé)
-        //    Chaque sommet i (>=1) est relié à un sommet déjà placé (j < i).
+        // 2. Arbre couvrant : garantit que le graphe est CONNEXE (aucun sommet isole)
+        //    Chaque sommet i (>=1) est relie à un sommet dejà place (j < i).
         for (int i = 1; i < nbSommets; i++) {
-            int j = random.nextInt(i); // j est forcément < i
+            int j = random.nextInt(i); // j est forcement < i
             numRoute = creerRoute(j, i, random, numRoute); // j < i => respecte tabR[min][max]
         }
 
-        // 3. Arêtes supplémentaires avec probabilité 1/5 (sans écraser celles de l'arbre)
+        // 3. Arêtes supplementaires avec probabilite 1/5 (sans ecraser celles de l'arbre)
         for (int i = 0; i < nbSommets; i++) {
             for (int j = i + 1; j < nbSommets; j++) {
 //<<<<<<< HEAD
@@ -273,9 +273,9 @@ public class Graphe {
         }
     }
 
-// Helper : crée une route entre i et j (avec i < j) et renvoie le prochain numéro de route
+// Helper : cree une route entre i et j (avec i < j) et renvoie le prochain numero de route
     private int creerRoute(int i, int j, Random random, int numRoute) {
-        double fiabilite = random.nextInt(9) + 2;   // échelle 2 à 10
+        double fiabilite = random.nextInt(9) + 2;   // echelle 2 à 10
         int distance = random.nextInt(41) + 10;
         int duree = random.nextInt(111) + 10;
         ajouterRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), this.getSommet(j)));
@@ -317,7 +317,7 @@ public class Graphe {
         // Tri à bulles par distance croissante
         for (int i = 0; i < routes.size() - 1; i++) {
             for (int k = 0; k < routes.size() - 1 - i; k++) {
-                if (routes.get(k).getDurée() > routes.get(k + 1).getDurée()) {
+                if (routes.get(k).getDuree() > routes.get(k + 1).getDuree()) {
                     Route temp = routes.get(k);
                     routes.set(k, routes.get(k + 1));
                     routes.set(k + 1, temp);
@@ -413,10 +413,10 @@ public class Graphe {
             // Mise a jour des voisins de u
             for (int v = 0; v < this.nbSommet; v++) {
                 Route r = (this.tabR[u][v] != null) ? this.tabR[u][v] : this.tabR[v][u];
-                if (r != null && duree[u] + r.getDurée() < duree[v]) {
+                if (r != null && duree[u] + r.getDuree() < duree[v]) {
                     dist[v] = dist[u] + r.getDistance();
-                    duree[v] = duree[u] + r.getDurée();
-                    dureeEstimee[v] = (int) (dureeEstimee[u] + r.getDurée() * (20 - r.getFiabilité()) / 10);
+                    duree[v] = duree[u] + r.getDuree();
+                    dureeEstimee[v] = (int) (dureeEstimee[u] + r.getDuree() * (20 - r.getFiabilite()) / 10);
                 }
             }
         }

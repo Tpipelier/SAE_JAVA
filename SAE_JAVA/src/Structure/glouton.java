@@ -4,7 +4,7 @@
  */
 package Structure;
 
-import Structure.Camion;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,15 +14,15 @@ import java.util.List;
  */
 public class glouton {
     
-    Camion c ;
+   
     private List<Sommet> sommetAdjacents;
     private Sommet Sdep ;
     private List<Route> parcours;
     private Route[][] tabR;
     
     
-    public glouton(Camion cam, Route[][] tabR){
-        this.c=cam;
+    public glouton(Route[][] tabR){
+        
         this.Sdep =cam.getSommetDepart();
         this.sommetAdjacents = new ArrayList<>();
         

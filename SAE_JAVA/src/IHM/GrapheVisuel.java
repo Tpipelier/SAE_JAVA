@@ -45,11 +45,11 @@ public class GrapheVisuel extends SingleGraph {
                     
                     e.setAttribute("distance", r.getDistance());
                     
-                    e.setAttribute("fiabilite", r.getFiabilité());
+                    e.setAttribute("fiabilite", r.getFiabilite());
                     // Poids utilises par la classe Recherche (Dijkstra)
-                    e.setAttribute("duree", r.getDurée());
+                    e.setAttribute("duree", r.getDuree());
                     // Duree estimee : penalisee quand la fiabilite est faible
-                    e.setAttribute("dureeEstimee", r.getDurée() * 10.0 / r.getFiabilité());
+                    e.setAttribute("dureeEstimee", r.getDuree() * 10.0 / r.getFiabilite());
                 }
             }
         }

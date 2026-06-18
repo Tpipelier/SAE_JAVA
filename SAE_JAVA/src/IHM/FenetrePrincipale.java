@@ -5,7 +5,7 @@
 package IHM;
 
 import Structure.Graphe;
-import Structure.Recherche;
+import Outils.Recherche;
 import java.awt.BorderLayout;
 import static java.awt.BorderLayout.EAST;
 import static java.awt.BorderLayout.WEST;

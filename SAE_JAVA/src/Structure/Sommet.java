@@ -11,8 +11,10 @@ package Structure;
 public class Sommet {
     private String nom;
     private String type;
+    private int index;
     
-    public Sommet(String nom,String type) {
+    public Sommet(int index, String nom,String type) {
+        this.index = index;
         this.nom = nom;
         this.type=type;
     }
@@ -23,6 +25,10 @@ public class Sommet {
 
     public String getType() {
         return type;
+    }
+
+    public int getIndex() {
+        return index;
     }
     
     

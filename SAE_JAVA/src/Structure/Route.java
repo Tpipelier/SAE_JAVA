@@ -11,43 +11,43 @@ package Structure;
 public class Route {
 
     String name;
-    double fiabilité;
+    double fiabilite;
     int distance;
-    int durée;
-    private Sommet sDépart;
-    private Sommet sArrivée;
+    int duree;
+    private Sommet sDepart;
+    private Sommet sArrivee;
 
-    public Route(String name, double fiabilité, int distance, int durée, Sommet sD, Sommet sA) {
+    public Route(String name, double fiabilite, int distance, int duree, Sommet sD, Sommet sA) {
         this.name = name;
-        this.fiabilité = fiabilité;
+        this.fiabilite = fiabilite;
         this.distance = distance;
-        this.durée = durée;
-        this.sDépart = sD;
-        this.sArrivée = sA;
+        this.duree = duree;
+        this.sDepart = sD;
+        this.sArrivee = sA;
     }
 
     public String getName() {
         return name;
     }
 
-    public double getFiabilité() {
-        return fiabilité;
+    public double getFiabilite() {
+        return fiabilite;
     }
 
     public int getDistance() {
         return distance;
     }
 
-    public int getDurée() {
-        return durée;
+    public int getDuree() {
+        return duree;
     }
 
-    public Sommet getsDépart() {
-        return sDépart;
+    public Sommet getSommetDepart() {
+        return sDepart;
     }
 
-    public Sommet getsArrivée() {
-        return sArrivée;
+    public Sommet getSommetArrivee() {
+        return sArrivee;
     }
 
     

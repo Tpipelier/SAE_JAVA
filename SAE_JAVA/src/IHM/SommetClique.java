@@ -112,7 +112,7 @@ public class SommetClique extends JDialog implements ActionListener {
         tab.setValueAt("Type du centre", 0, 1);
         tab.setValueAt("Durée", 0, 2);
         tab.setValueAt("Durée estimée", 0, 3);
-        Sommet sommetClique = new Sommet(nodeCliqué.getAttribute("id"), nodeCliqué.getAttribute("type"));
+        Sommet sommetClique = new Sommet(nodeCliqué.getAttribute("index"), nodeCliqué.getAttribute("id"), nodeCliqué.getAttribute("type"));
         List<Graphe.DistanceVers> lst = graphe.distancesCroissantesVersTous(sommetClique, "Duree");
         boolean sortie = false;
         boolean typeMInseree = false;
