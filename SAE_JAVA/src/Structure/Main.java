@@ -16,51 +16,30 @@ import IHM.GrapheVisuel;
 public class Main {
 
     public static void main(String[] args) throws FileNotFoundException {
-        // 1. On construit un graphe aleatoire connexe (sommets de type M, O ou N)
+        // 1. Graphe aléatoire connexe
         Graphe graphe = new Graphe();
-        graphe.genererGrapheAleatoire(50);
+        graphe.genererGrapheAleatoire(10);
 
-        // 2. On affiche toutes les routes pour voir les distances du graphe
-        System.out.println("===== Contenu du graphe =====");
-        graphe.afficheContenuGraphe();
-
-        // 3. On choisit un sommet de depart
-        Sommet depart = graphe.getSommet(0);
-        System.out.println("===== Distances depuis " + depart.getNom() + " (" + depart.getType() + ") =====");
-
-        // 4. On appelle la methode a tester
-        List<Graphe.DistanceVers> distances = graphe.distancesCroissantesVersTous(depart);
-
-        // 5. On affiche le resultat (nom, type et distance, par ordre croissant)
-        for (int i = 0; i < distances.size(); i++) {
-            Graphe.DistanceVers d = distances.get(i);
-            System.out.println((i + 1) + ") " + d.getNom() + " (" + d.getType() + ") -> distance en km = " + d.getDistance());
-        }
-
-        // 6. Test des plus courts chemins via la classe Recherche (GraphStream)
-        //    On construit le graphe GraphStream (qui pose les poids duree et dureeEstimee)
+        // 2. Graphe GraphStream + Recherche (Dijkstra)
         GrapheVisuel grapheVisuel = new GrapheVisuel("g", graphe.getTabS(), graphe.getTabR());
         Recherche recherche = new Recherche(grapheVisuel);
+        grapheVisuel.afficher();
 
-        // On choisit un depart et une arrivee (ici S1 et le dernier sommet)
-        String nomDepart = graphe.getSommet(0).getNom();
-        String nomArrivee = graphe.getSommet(graphe.getNbSommet() - 1).getNom();
+        // 3. Algorithme glouton à partir du sommet 0
+        Sommet depart = graphe.getSommet(0);
+        glouton g = new glouton(recherche);
+        List<Sommet> parcours = g.unCamion(graphe.getTabS(), depart);
 
-        System.out.println("\n===== Plus courts chemins de " + nomDepart + " a " + nomArrivee + " =====");
-
-        Recherche.Itineraire parDuree = recherche.plusCourtCheminDuree(nomDepart, nomArrivee);
-        Recherche.Itineraire parDureeEstimee = recherche.plusCourtCheminDureeEstimee(nomDepart, nomArrivee);
-
-        if (parDuree != null) {
-            System.out.println("En duree standard      : " + parDuree);
-        } else {
-            System.out.println("En duree standard      : aucun chemin");
+        // 4. Affichage du parcours
+        System.out.println("Depart : " + depart.getNom());
+        System.out.print("Parcours glouton : ");
+        for (int i = 0; i < parcours.size(); i++) {
+            System.out.print(parcours.get(i).getNom());
+            if (i < parcours.size() - 1) {
+                System.out.print(" -> ");
+            }
         }
-
-        if (parDureeEstimee != null) {
-            System.out.println("En duree estimee        : " + parDureeEstimee);
-        } else {
-            System.out.println("En duree estimee        : aucun chemin");
+        System.out.println();
+        System.out.println("Nombre de sommets visites : " + parcours.size());
         }
-    }
 }

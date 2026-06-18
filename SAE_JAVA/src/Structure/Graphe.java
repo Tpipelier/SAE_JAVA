@@ -270,7 +270,7 @@ public class Graphe {
     }
 
     /**
-    Renvoie l'indice d'un sommet dans tabS (-1 s'il n'existe pas).
+     * Renvoie l'indice d'un sommet dans tabS (-1 s'il n'existe pas).
      */
     public int indexDeSommet(Sommet s) {
         for (int i = 0; i < this.nbSommet; i++) {
@@ -282,8 +282,8 @@ public class Graphe {
     }
 
     /**
-     Renvoie les routes partant du sommet donne (vers les maternites, blocs
-     operatoires et centres de nutrition), triees par distance croissante.
+     * Renvoie les routes partant du sommet donne (vers les maternites, blocs
+     * operatoires et centres de nutrition), triees par distance croissante.
      */
     public List<Route> distancesCroissantes(Sommet depart) {
         List<Route> routes = new ArrayList<>();
@@ -314,8 +314,8 @@ public class Graphe {
     }
 
     /**
-     Petit resultat associant un sommet d'arrivee a la distance la plus courte
-     depuis le sommet de depart. Donne acces au nom et au type.
+     * Petit resultat associant un sommet d'arrivee a la distance la plus courte
+     * depuis le sommet de depart. Donne acces au nom et au type.
      */
     public static class DistanceVers {
 
@@ -350,9 +350,9 @@ public class Graphe {
     }
 
     /**
-     Calcule, depuis le sommet donne, la distance la plus courte (Dijkstra
-     pondere par la distance des routes) vers tous les autres sommets, puis
-     renvoie ces resultats (nom, type et distance) tries par ordre croissant.
+     * Calcule, depuis le sommet donne, la distance la plus courte (Dijkstra
+     * pondere par la distance des routes) vers tous les autres sommets, puis
+     * renvoie ces resultats (nom, type et distance) tries par ordre croissant.
      */
     public List<DistanceVers> distancesCroissantesVersTous(Sommet depart) {
         List<DistanceVers> resultats = new ArrayList<>();
@@ -399,12 +399,32 @@ public class Graphe {
             for (int j = 0; j < resultats.size() - 1 - i; j++) {
                 if (resultats.get(j).getDistance() > resultats.get(j + 1).getDistance()) {
                     DistanceVers tmp = resultats.get(j);
+                    
                     resultats.set(j, resultats.get(j + 1));
                     resultats.set(j + 1, tmp);
                 }
             }
         }
         return resultats;
+    }
+    
+    
+
+    public List<String> top5Texte(Sommet depart) {
+        List<DistanceVers> resultats = distancesCroissantesVersTous(depart);
+        List<String> top = new ArrayList<>();
+
+        int limite = 5;
+        if (resultats.size() < 5) {
+            limite = resultats.size();
+        }
+
+        for (int i = 0; i < limite; i++) {
+            DistanceVers d = resultats.get(i);
+            top.add(d.getNom() + d.getType() + d.getDistance());
+        }
+
+        return top;
     }
 
 }

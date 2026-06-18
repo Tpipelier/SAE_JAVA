@@ -4,7 +4,6 @@
  */
 package Structure;
 
-import Structure.Camion;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,35 +12,46 @@ import java.util.List;
  * @author walid
  */
 public class glouton {
-    
-    Camion c ;
-    private List<Sommet> sommetAdjacents;
-    private Sommet Sdep ;
-    private List<Route> parcours;
-    private Route[][] tabR;
-    
-    
-    public glouton(Camion cam, Route[][] tabR){
-        this.c=cam;
-        this.Sdep =cam.getSommetDepart();
-        this.sommetAdjacents = new ArrayList<>();
-        
+
+    private final Recherche recherche;
+
+    public glouton(Recherche recherche){
+        this.recherche = recherche;
     }
-    public void ajouterSommetAdjacents(){
-        Route r ;
-        for(int i = 0 ; i < tabR.length ; i++){
-            for(int j = 0 ; j < tabR.length ; j ++){
-                r = tabR[i][j] ;
-                if (r.getsDépart() == this.Sdep && this.sommetAdjacents.contains(r.getsArrivée())!=true){
-                    this.sommetAdjacents.add(r.getsArrivée());
-                }
-                if (r.getsArrivée() == this.Sdep && this.sommetAdjacents.contains(r.getsDépart())!=true){ 
-                    this.sommetAdjacents.add(r.getsDépart());
-                }
-                
-                    
+
+    public List<Sommet> unCamion(Sommet[] tabS, Sommet depart){
+        List<Sommet> aVisiter = new ArrayList<>();
+        for (Sommet s : tabS) {
+            if (s != null && s != depart) {
+                aVisiter.add(s);
             }
         }
-    
+
+        List<Sommet> parcours = new ArrayList<>();
+        parcours.add(depart);
+        Sommet courant = depart;
+
+        while (!aVisiter.isEmpty()) {
+            Sommet prochain = plusProche(courant, aVisiter);
+            parcours.add(prochain);
+            aVisiter.remove(prochain);
+            courant = prochain;
+        }
+
+        return parcours;
+    }
+
+
+    private Sommet plusProche(Sommet courant, List<Sommet> candidats){
+        Sommet plusProche = null;
+        double meilleurCout = Double.MAX_VALUE;
+        for (Sommet candidat : candidats) {
+            Recherche.Itineraire it = recherche.plusCourtCheminDuree(courant.getNom(), candidat.getNom());
+            if (it != null && it.getCout() < meilleurCout) {
+                meilleurCout = it.getCout();
+                plusProche = candidat;
+            }
+        }
+        return plusProche;
     }
 }
