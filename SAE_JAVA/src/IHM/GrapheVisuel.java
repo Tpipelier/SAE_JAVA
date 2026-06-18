@@ -31,6 +31,7 @@ public class GrapheVisuel extends SingleGraph {
                 }
                 n.setAttribute("type", s.getType());
                 n.setAttribute("id", s.getNom());
+                n.setAttribute("index", s.getIndex());
                 
             }
         }

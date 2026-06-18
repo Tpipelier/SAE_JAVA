@@ -317,7 +317,7 @@ public class Graphe {
         // Tri à bulles par distance croissante
         for (int i = 0; i < routes.size() - 1; i++) {
             for (int k = 0; k < routes.size() - 1 - i; k++) {
-                if (routes.get(k).getDuree() > routes.get(k + 1).getDuree()) {
+                if (routes.get(k).getDistance() > routes.get(k + 1).getDistance()) {
                     Route temp = routes.get(k);
                     routes.set(k, routes.get(k + 1));
                     routes.set(k + 1, temp);

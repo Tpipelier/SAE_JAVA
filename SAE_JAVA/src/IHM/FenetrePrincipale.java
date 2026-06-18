@@ -4,6 +4,7 @@
  */
 package IHM;
 
+import Outils.AlgorithmeChristofide;
 import Structure.Graphe;
 import Outils.Recherche;
 import java.awt.BorderLayout;
@@ -21,6 +22,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -55,6 +57,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private JButton boutonGrapheAleatoire;
     private JButton boutonCalculerItineraire;
     private JButton boutonCalculerItineraireEstimee;
+    private JButton boutonCalculerAlgoGlouton;
+    private JButton boutonCalculerAlgoChristofide;
+    private JButton boutonCalculerAlgo2Camions;
     private JPanel panneauGlobal;
     private Component grapheActuel;
     private JFileChooser fileChooser;
@@ -97,6 +102,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         boutonGrapheAleatoire = new JButton("Créer un graphe aléatoire");
         boutonCalculerItineraire = new JButton("Calculer l'itinéraire");
         boutonCalculerItineraireEstimee = new JButton("Calculer l'itinéraire estimée");
+        boutonCalculerAlgoGlouton = new JButton("Glouton");
+        boutonCalculerAlgoChristofide = new JButton("Christofides");
+        boutonCalculerAlgo2Camions = new JButton("2 Camions");
         panneauDeroulantListe = new JScrollPane();
         panneauGlobal = new JPanel();
         fileChooser = new JFileChooser();
@@ -112,8 +120,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         labelM = new JLabel("Nombre de maternités : 0");
         labelN = new JLabel("Nombre de centres de nutrition : 0");
         labelO = new JLabel("Nombre de blocs opératoires : 0");
-        texte = new JTextArea(200, 50);
-        texte.setEditable(false);
+        texte = new JTextArea(8, 15);
         texte.setEditable(false);
         texte.setBackground(new Color(0xC2C2C2));
         texte.setForeground(Color.BLACK);
@@ -130,6 +137,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         boutonGrapheAleatoire.addActionListener(this);
         boutonCalculerItineraire.addActionListener(this);
         boutonCalculerItineraireEstimee.addActionListener(this);
+        boutonCalculerAlgoGlouton.addActionListener(this);
+        boutonCalculerAlgoChristofide.addActionListener(this);
+        boutonCalculerAlgo2Camions.addActionListener(this);
 
         this.setContentPane(panneauGlobal);
 
@@ -139,6 +149,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         appliquerStyleBouton(boutonGrapheAleatoire);
         appliquerStyleBouton(boutonCalculerItineraire);
         appliquerStyleBouton(boutonCalculerItineraireEstimee);
+        appliquerStyleBouton(boutonCalculerAlgoGlouton);
+        appliquerStyleBouton(boutonCalculerAlgoChristofide);
+        appliquerStyleBouton(boutonCalculerAlgo2Camions);
         labelM.setForeground(Color.WHITE);
         labelN.setForeground(Color.WHITE);
         labelO.setForeground(Color.WHITE);
@@ -217,12 +230,19 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         panneauDeroulant.add(separateur3, gb);
         gb.gridy += 1;
         panneauDeroulant.add(panneauDijkstra, gb);
+        
+        gb.gridy += 1;
+        panneauDeroulant.add(boutonCalculerAlgoGlouton, gb);
+        gb.gridy += 1;
+        panneauDeroulant.add(boutonCalculerAlgoChristofide, gb);
+        gb.gridy += 1;
+        panneauDeroulant.add(boutonCalculerAlgo2Camions, gb);
 
         gb.fill = GridBagConstraints.BOTH;
         gb.weighty = 1;
         panneauDeroulant.add(vide, gb);
 
-        panneauDeroulant.setPreferredSize(new Dimension(250, 700));
+        //panneauDeroulant.setPreferredSize(new Dimension(250, 700));
         panneauDeroulantListe.setViewportView(panneauDeroulant);
         panneauDeroulantListe.setBorder(null);
 
@@ -349,7 +369,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
                     graphe = new Graphe();
                     graphe.chargerGraphes(nomFichier);
-                    grapheVisuel = new GrapheVisuel("nom du graphe", graphe.getTabS(), graphe.getTabR());
+                    grapheVisuel = new GrapheVisuel("Graphe charger", graphe.getTabS(), graphe.getTabR());
                     grapheVisuel.setAttribute("ui.stylesheet", "url('css/styleGraphe.css')");
                     afficherGraphe(grapheVisuel);
                     int nbrM = 0;
@@ -591,6 +611,21 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             }
             String cout = String.valueOf(Math.round(recherche.plusCourtCheminDureeEstimee(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getCout()));
             texte.setText(res + "\n Ce trajet prend : " + cout + " min");
+        }
+        if (e.getSource() == boutonCalculerAlgoGlouton) {
+            
+        }
+        if (e.getSource() == boutonCalculerAlgoChristofide) {
+            AlgorithmeChristofide ac = new AlgorithmeChristofide(grapheVisuel,graphe);
+            List<String> lst = ac.executerChristofide();
+            String resultat = new String("Christofide : \n");
+            for (int i = 0; i < lst.size();i++){
+                resultat = resultat + lst.get(i) + "\n";
+            }
+            texte.setText(resultat);
+        }
+        if (e.getSource() == boutonCalculerAlgo2Camions) {
+            
         }
     }
 }

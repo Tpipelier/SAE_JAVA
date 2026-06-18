@@ -23,7 +23,7 @@ public class glouton {
     
     public glouton(Route[][] tabR){
         
-        this.Sdep =cam.getSommetDepart();
+        //this.Sdep =cam.getSommetDepart();
         this.sommetAdjacents = new ArrayList<>();
         
     }
@@ -32,11 +32,11 @@ public class glouton {
         for(int i = 0 ; i < tabR.length ; i++){
             for(int j = 0 ; j < tabR.length ; j ++){
                 r = tabR[i][j] ;
-                if (r.getsDépart() == this.Sdep && this.sommetAdjacents.contains(r.getsArrivée())!=true){
-                    this.sommetAdjacents.add(r.getsArrivée());
+                if (r.getSommetDepart() == this.Sdep && this.sommetAdjacents.contains(r.getSommetArrivee())!=true){
+                    this.sommetAdjacents.add(r.getSommetArrivee());
                 }
-                if (r.getsArrivée() == this.Sdep && this.sommetAdjacents.contains(r.getsDépart())!=true){ 
-                    this.sommetAdjacents.add(r.getsDépart());
+                if (r.getSommetArrivee() == this.Sdep && this.sommetAdjacents.contains(r.getSommetDepart())!=true){ 
+                    this.sommetAdjacents.add(r.getSommetDepart());
                 }
                 
                     

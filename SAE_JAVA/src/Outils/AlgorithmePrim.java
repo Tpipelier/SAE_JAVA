@@ -59,7 +59,7 @@ public class AlgorithmePrim {
                     for (int j = 0; j < n; j++) {
                         if (!visites[j] && graphe.getRoute(i, j) != null) {
                             Route routeActuelle = graphe.getRoute(i, j);
-                            double coutActuel = routeActuelle.getDistance();
+                            double coutActuel = routeActuelle.getDuree();
 
                             if (coutActuel < coutMin) {
                                 coutMin = coutActuel;

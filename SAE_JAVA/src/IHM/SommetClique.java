@@ -182,7 +182,7 @@ public class SommetClique extends JDialog implements ActionListener {
     
     private JTable remplirGrandTableau(JTable tab,String type) {
         
-        Sommet sommetClique = new Sommet(nodeCliqué.getAttribute("id"), nodeCliqué.getAttribute("type"));
+        Sommet sommetClique = new Sommet(nodeCliqué.getAttribute("index"),nodeCliqué.getAttribute("id"), nodeCliqué.getAttribute("type"));
         List<Graphe.DistanceVers> lst = graphe.distancesCroissantesVersTous(sommetClique, type);
         int position = 1;
         String text1;
