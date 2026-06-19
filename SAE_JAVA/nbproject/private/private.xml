@@ -3,17 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Structure/Route.java</file>
-            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Outils/AlgorithmePrim.java</file>
             <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Outils/AlgorithmeChristofide.java</file>
-            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Structure/Sommet.java</file>
-            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Test/Test.java</file>
-            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Exception/MalformedCSVException.java</file>
-            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Structure/glouton.java</file>
-            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/IHM/GrapheVisuel.java</file>
-            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Outils/Recherche.java</file>
+            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Outils/DiviserGraphe.java</file>
             <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Structure/Graphe.java</file>
-            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/IHM/SommetClique.java</file>
+            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/IHM/FenetrePrincipale.java</file>
         </group>
     </open-files>
 </project-private>
