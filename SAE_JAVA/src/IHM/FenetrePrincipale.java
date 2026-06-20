@@ -5,6 +5,7 @@
 package IHM;
 
 import Outils.AlgorithmeChristofide;
+import Outils.DiviserGraphe;
 import Structure.Graphe;
 import Outils.Recherche;
 import java.awt.BorderLayout;
@@ -15,10 +16,13 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -37,10 +41,12 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.ui.graphicGraph.GraphicElement;
+import org.graphstream.ui.view.Camera;
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.util.DefaultMouseManager;
@@ -230,7 +236,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         panneauDeroulant.add(separateur3, gb);
         gb.gridy += 1;
         panneauDeroulant.add(panneauDijkstra, gb);
-        
+        gb.insets = new java.awt.Insets(15, 0, 0, 0);//padding
+
         gb.gridy += 1;
         panneauDeroulant.add(boutonCalculerAlgoGlouton, gb);
         gb.gridy += 1;
@@ -279,28 +286,87 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         Viewer viewer = new Viewer((Graph) g, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
         viewer.enableAutoLayout();
         View view = viewer.addDefaultView(false);   // false indicates "no JFrame".
+        view.setMouseManager(null);
 
         //
-        view.addMouseListener(new MouseAdapter() {
+        Component viewComponent = (Component) view;
+        final Point pointDepart = new Point();
+        Camera camera = view.getCamera();
+
+        // 1. Écouteur pour le CLIC DROIT (Sélection de sommet)
+        viewComponent.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (javax.swing.SwingUtilities.isRightMouseButton(e)) {
                     double x = e.getX();
                     double y = e.getY();
 
-                    GraphicElement element = view.findNodeOrSpriteAt(x, y);//Donné par l'ennoncer
-                    if (element != null) {//Donné par l'ennoncer
-                        Node n = g.getNode(element.getId());//Donné par l'ennoncer
-
+                    GraphicElement element = view.findNodeOrSpriteAt(x, y);
+                    if (element != null) {
+                        Node n = g.getNode(element.getId());
                         SommetClique sommetClique = new SommetClique(FenetrePrincipale.this, n, graphe);
                     }
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // Si c'est un clic gauche, on enregistre le point de départ du déplacement
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    pointDepart.setLocation(e.getPoint());
+                }
+            }
+        });
+
+        // 2. Écouteur pour le glisser de souris (Mouvement dans le graphe)
+        viewComponent.addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    // Calcul de la distance parcourue par la souris en pixels
+                    double deltaX = e.getX() - pointDepart.x;
+                    double deltaY = e.getY() - pointDepart.y;
+
+                    // Récupération du centre actuel de la caméra
+                    org.graphstream.ui.geom.Point3 centreActuel = camera.getViewCenter();
+
+                    // Facteur d'ajustement : plus on zoom (viewPercent petit), plus le déplacement doit être sensible
+                    double facteur = 0.004 * camera.getViewPercent();
+
+                    // Calcul du nouveau centre (GraphStream inverse l'axe Y par rapport à Swing)
+                    double nouveauX = centreActuel.x - (deltaX * facteur);
+                    double nouveauY = centreActuel.y + (deltaY * facteur);
+
+                    // Appliquer le nouveau centre
+                    camera.setViewCenter(nouveauX, nouveauY, 0);
+
+                    // Mettre à jour le point de départ pour le prochain mouvement
+                    pointDepart.setLocation(e.getPoint());
+                }
+            }
+        });
+
+        // 2. Écouteur spécifique pour la MOLETTE (ZOOM) -> C'est ça qui manquait !
+        viewComponent.addMouseWheelListener(new MouseWheelListener() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                
+                double currentPercent = camera.getViewPercent();
+
+                // e.getWheelRotation() donne -1 pour un défilement vers le haut, 1 vers le bas
+                if (e.getWheelRotation() < 0) {
+                    // Zoom avant : on diminue le pourcentage de vue
+                    camera.setViewPercent(Math.max(0.1, currentPercent - 0.05));
+                } else {
+                    // Zoom arrière : on augmente le pourcentage de vue
+                    camera.setViewPercent(Math.min(5.0, currentPercent + 0.05));
                 }
             }
         });
         //
 
-        grapheActuel = (Component) view;
-        panneauGlobal.add((Component) view, BorderLayout.CENTER);
+        grapheActuel = viewComponent;
+        panneauGlobal.add(viewComponent, BorderLayout.CENTER);
 
         panneauGlobal.revalidate(); // Recalcule la mise en page
         panneauGlobal.repaint();    // Redessine les composants
@@ -592,7 +658,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 Edge route = SommetDepart.getEdgeBetween(SommetArivee);
                 route.addAttribute("ui.class", "selectionnerPCC");
             }
-            String cout = String.valueOf(Math.round(recherche.plusCourtCheminDureeEstimee(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getCout()));
+            String cout = String.valueOf(Math.round(recherche.plusCourtCheminDuree(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getCout()));
             texte.setText(res + "\n Ce trajet prend : " + cout + " min");
         }
         if (e.getSource() == boutonCalculerItineraireEstimee) {
@@ -616,17 +682,27 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             
         }
         if (e.getSource() == boutonCalculerAlgoChristofide) {
-            AlgorithmeChristofide ac = new AlgorithmeChristofide(grapheVisuel,graphe);
-            List<String> lst = ac.executerChristofide();
-            String resultat = new String("Christofide : \n");
-            for (int i = 0; i < lst.size();i++){
-                resultat = resultat + lst.get(i) + "\n";
-            }
-            texte.setText(resultat);
+            String texteAlgo = "Résultat Christofide : \n" + lancerChristofide(graphe);
+            texte.setText(texteAlgo);
         }
         if (e.getSource() == boutonCalculerAlgo2Camions) {
-            
+            Graphe[] resultats = DiviserGraphe.diviserEnDeux(graphe);
+            Graphe grapheCamion1 = resultats[0];
+            Graphe grapheCamion2 = resultats[1];
+            String texteAlgo = "Résultat camion 1 : \n"+lancerChristofide(grapheCamion1);
+            texteAlgo = texteAlgo + "\n\nRésultat camion 2 : \n" + lancerChristofide(grapheCamion2);
+            texte.setText(texteAlgo);
         }
     }
+    private String lancerChristofide(Graphe graphe){
+        AlgorithmeChristofide ac = new AlgorithmeChristofide(grapheVisuel, graphe);
+            List<String> lst = ac.executerChristofide();
+            String resultat = new String("");
+            for (int i = 0; i < lst.size(); i++) {
+                resultat = resultat + lst.get(i) + "\n";
+            }
+            String cout = ""+Math.round(ac.getDuree());
+            resultat = resultat + "\n Ce trajet prend : " + cout + " min";
+            return resultat;
+    }
 }
- 

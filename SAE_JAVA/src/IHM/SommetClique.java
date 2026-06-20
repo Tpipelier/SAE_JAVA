@@ -4,6 +4,7 @@
  */
 package IHM;
 
+import Outils.DistanceVers;
 import Structure.Graphe;
 import Structure.Sommet;
 import java.awt.BorderLayout;
@@ -113,7 +114,7 @@ public class SommetClique extends JDialog implements ActionListener {
         tab.setValueAt("Durée", 0, 2);
         tab.setValueAt("Durée estimée", 0, 3);
         Sommet sommetClique = new Sommet(nodeCliqué.getAttribute("index"), nodeCliqué.getAttribute("id"), nodeCliqué.getAttribute("type"));
-        List<Graphe.DistanceVers> lst = graphe.distancesCroissantesVersTous(sommetClique, "Duree");
+        List<DistanceVers> lst = graphe.distancesCroissantesVersTous(sommetClique, "Duree");
         boolean sortie = false;
         boolean typeMInseree = false;
         boolean typeOInseree = false;
@@ -183,7 +184,7 @@ public class SommetClique extends JDialog implements ActionListener {
     private JTable remplirGrandTableau(JTable tab,String type) {
         
         Sommet sommetClique = new Sommet(nodeCliqué.getAttribute("index"),nodeCliqué.getAttribute("id"), nodeCliqué.getAttribute("type"));
-        List<Graphe.DistanceVers> lst = graphe.distancesCroissantesVersTous(sommetClique, type);
+        List<DistanceVers> lst = graphe.distancesCroissantesVersTous(sommetClique, type);
         int position = 1;
         String text1;
         String text3;

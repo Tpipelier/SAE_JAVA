@@ -24,6 +24,7 @@ public class AlgorithmeChristofide {
     private AlgorithmePrim a;
     private GrapheVisuel grapheVisuel;
     private Graphe graphe;
+    private double duree;
 
     public AlgorithmeChristofide(GrapheVisuel grapheVisuel, Graphe graphe) {
         lstSommetACorriger = new ArrayList<>();
@@ -32,6 +33,7 @@ public class AlgorithmeChristofide {
         acm = a.determinerACM();
         this.grapheVisuel = grapheVisuel;
         this.graphe = graphe;
+        this.duree = 0;
     }
 
     /**
@@ -137,7 +139,8 @@ public class AlgorithmeChristofide {
             for (int j = i + 1; j < lstSommetACorriger.size(); j++) {
                 Sommet s2 = lstSommetACorriger.get(j);
 
-                Route routeActuelle = graphe.getRoute(s1.getIndex(), s2.getIndex());
+                
+                Route routeActuelle = graphe.getRoute(graphe.indexDeSommet(s1), graphe.indexDeSommet(s2));
                 if (routeActuelle != null) {
                     toutesLesRoutesPossibles.add(routeActuelle);
                 }
@@ -219,7 +222,7 @@ public class AlgorithmeChristofide {
 
     private List<String> appliquerRaccourcisDijkstra(List<Sommet> ordreGlobal, Graph graphStream) {
         List<String> trajetReelFinal = new ArrayList<>();
-        double dureeTotaleDuVoyage = 0;
+        duree = 0;
 
         // Utilisation du graphe passé en paramètre pour initialiser le module de recherche
         Recherche outilDijkstra = new Recherche(graphStream);
@@ -231,7 +234,7 @@ public class AlgorithmeChristofide {
             Recherche.Itineraire sousTrajet = outilDijkstra.plusCourtCheminDuree(villeDepart, villeArrivee);
 
             if (sousTrajet != null) {
-                dureeTotaleDuVoyage += sousTrajet.getCout();
+                duree += sousTrajet.getCout();
                 ArrayList<String> etapes = sousTrajet.getSommets();
 
                 // On retire le premier sommet de chaque sous-trajet pour éviter 
@@ -242,8 +245,10 @@ public class AlgorithmeChristofide {
                 trajetReelFinal.addAll(etapes);
             }
         }
-
-        System.out.println("Defi Christofides - Duree totale : " + Math.round(dureeTotaleDuVoyage) + " min");
         return trajetReelFinal;
+    }
+    
+    public double getDuree(){
+        return duree;
     }
 }
