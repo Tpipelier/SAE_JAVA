@@ -18,7 +18,7 @@ import org.graphstream.graph.Graph;
  */
 public class AlgorithmeChristofide {
 
-    List<Sommet> lstSommetDegImpaire;
+    List<Sommet> lstSommetACorriger;
     List<Route> acm;
     List<Route> lstCouplageRoute;
     private AlgorithmePrim a;
@@ -26,8 +26,8 @@ public class AlgorithmeChristofide {
     private Graphe graphe;
 
     public AlgorithmeChristofide(GrapheVisuel grapheVisuel, Graphe graphe) {
-        lstSommetDegImpaire = new ArrayList();
-        lstCouplageRoute = new ArrayList();
+        lstSommetACorriger = new ArrayList<>();
+        lstCouplageRoute = new ArrayList<>();
         a = new AlgorithmePrim(graphe);
         acm = a.determinerACM();
         this.grapheVisuel = grapheVisuel;
@@ -42,197 +42,179 @@ public class AlgorithmeChristofide {
      * @return La liste ordonnée des noms des centres à visiter
      */
     public List<String> executerChristofide() {
-        // Étapes 2 & 3 : Sommets impairs et couplage parfait minimum
-        this.remplirLstSommetDegImpaire();
-        this.calculerLstCouplageRoute();
+        // 1. Définir le point de départ automatique (ex: index 0)
+        Sommet depart = graphe.getSommet(0);
+        Sommet arrivee = this.trouverArriveeAutomatique(depart, acm);
 
-        // Étape 4 : Création du multi-graphe (Union de l'ACM et du Couplage)
+        // Étapes 2 & 3 : Appel de ta nouvelle méthode avec départ et arrivée
+        this.identifierSommetsACorriger(depart, arrivee);
+        this.calculerLstCouplageRoute(); // (Qui utilisera en interne lstSommetACorriger)
+
+        // Étape 4 : Création du multi-graphe
         List<Route> multiGraphe = new ArrayList<>();
         multiGraphe.addAll(acm);
         multiGraphe.addAll(lstCouplageRoute);
 
-        // Étape 5.A : Extraction du cycle eulérien (Ordre macro des villes)
-        List<Sommet> ordreGlobal = this.calculerCycleEulerien(multiGraphe);
+        
+        List<Sommet> ordreGlobal = this.calculerCheminEulerien(multiGraphe, depart);
 
-        // Étape 5.B : Raccourcis par Dijkstra (Itinéraire réel minute par minute)
+        
         return this.appliquerRaccourcisDijkstra(ordreGlobal, grapheVisuel);
     }
 
-    private void remplirLstSommetDegImpaire() {
-        Sommet sommetAVerif;
-        int nbRoute;
+    private Sommet trouverArriveeAutomatique(Sommet depart, List<Route> acm) {
+        List<Sommet> file = new ArrayList<>();
+        List<Sommet> visites = new ArrayList<>();
+
+        file.add(depart);
+        visites.add(depart);
+
+        Sommet dernierSommetAtteint = depart;
+
+        while (!file.isEmpty()) {
+            Sommet actuel = file.remove(0);
+            dernierSommetAtteint = actuel; // Le dernier sorti de la file sera le plus éloigné
+
+            // Trouver tous les voisins de 'actuel' UNIQUEMENT dans l'ACM
+            for (Route r : acm) {
+                Sommet voisin = null;
+                if (r.getSommetDepart().equals(actuel)) {
+                    voisin = r.getSommetArrivee();
+                } else if (r.getSommetArrivee().equals(actuel)) {
+                    voisin = r.getSommetDepart();
+                }
+
+                if (voisin != null && !visites.contains(voisin)) {
+                    visites.add(voisin);
+                    file.add(voisin);
+                }
+            }
+        }
+
+        return dernierSommetAtteint;
+    }
+
+    private void identifierSommetsACorriger(Sommet depart, Sommet arrivee) {
+        lstSommetACorriger.clear();
 
         for (int i = 0; i < graphe.getNbSommet(); i++) {
-            nbRoute = 0; //corespond au degres du sommet i
-            sommetAVerif = graphe.getSommet(i);
+            Sommet sommetAVerif = graphe.getSommet(i);
+            int degreDansACM = 0;
+
             for (int j = 0; j < acm.size(); j++) {
                 if (acm.get(j).getSommetDepart().equals(sommetAVerif)
                         || acm.get(j).getSommetArrivee().equals(sommetAVerif)) {
-                    nbRoute++;
+                    degreDansACM++;
                 }
             }
-            if (nbRoute % 2 != 0) {
-                lstSommetDegImpaire.add(sommetAVerif);
+
+            boolean estExtremite = sommetAVerif.equals(depart) || sommetAVerif.equals(arrivee);
+
+            if (estExtremite) {
+                // Le départ et l'arrivée DOIVENT être impairs. 
+                // S'ils sont pairs, ils ont besoin d'une correction (on les ajoute).
+                if (degreDansACM % 2 == 0) {
+                    lstSommetACorriger.add(sommetAVerif);
+                }
+            } else {
+                // Les autres sommets DOIVENT être pairs.
+                // S'ils sont impairs, ils ont besoin d'une correction (on les ajoute).
+                if (degreDansACM % 2 != 0) {
+                    lstSommetACorriger.add(sommetAVerif);
+                }
             }
         }
     }
 
     private void calculerLstCouplageRoute() {
-        Sommet sommetD;
-        Sommet sommetA;
-        Route routeDureeMin;
-        while (!lstSommetDegImpaire.isEmpty()) {
+        lstCouplageRoute.clear();
 
-            sommetD = lstSommetDegImpaire.remove(0);
-            Route meilleurRoute = null;
-            double dureeMin = Double.MAX_VALUE;
-            int indexMeilleurVoisin = -1;
-            for (int j = 0; j < lstSommetDegImpaire.size(); j++) {
-                Sommet candidat = lstSommetDegImpaire.get(j);
-                Route routeActuelle = graphe.getRoute(sommetD.getIndex(), candidat.getIndex());
+        // 1. Collecter toutes les routes uniques possibles entre les sommets de lstSommetACorriger
+        List<Route> toutesLesRoutesPossibles = new ArrayList<>();
+
+        for (int i = 0; i < lstSommetACorriger.size(); i++) {
+            Sommet s1 = lstSommetACorriger.get(i);
+            for (int j = i + 1; j < lstSommetACorriger.size(); j++) {
+                Sommet s2 = lstSommetACorriger.get(j);
+
+                Route routeActuelle = graphe.getRoute(s1.getIndex(), s2.getIndex());
                 if (routeActuelle != null) {
-                    double dureeActuelle = routeActuelle.getDuree();
-
-                    if (dureeActuelle < dureeMin) {
-                        dureeMin = dureeActuelle;
-                        meilleurRoute = routeActuelle;
-                        indexMeilleurVoisin = j; // On garde en memoire où il est dans la liste
-                    }
+                    toutesLesRoutesPossibles.add(routeActuelle);
                 }
             }
-            if (meilleurRoute != null) {
-                lstCouplageRoute.add(meilleurRoute);
-                // On retire le voisin trouve pour ne plus le reutiliser !
-                lstSommetDegImpaire.remove(indexMeilleurVoisin);
+        }
+
+        // 2. Trier ces routes de la plus courte à la plus longue
+        toutesLesRoutesPossibles.sort((r1, r2) -> Double.compare(r1.getDuree(), r2.getDuree()));
+
+        // 3. Associer les sommets en prenant les meilleures routes disponibles
+        List<Sommet> sommetsDejaCouples = new ArrayList<>();
+        int indexRoute = 0;
+
+        // La boucle tourne tant qu'on a des routes à analyser ET que tous les sommets ne sont pas couplés
+        while (indexRoute < toutesLesRoutesPossibles.size() && sommetsDejaCouples.size() < lstSommetACorriger.size()) {
+            Route route = toutesLesRoutesPossibles.get(indexRoute);
+            Sommet sDepart = route.getSommetDepart();
+            Sommet sArrivee = route.getSommetArrivee();
+
+            if (!sommetsDejaCouples.contains(sDepart) && !sommetsDejaCouples.contains(sArrivee)) {
+                lstCouplageRoute.add(route);
+                sommetsDejaCouples.add(sDepart);
+                sommetsDejaCouples.add(sArrivee);
             }
 
+            indexRoute++; // On passe à la route suivante
         }
+
+        
     }
 
-//    private List<Sommet> calculerCycleEulerien(List<Route> multiGraphe) {
-//        List<Sommet> ordreGlobal = new ArrayList<>();
-//
-//        // 1. Trouver le point de départ "1" 
-//        Sommet sommetActuel = null;
-//        int indexSommet = 0;
-//        while (sommetActuel == null && indexSommet < graphe.getNbSommet()) {
-//            if (graphe.getSommet(indexSommet).getNom().equals("S1")) {
-//                sommetActuel = graphe.getSommet(indexSommet);
-//            }
-//            indexSommet++;
-//        }
-//        ordreGlobal.add(sommetActuel);
-//
-//        // 2. Parcours des arêtes du multi-graphe 
-//        boolean continuerParcours = true;
-//        while (!multiGraphe.isEmpty() && continuerParcours) {
-//            Route routeSuivante = null;
-//            int indexRoute = 0;
-//
-//            // On cherche une route connectée au sommet actuel
-//            while (routeSuivante == null && indexRoute < multiGraphe.size()) {
-//                Route r = multiGraphe.get(indexRoute);
-//                if (r.getSommetDepart().equals(sommetActuel)) {
-//                    routeSuivante = r;
-//                    sommetActuel = r.getSommetArrivee();
-//                } else if (r.getSommetArrivee().equals(sommetActuel)) {
-//                    routeSuivante = r;
-//                    sommetActuel = r.getSommetDepart();
-//                }
-//                indexRoute++;
-//            }
-//
-//            // Si on a trouvé une route, on avance, sinon on arrête la grande boucle
-//            if (routeSuivante != null) {
-//                ordreGlobal.add(sommetActuel);
-//                multiGraphe.remove(routeSuivante);
-//            } else {
-//                continuerParcours = false; // Remplace le break du while principal
-//            }
-//        }
-//
-//        // 3. Sécurité : Fermeture de la boucle vers le point "1" (sans break)
-//        if (sommetActuel != null && !sommetActuel.getNom().equals("S1")) {
-//            Sommet depart = null;
-//            int k = 0;
-//            while (depart == null && k < graphe.getNbSommet()) {
-//                if (graphe.getSommet(k).getNom().equals("S1")) {
-//                    depart = graphe.getSommet(k);
-//                    ordreGlobal.add(depart);
-//                }
-//                k++;
-//            }
-//        }
-//
-//        return ordreGlobal;
-//    }
-    private List<Sommet> calculerCycleEulerien(List<Route> multiGraphe) {
-        List<Sommet> cycleFinal = new ArrayList<>();
+    /**
+     * Algorithme de Hierholzer adapté pour extraire un CHEMIN Eulérien.
+     */
+    private List<Sommet> calculerCheminEulerien(List<Route> multiGraphe, Sommet depart) {
+        List<Sommet> cheminFinal = new ArrayList<>();
 
-        // Sécurité : si le multi-graphe est vide
         if (multiGraphe.isEmpty()) {
-            return cycleFinal;
+            return cheminFinal;
         }
 
-        // 1. Trouver le point de départ : le sommet qui a l'attribut index = 1
-        Sommet depart = null;
-        for (int i = 0; i < graphe.getNbSommet(); i++) {
-            // CORRECTION : On cherche par l'attribut index au lieu du nom
-            if (graphe.getSommet(i).getIndex() == 0) {
-                depart = graphe.getSommet(i);
-                break;
-            }
-        }
-
-        // Si l'index 1 n'est pas trouvé par sécurité, on prend le premier sommet disponible
-        if (depart == null) {
-            depart = multiGraphe.get(0).getSommetDepart();
-        }
-
-        // Listes de travail pour l'algorithme de Hierholzer
         List<Sommet> cheminCourant = new ArrayList<>();
         cheminCourant.add(depart);
 
         Sommet sommetActuel = depart;
 
         while (!cheminCourant.isEmpty()) {
-            // On cherche s'il reste une route connectée au sommet actuel
             Route routeSuivante = null;
-            for (Route r : multiGraphe) {
+            int indexRoute = 0;
+
+            while (routeSuivante == null && indexRoute < multiGraphe.size()) {
+                Route r = multiGraphe.get(indexRoute);
                 if (r.getSommetDepart().equals(sommetActuel) || r.getSommetArrivee().equals(sommetActuel)) {
                     routeSuivante = r;
-                    break;
                 }
+                indexRoute++;
             }
 
             if (routeSuivante != null) {
-                // On avance : on ajoute le sommet actuel à notre pile de chemin
                 cheminCourant.add(sommetActuel);
 
-                // On détermine le prochain sommet
                 if (routeSuivante.getSommetDepart().equals(sommetActuel)) {
                     sommetActuel = routeSuivante.getSommetArrivee();
                 } else {
                     sommetActuel = routeSuivante.getSommetDepart();
                 }
 
-                // On supprime la route consommée du multi-graphe
                 multiGraphe.remove(routeSuivante);
             } else {
-                // Impasse ou boucle fermée : ce sommet fait définitivement partie du cycle
-                cycleFinal.add(0, sommetActuel); // On l'ajoute au début pour inverser à la fin
-
-                // On recule d'un cran dans le chemin courant pour explorer d'autres branches
+                cheminFinal.add(0, sommetActuel);
                 sommetActuel = cheminCourant.remove(cheminCourant.size() - 1);
             }
         }
 
-        // CORRECTION SECURISE : On s'assure que le sommet d'index 1 se retrouve bien en premier
-        if (!cycleFinal.isEmpty() && cycleFinal.get(0).getIndex() != 0) {
-            cycleFinal.add(0, cycleFinal.remove(cycleFinal.size() - 1));
-        }
-
-        return cycleFinal;
+        // Le bloc de correction forçant le retour à l'index 0 a été supprimé ici
+        // pour laisser le chemin ouvert se terminer naturellement à son arrivée.
+        return cheminFinal;
     }
 
     private List<String> appliquerRaccourcisDijkstra(List<Sommet> ordreGlobal, Graph graphStream) {

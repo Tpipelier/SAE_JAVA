@@ -4,6 +4,7 @@
  */
 package Structure;
 
+import Outils.DistanceVers;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -35,6 +36,18 @@ public class Graphe {
         this.tabR = null;
         this.durees = null;
 
+    }
+    
+    /**
+     * Deuxième constructeur : Permet de créer un sous-graphe vierge 
+     * avec des tableaux dimensionnés sans passer par un fichier CSV.
+     * @param nbSommetsMax 
+     */
+    public Graphe(int nbSommet) {
+        this.nbSommet = nbSommet; // On commencera à 0 et on incrémentera à chaque ajout
+        this.tabS = new Sommet[nbSommet];
+        this.tabR = new Route[nbSommet][nbSommet];
+        this.durees = new HashMap<>();
     }
 
     /**
@@ -256,7 +269,7 @@ public class Graphe {
         // 3. Arêtes supplementaires avec probabilite 1/5 (sans ecraser celles de l'arbre)
         for (int i = 0; i < nbSommets; i++) {
             for (int j = i + 1; j < nbSommets; j++) {
-//<<<<<<< HEAD
+
                 if (random.nextInt(5) == 0) {
                     int fiabilite = (random.nextInt(9) + 2);
                     int distance = random.nextInt(41) + 10;
@@ -264,10 +277,7 @@ public class Graphe {
                     ajouterRoute(i, j, new Route("R" + numRoute, fiabilite, distance, duree, this.getSommet(i), this.getSommet(i + 1)));
                     ajouterDuree(tabR[i][j], duree);
                     numRoute++;
-//=======
-//                if (tabR[i][j] == null && random.nextInt(5) == 0) {
-//                    numRoute = creerRoute(i, j, random, numRoute);
-//>>>>>>> origin/walid
+
                 }
             }
         }
@@ -325,54 +335,6 @@ public class Graphe {
             }
         }
         return routes;
-    }
-
-    /**
-     * Petit resultat associant un sommet d'arrivee a la distance la plus courte
-     * depuis le sommet de depart. Donne acces au nom et au type.
-     */
-    public static class DistanceVers {
-
-        private final Sommet sommet;
-        private final int distance;
-        private final int duree;
-        private final int dureeEstimee;
-
-        public DistanceVers(Sommet sommet, int distance, int duree, int dureeEstimee) {
-            this.sommet = sommet;
-            this.distance = distance;
-            this.duree = duree;
-            this.dureeEstimee = dureeEstimee;
-        }
-
-        public Sommet getSommet() {
-            return sommet;
-        }
-
-        public String getNom() {
-            return sommet.getNom();
-        }
-
-        public String getType() {
-            return sommet.getType();
-        }
-
-        public int getDistance() {
-            return distance;
-        }
-
-        public int getDuree() {
-            return duree;
-        }
-
-        public int getDureeEstimee() {
-            return dureeEstimee;
-        }
-
-        @Override
-        public String toString() {
-            return sommet.getNom() + " (" + sommet.getType() + ") : " + distance + "km" + " : " + duree + "min" + " : " + dureeEstimee + "min estimee\n";
-        }
     }
 
     /**

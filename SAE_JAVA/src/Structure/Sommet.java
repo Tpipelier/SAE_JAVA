@@ -4,6 +4,8 @@
  */
 package Structure;
 
+import java.util.Objects;
+
 /**
  *
  * @author compteadmin
@@ -31,5 +33,23 @@ public class Sommet {
         return index;
     }
     
-    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Sommet other = (Sommet) obj;
+        
+        // On compare uniquement l'index
+        return this.index == other.index;
+    }
+
+    // --- Redéfinition de hashCode (Basée uniquement sur l'index) ---
+    @Override
+    public int hashCode() {
+        return Objects.hash(index);
+    }
 }
