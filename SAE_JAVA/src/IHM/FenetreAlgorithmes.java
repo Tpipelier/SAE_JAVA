@@ -15,6 +15,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -117,15 +118,23 @@ public class FenetreAlgorithmes extends JDialog implements ActionListener {
             if (cbAlgo.getSelectedItem().equals("Christofide")) {
                 String res;
                 if (cbNombreCamions.getSelectedItem().equals("1 Camion")) {
-                    String[] resultatsChristofide = lancerChristofide(graphe);
+                    List<String> typesChoisis = new ArrayList<>();
+                    typesChoisis.add("O");
+                    typesChoisis.add("M");
+                    typesChoisis.add("N");
+                    String[] resultatsChristofide = lancerChristofide(graphe,typesChoisis);
                     res = "Trajet du camion : " + resultatsChristofide[0];
                     strExportCSV = resultatsChristofide[2]+";"+resultatsChristofide[1];
                 } else {
                     Graphe[] resultats = DiviserGraphe.diviserEnDeux(graphe);
                     Graphe grapheCamion1 = resultats[0];
                     Graphe grapheCamion2 = resultats[1];
-                    String[] resultatsChristofide1 = lancerChristofide(grapheCamion1);
-                    String[] resultatsChristofide2 = lancerChristofide(grapheCamion2);
+                    List<String> typesChoisis = new ArrayList<>();
+                    typesChoisis.add("O");
+                    typesChoisis.add("M");
+                    typesChoisis.add("N");
+                    String[] resultatsChristofide1 = lancerChristofide(grapheCamion1,typesChoisis);
+                    String[] resultatsChristofide2 = lancerChristofide(grapheCamion2,typesChoisis);
                     res = resultatsChristofide1[0];
                     strExportCSV = resultatsChristofide1[1];
                     res = res + "\n\n" + resultatsChristofide2[0];
@@ -160,8 +169,8 @@ public class FenetreAlgorithmes extends JDialog implements ActionListener {
 
     }
 
-    private String[] lancerChristofide(Graphe graphe) {
-        AlgorithmeChristofide ac = new AlgorithmeChristofide(grapheVisuel, graphe);
+    private String[] lancerChristofide(Graphe graphe,List<String> typesChoisis) {
+        AlgorithmeChristofide ac = new AlgorithmeChristofide(grapheVisuel, graphe, typesChoisis);
         List<String> lst = ac.executerChristofide();
         String resultatTexte = new String("");
         String resultatCSV = new String("");

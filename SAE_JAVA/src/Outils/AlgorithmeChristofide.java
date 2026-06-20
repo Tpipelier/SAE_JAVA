@@ -31,11 +31,14 @@ public class AlgorithmeChristofide {
     public AlgorithmeChristofide(GrapheVisuel grapheVisuel, Graphe graphe, List<String> typesChoisis) {
         lstSommetACorriger = new ArrayList<>();
         lstCouplageRoute = new ArrayList<>();
-        algoPrim = new AlgorithmePrim(graphe);
-        acm = algoPrim.determinerACM();
         this.typesChoisis = typesChoisis;
         this.grapheVisuel = grapheVisuel;
         this.graphe = genererGrapheFiltre(graphe, typesChoisis);
+        System.out.println("CONSTRUCTEUR - NB routes dispo dans le graphe filtré : " + this.graphe.getNbRoutesEffectives());
+        algoPrim = new AlgorithmePrim(this.graphe);
+        acm = algoPrim.determinerACM();
+        System.out.println("CONSTRUCTEUR - NB sommets filtrés : " + this.graphe.getNbSommet());
+        System.out.println("CONSTRUCTEUR - NB routes retenues dans l'ACM : " + acm.size());
         this.duree = 0;
     }
 
@@ -71,9 +74,9 @@ public class AlgorithmeChristofide {
                 if (i != j) {
                     Sommet s2 = grapheFiltre.getSommet(j);
 
-                    Route r = global.getRoute(s1.getIndex(), s2.getIndex());
+                    Route r = global.getRoute(global.indexDeSommet(s1), global.indexDeSommet(s2));
                     if (r == null) {
-                        r = global.getRoute(s2.getIndex(), s1.getIndex());
+                        r = global.getRoute(global.indexDeSommet(s2), global.indexDeSommet(s1));
                     }
 
                     if (r != null) {

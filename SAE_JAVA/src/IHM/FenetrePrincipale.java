@@ -82,8 +82,11 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private JLabel labelN;
     private JComboBox depart;
     private JComboBox arrivee;
+    private JComboBox filtreTypes;
     private JScrollPane panneauDeroulantListe;
     private JTextArea texte;
+    private JTextArea texteAlgo;
+
 
     /**
      * Constructeur de FenetrePrincipale
@@ -100,7 +103,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
         initComposants();
         viderFichiersRendu();
-
+        
         this.setVisible(true);
 
     }
@@ -112,7 +115,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(fichier1))) {
                 writer.write("");
             }
-            
+
             File fichier2 = new File("rendu/" + "resultats2camionsEquipe1Groupe3.csv");
 
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(fichier2))) {
@@ -134,8 +137,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         boutonCalculerItineraire = new JButton("Calculer l'itinéraire");
         boutonCalculerItineraireEstimee = new JButton("Calculer l'itinéraire estimée");
         boutonCalculerAlgoGlouton = new JButton("Glouton");
-        boutonCalculerAlgoChristofide = new JButton("Christofides");
-        boutonCalculerAlgo2Camions = new JButton("2 Camions");
+        boutonCalculerAlgoChristofide = new JButton("Christofide 1 Camion");
+        boutonCalculerAlgo2Camions = new JButton("Christofide 2 Camions");
         boutonExporter1Camion = new JButton("Exporter avec 1 camion");
         boutonExporter2Camion = new JButton("Exporter avec 2 camion");
         panneauDeroulantListe = new JScrollPane();
@@ -153,11 +156,15 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         labelM = new JLabel("Nombre de maternités : 0");
         labelN = new JLabel("Nombre de centres de nutrition : 0");
         labelO = new JLabel("Nombre de blocs opératoires : 0");
-        texte = new JTextArea(8, 15);
+        texte = new JTextArea();
         texte.setEditable(false);
         texte.setBackground(new Color(0xC2C2C2));
         texte.setForeground(Color.BLACK);
-        //texte.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        texteAlgo = new JTextArea();
+        texteAlgo.setEditable(false);
+        texteAlgo.setBackground(new Color(0xC2C2C2));
+        texteAlgo.setForeground(Color.BLACK);
+
 
         depart = new JComboBox();
         depart.setBackground(new Color(0xC2C2C2));
@@ -165,6 +172,13 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         arrivee = new JComboBox();
         arrivee.setBackground(new Color(0xC2C2C2));
         arrivee.setForeground(Color.BLACK);
+        filtreTypes = new JComboBox();
+        filtreTypes.setBackground(new Color(0xC2C2C2));
+        filtreTypes.setForeground(Color.BLACK);
+        filtreTypes.addItem("Tout les centres");
+        filtreTypes.addItem("Blocs opératoires");
+        filtreTypes.addItem("Centres de nutrition");
+        filtreTypes.addItem("Maternités");
 
         boutonChargerCarte.addActionListener(this);
         boutonGrapheAleatoire.addActionListener(this);
@@ -199,9 +213,11 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         JSeparator separateur1 = new JSeparator();
         JSeparator separateur2 = new JSeparator();
         JSeparator separateur3 = new JSeparator();
+        JSeparator separateur4 = new JSeparator();
         separateur1.setForeground(new Color(0xC2C2C2));
         separateur2.setForeground(new Color(0xC2C2C2));
         separateur3.setForeground(new Color(0xC2C2C2));
+        separateur4.setForeground(new Color(0xC2C2C2));
 
         panneauDijkstra.setLayout(new GridBagLayout());
         GridBagConstraints gbDijkstra = new GridBagConstraints();
@@ -217,6 +233,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         gbDijkstra.gridwidth = 2;
         gbDijkstra.gridx = 0;
         gbDijkstra.gridy = 1;
+        gbDijkstra.insets = new java.awt.Insets(10, 10, 0, 10);
         panneauDijkstra.add(boutonCalculerItineraire, gbDijkstra);
         gbDijkstra.gridx = 0;
         gbDijkstra.gridy = 2;
@@ -267,8 +284,13 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         panneauDeroulant.add(separateur3, gb);
         gb.gridy += 1;
         panneauDeroulant.add(panneauDijkstra, gb);
-        gb.insets = new java.awt.Insets(15, 0, 0, 0);//padding
+        gb.insets = new java.awt.Insets(25, 0, 0, 0);//padding
+        gb.gridy += 1;
+        panneauDeroulant.add(separateur4, gb);
 
+        gb.gridy += 1;
+        panneauDeroulant.add(filtreTypes, gb);
+        gb.insets = new java.awt.Insets(10, 0, 0, 0);//padding
         gb.gridy += 1;
         panneauDeroulant.add(boutonCalculerAlgoGlouton, gb);
         gb.gridy += 1;
@@ -279,12 +301,14 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         panneauDeroulant.add(boutonExporter1Camion, gb);
         gb.gridy += 1;
         panneauDeroulant.add(boutonExporter2Camion, gb);
+        gb.insets = new java.awt.Insets(10, 0,10, 0);//padding
+        gb.gridy += 1;
+        panneauDeroulant.add(texteAlgo, gb);
 
         gb.fill = GridBagConstraints.BOTH;
         gb.weighty = 1;
         panneauDeroulant.add(vide, gb);
 
-        //panneauDeroulant.setPreferredSize(new Dimension(250, 700));
         panneauDeroulantListe.setViewportView(panneauDeroulant);
         panneauDeroulantListe.setBorder(null);
 
@@ -719,16 +743,16 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
         }
         if (e.getSource() == boutonCalculerAlgoChristofide) {
-            String texteAlgo = "Résultat Christofide : \n" + lancerChristofide(graphe)[0];
-            texte.setText(texteAlgo);
+            String texteResultat = "Résultat Christofide : \n" + lancerChristofide(graphe)[0];
+            texteAlgo.setText(texteResultat);
         }
         if (e.getSource() == boutonCalculerAlgo2Camions) {
             Graphe[] resultats = DiviserGraphe.diviserEnDeux(graphe);
             Graphe grapheCamion1 = resultats[0];
             Graphe grapheCamion2 = resultats[1];
-            String texteAlgo = "Résultat camion 1 : \n" + lancerChristofide(grapheCamion1)[0];
-            texteAlgo = texteAlgo + "\n\nRésultat camion 2 : \n" + lancerChristofide(grapheCamion2)[0];
-            texte.setText(texteAlgo);
+            String texteResultat = "Résultat camion 1 : \n" + lancerChristofide(grapheCamion1)[0];
+            texteResultat = texteResultat + "\n\nRésultat camion 2 : \n" + lancerChristofide(grapheCamion2)[0];
+            texteAlgo.setText(texteResultat);
         }
         if (e.getSource() == boutonExporter1Camion) {
             String dureeGlouton = "0";
@@ -763,10 +787,11 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             Graphe[] resultats = DiviserGraphe.diviserEnDeux(graphe);
             Graphe grapheCamion1 = resultats[0];
             Graphe grapheCamion2 = resultats[1];
+
             String[] resultatsChristofide1 = lancerChristofide(grapheCamion1);
             String[] resultatsChristofide2 = lancerChristofide(grapheCamion2);
 
-            toutIDSommets = resultatsChristofide1[1] + ";" + resultatsChristofide2[1];
+            toutIDSommets = resultatsChristofide1[1] + resultatsChristofide2[1];
             dureeCamion1 = resultatsChristofide1[2];
             dureeCamion2 = resultatsChristofide2[2];
             ligneEcrite = nomGraphe + ";" + dureeCamion1 + ";" + dureeCamion2 + toutIDSommets + "\n";
@@ -784,7 +809,24 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     }
 
     private String[] lancerChristofide(Graphe graphe) {
-        AlgorithmeChristofide ac = new AlgorithmeChristofide(grapheVisuel, graphe);
+        List<String> typesChoisis = new ArrayList<>();
+        switch(filtreTypes.getSelectedItem().toString()){
+            case "Tout les centres":
+                typesChoisis.add("O");
+                typesChoisis.add("M");
+                typesChoisis.add("N");
+                break;
+            case "Blocs opératoires":
+                typesChoisis.add("O");
+                break;
+            case "Centres de nutrition":
+                typesChoisis.add("N");
+                break;
+            case "Maternités":
+                typesChoisis.add("M");
+                break;
+        }
+        AlgorithmeChristofide ac = new AlgorithmeChristofide(grapheVisuel, graphe,  typesChoisis);
         List<String> lst = ac.executerChristofide();
         String resultatTexte = new String("");
         String resultatCSV = new String("");

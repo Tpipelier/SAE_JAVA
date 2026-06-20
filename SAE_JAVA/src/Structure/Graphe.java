@@ -36,11 +36,12 @@ public class Graphe {
         this.durees = null;
 
     }
-    
+
     /**
-     * Deuxième constructeur : Permet de créer un sous-graphe vierge 
-     * avec des tableaux dimensionnés sans passer par un fichier CSV.
-     * @param nbSommetsMax 
+     * Deuxième constructeur : Permet de créer un sous-graphe vierge avec des
+     * tableaux dimensionnés sans passer par un fichier CSV.
+     *
+     * @param nbSommetsMax
      */
     public Graphe(int nbSommet) {
         this.nbSommet = nbSommet; // On commencera à 0 et on incrémentera à chaque ajout
@@ -255,7 +256,7 @@ public class Graphe {
             } else {
                 type = "N";
             }
-            ajouterSommet(i, new Sommet(i,"S" + (i + 1), type));
+            ajouterSommet(i, new Sommet(i, "S" + (i + 1), type));
         }
 
         // 2. Arbre couvrant : garantit que le graphe est CONNEXE (aucun sommet isole)
@@ -400,7 +401,7 @@ public class Graphe {
                     }
                 }
             }
-        }else if (typeTrie.equals("DureeEstimee")) {
+        } else if (typeTrie.equals("DureeEstimee")) {
             for (int i = 0; i < resultats.size(); i++) {
                 for (int j = 0; j < resultats.size() - 1 - i; j++) {
                     if (resultats.get(j).getDureeEstimee() > resultats.get(j + 1).getDureeEstimee()) {
@@ -410,7 +411,7 @@ public class Graphe {
                     }
                 }
             }
-        }else {
+        } else {
             for (int i = 0; i < resultats.size(); i++) {
                 for (int j = 0; j < resultats.size() - 1 - i; j++) {
                     if (resultats.get(j).getDistance() > resultats.get(j + 1).getDistance()) {
@@ -422,6 +423,22 @@ public class Graphe {
             }
         }
         return resultats;
+    }
+
+    public int getNbRoutesEffectives() {
+        int cpt = 0;
+        if (this.tabR == null) {
+            return 0;
+        }
+
+        for (int i = 0; i < this.nbSommet; i++) {
+            for (int j = 0; j < this.nbSommet; j++) {
+                if (this.tabR[i][j] != null) {
+                    cpt++;
+                }
+            }
+        }
+        return cpt;
     }
 
 }
