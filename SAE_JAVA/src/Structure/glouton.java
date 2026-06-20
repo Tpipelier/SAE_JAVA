@@ -22,21 +22,8 @@ public class glouton {
     public List<Sommet> unCamion(Sommet[] tabS, Sommet depart){
         return unCamionParType(tabS, depart, null);
     }
-
-    /**
-     * Lance une tournee gloutonne ne desservant que les sommets dont le type
-     * fait partie de ceux choisis (1 ou 2 types parmi "M", "O", "N").
-     * Si types vaut null, tous les sommets sont desservis.
-     *
-     * Les sommets non desservis peuvent etre traverses : le plus court chemin
-     * entre deux etapes emprunte le graphe complet (Dijkstra), donc une route
-     * existe toujours meme si un sommet non desservi se trouve entre deux etapes.
-     *
-     * @param tabS   l'ensemble des sommets du graphe
-     * @param depart le sommet de depart (depot), desservi quel que soit son type
-     * @param types  le tableau des 1 ou 2 types a desservir, ou null pour tous
-     * @return la liste ordonnee des sommets desservis, depart en tete
-     */
+    
+    // si on met type à null, il traverse tout les sommet sinon on met un truc du genre : String[]{"M", "O"} et il fera que ces sommet là
     public List<Sommet> unCamionParType(Sommet[] tabS, Sommet depart, String[] types){
         if (types != null && (types.length < 1 || types.length > 2)) {
             throw new IllegalArgumentException("Il faut choisir 1 ou 2 types parmi les 3.");
@@ -47,8 +34,10 @@ public class glouton {
 
         List<Sommet> aVisiter = new ArrayList<>();
         for (Sommet s : tabS) {
-            if (s != null && s != depart && (types == null || contient(types, s.getType()))) {
-                aVisiter.add(s);
+            if (s != null && s != depart){
+                if (types == null || contient(types, s.getType())){
+                    aVisiter.add(s);
+                }
             }
         }
 
@@ -66,7 +55,6 @@ public class glouton {
         return parcours;
     }
 
-    /** Indique si la valeur cherchee est presente dans le tableau. */
     private boolean contient(String[] tableau, String valeur){
         for (String t : tableau) {
             if (valeur.equals(t)) {
