@@ -5,6 +5,7 @@
  */
 package Outils;
 
+import Structure.Itineraire;
 import java.util.ArrayList;
 import java.util.List;
 import org.graphstream.algorithm.Dijkstra;
@@ -61,35 +62,12 @@ public class Recherche {
         }
 
         ArrayList<String> sommets = new ArrayList<>();
+        ArrayList<String> types = new ArrayList<>();
         for (Node n : chemin.getNodePath()) {
             sommets.add(n.getId());
+            types.add(n.getAttribute("type"));
         }
-        return new Itineraire(sommets, cout);
-    }
-
-    /** Résultat d'une recherche : les centres traversés et le coût total. */
-    public static class Itineraire {
-
-        private final ArrayList<String> sommets;
-        private final double cout;
-
-        public Itineraire(ArrayList<String> sommets, double cout) {
-            this.sommets = sommets;
-            this.cout = cout;
-        }
-
-        public ArrayList<String> getSommets() {
-            return sommets;
-        }
-
-        public double getCout() {
-            return cout;
-        }
-
-        @Override
-        public String toString() {
-            return sommets + " (" + Math.round(cout) + " min)";
-        }
+        return new Itineraire(sommets, types, cout);
     }
 }
 

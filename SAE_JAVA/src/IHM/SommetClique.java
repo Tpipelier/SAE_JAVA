@@ -4,7 +4,7 @@
  */
 package IHM;
 
-import Outils.DistanceVers;
+import Structure.DistanceVers;
 import Structure.Graphe;
 import Structure.Sommet;
 import java.awt.BorderLayout;
