@@ -4,6 +4,7 @@
  */
 package Outils;
 
+import Structure.DistanceVers;
 import Structure.Graphe;
 import Structure.Route;
 import Structure.Sommet;

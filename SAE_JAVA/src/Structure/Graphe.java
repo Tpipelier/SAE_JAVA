@@ -4,7 +4,6 @@
  */
 package Structure;
 
-import Outils.DistanceVers;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;

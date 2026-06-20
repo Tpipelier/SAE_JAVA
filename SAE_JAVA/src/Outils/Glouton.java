@@ -2,9 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Structure;
+package Outils;
 
 
+import Structure.Route;
+import Structure.Sommet;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,7 @@ import java.util.List;
  *
  * @author walid
  */
-public class glouton {
+public class Glouton {
     
    
     private List<Sommet> sommetAdjacents;
@@ -21,7 +23,7 @@ public class glouton {
     private Route[][] tabR;
     
     
-    public glouton(Route[][] tabR){
+    public Glouton(Route[][] tabR){
         
         //this.Sdep =cam.getSommetDepart();
         this.sommetAdjacents = new ArrayList<>();

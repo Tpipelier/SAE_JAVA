@@ -6,6 +6,7 @@ package Outils;
 
 import IHM.GrapheVisuel;
 import Structure.Graphe;
+import Structure.Itineraire;
 import Structure.Route;
 import Structure.Sommet;
 import java.util.ArrayList;
@@ -21,19 +22,69 @@ public class AlgorithmeChristofide {
     List<Sommet> lstSommetACorriger;
     List<Route> acm;
     List<Route> lstCouplageRoute;
-    private AlgorithmePrim a;
+    List<String> typesChoisis;
+    private AlgorithmePrim algoPrim;
     private GrapheVisuel grapheVisuel;
     private Graphe graphe;
     private double duree;
 
-    public AlgorithmeChristofide(GrapheVisuel grapheVisuel, Graphe graphe) {
+    public AlgorithmeChristofide(GrapheVisuel grapheVisuel, Graphe graphe, List<String> typesChoisis) {
         lstSommetACorriger = new ArrayList<>();
         lstCouplageRoute = new ArrayList<>();
-        a = new AlgorithmePrim(graphe);
-        acm = a.determinerACM();
+        algoPrim = new AlgorithmePrim(graphe);
+        acm = algoPrim.determinerACM();
+        this.typesChoisis = typesChoisis;
         this.grapheVisuel = grapheVisuel;
-        this.graphe = graphe;
+        this.graphe = genererGrapheFiltre(graphe, typesChoisis);
         this.duree = 0;
+    }
+
+    private Graphe genererGrapheFiltre(Graphe global, List<String> typesChoisis) {
+        // Si l'utilisateur n'a rien coché (ou liste vide), on travaille sur le graphe entier
+        if (typesChoisis == null || typesChoisis.isEmpty()) {
+            return global;
+        }
+
+        List<Sommet> sommetsValides = new ArrayList<>();
+
+        Sommet depot = global.getSommet(0);
+        sommetsValides.add(depot);
+
+        for (int i = 1; i < global.getNbSommet(); i++) {
+            Sommet s = global.getSommet(i);
+
+            if (typesChoisis.contains(s.getType())) {
+                sommetsValides.add(s);
+            }
+        }
+
+        Graphe grapheFiltre = new Graphe(sommetsValides.size());
+        for (int i = 0; i < sommetsValides.size(); i++) {
+
+            grapheFiltre.ajouterSommet(i, sommetsValides.get(i));
+        }
+
+        int n = grapheFiltre.getNbSommet();
+        for (int i = 0; i < n; i++) {
+            Sommet s1 = grapheFiltre.getSommet(i);
+            for (int j = 0; j < n; j++) {
+                if (i != j) {
+                    Sommet s2 = grapheFiltre.getSommet(j);
+
+                    Route r = global.getRoute(s1.getIndex(), s2.getIndex());
+                    if (r == null) {
+                        r = global.getRoute(s2.getIndex(), s1.getIndex());
+                    }
+
+                    if (r != null) {
+                        grapheFiltre.ajouterRoute(i, j, r);
+                        grapheFiltre.ajouterDuree(r, (int) r.getDuree());
+                    }
+                }
+            }
+        }
+
+        return grapheFiltre;
     }
 
     /**
@@ -57,10 +108,8 @@ public class AlgorithmeChristofide {
         multiGraphe.addAll(acm);
         multiGraphe.addAll(lstCouplageRoute);
 
-        
         List<Sommet> ordreGlobal = this.calculerCheminEulerien(multiGraphe, depart);
 
-        
         return this.appliquerRaccourcisDijkstra(ordreGlobal, grapheVisuel);
     }
 
@@ -139,7 +188,6 @@ public class AlgorithmeChristofide {
             for (int j = i + 1; j < lstSommetACorriger.size(); j++) {
                 Sommet s2 = lstSommetACorriger.get(j);
 
-                
                 Route routeActuelle = graphe.getRoute(graphe.indexDeSommet(s1), graphe.indexDeSommet(s2));
                 if (routeActuelle != null) {
                     toutesLesRoutesPossibles.add(routeActuelle);
@@ -169,7 +217,6 @@ public class AlgorithmeChristofide {
             indexRoute++; // On passe à la route suivante
         }
 
-        
     }
 
     /**
@@ -231,24 +278,26 @@ public class AlgorithmeChristofide {
             String villeDepart = ordreGlobal.get(i).getNom();
             String villeArrivee = ordreGlobal.get(i + 1).getNom();
 
-            Recherche.Itineraire sousTrajet = outilDijkstra.plusCourtCheminDuree(villeDepart, villeArrivee);
+            Itineraire sousTrajet = outilDijkstra.plusCourtCheminDuree(villeDepart, villeArrivee);
 
             if (sousTrajet != null) {
                 duree += sousTrajet.getCout();
-                ArrayList<String> etapes = sousTrajet.getSommets();
 
-                // On retire le premier sommet de chaque sous-trajet pour éviter 
-                // qu'un point de transition soit écrit deux fois d'affilée dans la liste
-                if (i > 0 && !etapes.isEmpty()) {
-                    etapes.remove(0);
+                if (i > 0 && !sousTrajet.getIdSommets().isEmpty()) {
+                    sousTrajet.getIdSommets().remove(0);
                 }
-                trajetReelFinal.addAll(etapes);
+                for (int j = 0; j < sousTrajet.getIdSommets().size(); j++) {
+                    if (typesChoisis.contains(sousTrajet.getTypes().get(j))) {
+                        trajetReelFinal.add(sousTrajet.getIdSommets().get(j));
+                    }
+
+                }
             }
         }
         return trajetReelFinal;
     }
-    
-    public double getDuree(){
+
+    public double getDuree() {
         return duree;
     }
 }

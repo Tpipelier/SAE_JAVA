@@ -650,7 +650,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             }
             Recherche recherche = new Recherche(grapheVisuel);
             String res = "Le plus court chemin : \n\n";
-            ArrayList<String> strListe = recherche.plusCourtCheminDuree(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getSommets();
+            ArrayList<String> strListe = recherche.plusCourtCheminDuree(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getIdSommets();
             for (int i = 0; i < strListe.size() - 1; i++) {
                 res = res + strListe.get(i) + "\n";
                 Node SommetDepart = grapheVisuel.getNode(strListe.get(i));
@@ -667,7 +667,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             }
             Recherche recherche = new Recherche(grapheVisuel);
             String res = "Le plus court chemin : \n\n";
-            ArrayList<String> strListe = recherche.plusCourtCheminDureeEstimee(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getSommets();
+            ArrayList<String> strListe = recherche.plusCourtCheminDureeEstimee(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getIdSommets();
             for (int i = 0; i < strListe.size() - 1; i++) {
                 res = res + strListe.get(i) + "\n";
                 Node SommetDepart = grapheVisuel.getNode(strListe.get(i));
@@ -695,7 +695,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         }
     }
     private String lancerChristofide(Graphe graphe){
-        AlgorithmeChristofide ac = new AlgorithmeChristofide(grapheVisuel, graphe);
+        AlgorithmeChristofide ac = new AlgorithmeChristofide(grapheVisuel, graphe, null);
             List<String> lst = ac.executerChristofide();
             String resultat = new String("");
             for (int i = 0; i < lst.size(); i++) {
