@@ -25,6 +25,9 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
@@ -66,6 +69,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private JButton boutonCalculerAlgoGlouton;
     private JButton boutonCalculerAlgoChristofide;
     private JButton boutonCalculerAlgo2Camions;
+    private JButton boutonExporter1Camion;
+    private JButton boutonExporter2Camion;
     private JPanel panneauGlobal;
     private Component grapheActuel;
     private JFileChooser fileChooser;
@@ -94,9 +99,29 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         initComposants();
+        viderFichiersRendu();
 
         this.setVisible(true);
 
+    }
+
+    public void viderFichiersRendu() {
+        try {
+            File fichier1 = new File("rendu/" + "resultats1camionEquipe1Groupe3.csv");
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fichier1))) {
+                writer.write("");
+            }
+            
+            File fichier2 = new File("rendu/" + "resultats2camionsEquipe1Groupe3.csv");
+
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fichier2))) {
+                writer.write("");
+            }
+
+        } catch (IOException ex) {
+            System.out.println("IOException : Erreur lors de l'export du fichier.");
+        }
     }
 
     /**
@@ -111,6 +136,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         boutonCalculerAlgoGlouton = new JButton("Glouton");
         boutonCalculerAlgoChristofide = new JButton("Christofides");
         boutonCalculerAlgo2Camions = new JButton("2 Camions");
+        boutonExporter1Camion = new JButton("Exporter avec 1 camion");
+        boutonExporter2Camion = new JButton("Exporter avec 2 camion");
         panneauDeroulantListe = new JScrollPane();
         panneauGlobal = new JPanel();
         fileChooser = new JFileChooser();
@@ -146,6 +173,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         boutonCalculerAlgoGlouton.addActionListener(this);
         boutonCalculerAlgoChristofide.addActionListener(this);
         boutonCalculerAlgo2Camions.addActionListener(this);
+        boutonExporter1Camion.addActionListener(this);
+        boutonExporter2Camion.addActionListener(this);
 
         this.setContentPane(panneauGlobal);
 
@@ -158,6 +187,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         appliquerStyleBouton(boutonCalculerAlgoGlouton);
         appliquerStyleBouton(boutonCalculerAlgoChristofide);
         appliquerStyleBouton(boutonCalculerAlgo2Camions);
+        appliquerStyleBouton(boutonExporter1Camion);
+        appliquerStyleBouton(boutonExporter2Camion);
         labelM.setForeground(Color.WHITE);
         labelN.setForeground(Color.WHITE);
         labelO.setForeground(Color.WHITE);
@@ -244,6 +275,10 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         panneauDeroulant.add(boutonCalculerAlgoChristofide, gb);
         gb.gridy += 1;
         panneauDeroulant.add(boutonCalculerAlgo2Camions, gb);
+        gb.gridy += 1;
+        panneauDeroulant.add(boutonExporter1Camion, gb);
+        gb.gridy += 1;
+        panneauDeroulant.add(boutonExporter2Camion, gb);
 
         gb.fill = GridBagConstraints.BOTH;
         gb.weighty = 1;
@@ -350,7 +385,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         viewComponent.addMouseWheelListener(new MouseWheelListener() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
-                
+
                 double currentPercent = camera.getViewPercent();
 
                 // e.getWheelRotation() donne -1 pour un défilement vers le haut, 1 vers le bas
@@ -658,6 +693,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 Edge route = SommetDepart.getEdgeBetween(SommetArivee);
                 route.addAttribute("ui.class", "selectionnerPCC");
             }
+            res = res + strListe.get(strListe.size() - 1) + "\n";
             String cout = String.valueOf(Math.round(recherche.plusCourtCheminDuree(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getCout()));
             texte.setText(res + "\n Ce trajet prend : " + cout + " min");
         }
@@ -675,34 +711,90 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 Edge route = SommetDepart.getEdgeBetween(SommetArivee);
                 route.addAttribute("ui.class", "selectionnerPCC");
             }
+            res = res + strListe.get(strListe.size() - 1) + "\n";
             String cout = String.valueOf(Math.round(recherche.plusCourtCheminDureeEstimee(depart.getSelectedItem().toString(), arrivee.getSelectedItem().toString()).getCout()));
             texte.setText(res + "\n Ce trajet prend : " + cout + " min");
         }
         if (e.getSource() == boutonCalculerAlgoGlouton) {
-            
+
         }
         if (e.getSource() == boutonCalculerAlgoChristofide) {
-            String texteAlgo = "Résultat Christofide : \n" + lancerChristofide(graphe);
+            String texteAlgo = "Résultat Christofide : \n" + lancerChristofide(graphe)[0];
             texte.setText(texteAlgo);
         }
         if (e.getSource() == boutonCalculerAlgo2Camions) {
             Graphe[] resultats = DiviserGraphe.diviserEnDeux(graphe);
             Graphe grapheCamion1 = resultats[0];
             Graphe grapheCamion2 = resultats[1];
-            String texteAlgo = "Résultat camion 1 : \n"+lancerChristofide(grapheCamion1);
-            texteAlgo = texteAlgo + "\n\nRésultat camion 2 : \n" + lancerChristofide(grapheCamion2);
+            String texteAlgo = "Résultat camion 1 : \n" + lancerChristofide(grapheCamion1)[0];
+            texteAlgo = texteAlgo + "\n\nRésultat camion 2 : \n" + lancerChristofide(grapheCamion2)[0];
             texte.setText(texteAlgo);
         }
-    }
-    private String lancerChristofide(Graphe graphe){
-        AlgorithmeChristofide ac = new AlgorithmeChristofide(grapheVisuel, graphe);
-            List<String> lst = ac.executerChristofide();
-            String resultat = new String("");
-            for (int i = 0; i < lst.size(); i++) {
-                resultat = resultat + lst.get(i) + "\n";
+        if (e.getSource() == boutonExporter1Camion) {
+            String dureeGlouton = "0";
+            String dureeChristofide;
+            String nomGraphe = "nomDuGraphe";
+            String toutIDSommets;
+            String ligneEcrite;
+
+            String[] resultatsChristofide = lancerChristofide(graphe);
+
+            toutIDSommets = resultatsChristofide[1];
+            dureeChristofide = resultatsChristofide[2];
+            ligneEcrite = nomGraphe + ";" + dureeGlouton + ";" + dureeChristofide + toutIDSommets + "\n";
+            try {
+                File fichier = new File("rendu/" + "resultats1camionEquipe1Groupe3.csv");
+
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(fichier, true))) {
+                    writer.write(ligneEcrite);
+                }
+
+            } catch (IOException ex) {
+                System.out.println("IOException : Erreur lors de l'export du fichier.");
             }
-            String cout = ""+Math.round(ac.getDuree());
-            resultat = resultat + "\n Ce trajet prend : " + cout + " min";
-            return resultat;
+        }
+        if (e.getSource() == boutonExporter2Camion) {
+            String dureeCamion1;
+            String dureeCamion2;
+            String nomGraphe = "nomDuGraphe";
+            String toutIDSommets;
+            String ligneEcrite;
+
+            Graphe[] resultats = DiviserGraphe.diviserEnDeux(graphe);
+            Graphe grapheCamion1 = resultats[0];
+            Graphe grapheCamion2 = resultats[1];
+            String[] resultatsChristofide1 = lancerChristofide(grapheCamion1);
+            String[] resultatsChristofide2 = lancerChristofide(grapheCamion2);
+
+            toutIDSommets = resultatsChristofide1[1] + ";" + resultatsChristofide2[1];
+            dureeCamion1 = resultatsChristofide1[2];
+            dureeCamion2 = resultatsChristofide2[2];
+            ligneEcrite = nomGraphe + ";" + dureeCamion1 + ";" + dureeCamion2 + toutIDSommets + "\n";
+            try {
+                File fichier = new File("rendu/" + "resultats2camionsEquipe1Groupe3.csv");
+
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(fichier, true))) {
+                    writer.write(ligneEcrite);
+                }
+
+            } catch (IOException ex) {
+                System.out.println("IOException : Erreur lors de l'export du fichier.");
+            }
+        }
+    }
+
+    private String[] lancerChristofide(Graphe graphe) {
+        AlgorithmeChristofide ac = new AlgorithmeChristofide(grapheVisuel, graphe);
+        List<String> lst = ac.executerChristofide();
+        String resultatTexte = new String("");
+        String resultatCSV = new String("");
+        for (int i = 0; i < lst.size(); i++) {
+            resultatTexte = resultatTexte + lst.get(i) + "\n";
+            resultatCSV = resultatCSV + ";" + lst.get(i).substring(1);
+        }
+        String cout = "" + Math.round(ac.getDuree());
+        resultatTexte = resultatTexte + "\n Ce trajet prend : " + cout + " min";
+        String[] resultatRetourner = {resultatTexte, resultatCSV, cout};
+        return resultatRetourner;
     }
 }
