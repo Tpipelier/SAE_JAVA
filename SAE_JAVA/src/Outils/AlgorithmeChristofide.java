@@ -15,6 +15,10 @@ import java.util.List;
 import org.graphstream.graph.Graph;
 
 /**
+ * Implemente une variante de l'algorithme de Christofides pour approcher une
+ * tournee de cout minimal. Il combine un arbre couvrant minimum (Prim), un
+ * couplage des sommets de degre impair, un parcours eulerien (Hierholzer) puis
+ * des raccourcis calcules par Dijkstra.
  *
  * @author Theo Pipelier
  */
@@ -29,6 +33,15 @@ public class AlgorithmeChristofide {
     private Graphe graphe;
     private double duree;
 
+    /**
+     * Construit l'algorithme : filtre le graphe selon les types choisis et
+     * calcule immediatement l'arbre couvrant minimum servant de base.
+     *
+     * @param grapheVisuel le graphe GraphStream (pour les calculs Dijkstra)
+     * @param graphe       le graphe a parcourir
+     * @param typesChoisis les types de centres a desservir ({@code null} ou vide
+     *                     pour tous)
+     */
     public AlgorithmeChristofide(GrapheVisuel grapheVisuel, Graphe graphe, List<String> typesChoisis) {
         lstSommetACorriger = new ArrayList<>();
         lstCouplageRoute = new ArrayList<>();
@@ -108,11 +121,10 @@ public class AlgorithmeChristofide {
     }
 
     /**
-     * Exécute l'algorithme complet de Christofides combiné à Dijkstra.
+     * Execute l'algorithme complet de Christofides combine a Dijkstra et renvoie
+     * l'ordre de visite des centres.
      *
-     * * @param graphStream Le graphe de la librairie GraphStream nécessaire
-     * pour Dijkstra
-     * @return La liste ordonnée des noms des centres à visiter
+     * @return la liste ordonnee des noms des centres a visiter
      */
     public List<String> executerChristofide() {
         // 1. Définir le point de départ automatique (ex: index 0)
@@ -322,6 +334,13 @@ public class AlgorithmeChristofide {
         return trajetReelFinal;
     }
 
+
+    /**
+     * Renvoie la duree totale du dernier trajet calcule par
+     * {@link #executerChristofide()}.
+     *
+     * @return la duree totale du trajet (en minutes)
+     */
     public double getDuree() {
         return duree;
     }

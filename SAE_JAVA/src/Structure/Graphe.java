@@ -17,6 +17,13 @@ import java.io.File;
 import java.util.Comparator;
 
 /**
+ * Represente un graphe de centres de soins (les sommets) relies par des routes
+ * (les aretes). Le graphe est stocke sous forme de matrice d'adjacence
+ * ({@code tabR}) et d'un tableau de sommets ({@code tabS}). Il peut etre charge
+ * depuis un fichier CSV, genere aleatoirement, ou construit manuellement.
+ *
+ * <p>Cette classe propose aussi des algorithmes de parcours : distances
+ * croissantes, plus courts chemins (Dijkstra pondere par la duree), etc.</p>
  *
  * @author Theo Pipelier
  */
@@ -29,8 +36,12 @@ public class Graphe {
     HashMap<Route, Integer> durees;
 
     /**
+     * Construit un graphe vide. Les tableaux internes ne sont pas alloues ; ils
+     * le seront lors d'un appel a {@link #chargerGraphes(String)} ou
+     * {@link #genererGrapheAleatoire(int)}.
      *
-     * @throws FileNotFoundException
+     * @throws FileNotFoundException jamais levee par ce constructeur (conservee
+     *         pour compatibilite)
      */
     public Graphe() throws FileNotFoundException {
         this.nbSommet = 0;
@@ -41,10 +52,11 @@ public class Graphe {
     }
 
     /**
-     * Deuxième constructeur : Permet de créer un sous-graphe vierge avec des
-     * tableaux dimensionnés sans passer par un fichier CSV.
+     * Construit un graphe vierge dont les tableaux sont dimensionnes pour
+     * accueillir le nombre de sommets donne. Utile pour creer un sous-graphe
+     * sans passer par un fichier CSV.
      *
-     * @param nbSommetsMax
+     * @param nbSommet nombre de sommets du graphe
      */
     public Graphe(int nbSommet) {
         this.nbSommet = nbSommet; // On commencera à 0 et on incrémentera à chaque ajout
@@ -54,10 +66,13 @@ public class Graphe {
     }
 
     /**
+     * Compte le nombre de sommets decrits dans un fichier CSV, c'est-a-dire le
+     * nombre de lignes utiles (les lignes vides et les lignes de commentaire
+     * commencant par {@code //} sont ignorees).
      *
-     * @param nomFichier
-     * @return cpt
-     * @throws FileNotFoundException
+     * @param nomFichier chemin du fichier CSV a analyser
+     * @return le nombre de sommets (lignes de donnees utiles)
+     * @throws FileNotFoundException si le fichier est introuvable
      */
     public static int compteSommet(String nomFichier) throws FileNotFoundException {
         int cpt = 0;
@@ -80,93 +95,110 @@ public class Graphe {
 
     }
     
+    /**
+     * Renvoie le nom du graphe (generalement le nom du fichier source).
+     *
+     * @return le nom du graphe
+     */
     public String getNom() {
         return this.nom;
     }
 
     /**
+     * Renvoie le nombre de sommets du graphe.
      *
-     * @return int
+     * @return le nombre de sommets
      */
     public int getNbSommet() {
         return nbSommet;
     }
 
     /**
+     * Renvoie le sommet situe a la position demandee.
      *
-     * @param numeroSommet
-     * @return Sommet
+     * @param numeroSommet index du sommet (entre 0 et nbSommet-1)
+     * @return le sommet correspondant
      */
     public Sommet getSommet(int numeroSommet) {
         return tabS[numeroSommet];
     }
 
     /**
+     * Renvoie la route reliant deux sommets (selon la matrice d'adjacence).
      *
-     * @param numeroSommetD
-     * @param numeroSommetA
-     * @return Route
+     * @param numeroSommetD index du sommet de depart
+     * @param numeroSommetA index du sommet d'arrivee
+     * @return la route correspondante, ou {@code null} s'il n'y en a pas
      */
     public Route getRoute(int numeroSommetD, int numeroSommetA) {
         return tabR[numeroSommetD][numeroSommetA];
     }
 
     /**
+     * Renvoie le tableau des sommets du graphe.
      *
-     * @return Sommet[]
+     * @return le tableau des sommets
      */
     public Sommet[] getTabS() {
         return tabS;
     }
 
     /**
+     * Renvoie la matrice d'adjacence des routes du graphe.
      *
-     * @return Route[][]
+     * @return la matrice des routes
      */
     public Route[][] getTabR() {
         return tabR;
     }
 
     /**
+     * Renvoie la table associant chaque route a sa duree.
      *
-     * @return HashMap
+     * @return la table des durees
      */
     public HashMap<Route, Integer> getDurees() {
         return this.durees;
     }
 
     /**
+     * Place un sommet a la position demandee dans le tableau des sommets.
      *
-     * @param numeroSommet
-     * @param Sommet
+     * @param numeroSommet index ou ranger le sommet
+     * @param Sommet       le sommet a ajouter
      */
     public void ajouterSommet(int numeroSommet, Sommet Sommet) {
         this.tabS[numeroSommet] = Sommet;
     }
 
     /**
+     * Ajoute une route entre deux sommets dans la matrice d'adjacence.
      *
-     * @param numeroSommetD
-     * @param numeroSommetA
-     * @param Route
+     * @param numeroSommetD index du sommet de depart
+     * @param numeroSommetA index du sommet d'arrivee
+     * @param Route         la route a ajouter
      */
     public void ajouterRoute(int numeroSommetD, int numeroSommetA, Route Route) {
         this.tabR[numeroSommetD][numeroSommetA] = Route;
     }
 
     /**
+     * Associe une duree a une route dans la table des durees.
      *
-     * @param R
-     * @param duree
+     * @param R     la route concernee
+     * @param duree la duree a associer (en minutes)
      */
     public void ajouterDuree(Route R, int duree) {
         this.durees.put(R, duree);
     }
 
     /**
+     * Charge un graphe depuis un fichier CSV : lit d'abord les sommets, puis les
+     * routes (donnees au format {@code fiabilite,distance,duree}). Les tableaux
+     * internes sont alloues a la bonne taille.
      *
-     * @param nomFichier
-     * @throws FileNotFoundException
+     * @param nomFichier chemin du fichier CSV a charger
+     * @throws FileNotFoundException si le fichier est introuvable
      */
     public void chargerGraphes(String nomFichier) throws FileNotFoundException {
         this.nom = new File(nomFichier).getName();
@@ -232,6 +264,10 @@ public class Graphe {
 
     }
 
+    /**
+     * Affiche sur la sortie standard le detail de toutes les routes du graphe
+     * (nom, fiabilite, sommets relies, distance et duree).
+     */
     public void afficheContenuGraphe() {
         String ligne = "";
         for (int i = 0; i < this.nbSommet; i++) {
@@ -245,6 +281,14 @@ public class Graphe {
 
     }
 
+    /**
+     * Genere aleatoirement un graphe connexe du nombre de sommets demande.
+     * Chaque sommet recoit un type tire au hasard ; un arbre couvrant garantit la
+     * connexite, puis des aretes supplementaires sont ajoutees avec une faible
+     * probabilite.
+     *
+     * @param nbSommets nombre de sommets du graphe a generer
+     */
     public void genererGrapheAleatoire(int nbSommets) {
         this.nbSommet = nbSommets;
         this.tabS = new Sommet[nbSommet];
@@ -302,7 +346,11 @@ public class Graphe {
     }
 
     /**
-     * Renvoie l'indice d'un sommet dans tabS (-1 s'il n'existe pas).
+     * Renvoie l'indice d'un sommet dans le tableau des sommets. La comparaison se
+     * fait sur le nom et le type du sommet.
+     *
+     * @param s le sommet recherche
+     * @return l'indice du sommet, ou {@code -1} s'il n'existe pas dans le graphe
      */
     public int indexDeSommet(Sommet s) {
         for (int i = 0; i < this.nbSommet; i++) {
@@ -314,8 +362,12 @@ public class Graphe {
     }
 
     /**
-     * Renvoie les routes partant du sommet donne (vers les maternites, blocs
-     * operatoires et centres de nutrition), triees par distance croissante.
+     * Renvoie les routes incidentes au sommet donne (dans un sens ou dans
+     * l'autre), triees par distance croissante.
+     *
+     * @param depart le sommet dont on veut les routes incidentes
+     * @return la liste des routes triees par distance croissante (vide si le
+     *         sommet est absent du graphe)
      */
     public List<Route> distancesCroissantes(Sommet depart) {
         List<Route> routes = new ArrayList<>();
@@ -346,9 +398,15 @@ public class Graphe {
     }
 
     /**
-     * Calcule, depuis le sommet donne, la distance la plus courte (Dijkstra
-     * pondere par la distance des routes) vers tous les autres sommets, puis
-     * renvoie ces resultats (nom, type et distance) tries par ordre croissant.
+     * Calcule, depuis le sommet donne, les plus courts chemins (Dijkstra
+     * pondere par la duree des routes) vers tous les autres sommets atteignables,
+     * puis renvoie ces resultats tries selon le critere demande.
+     *
+     * @param depart   le sommet source
+     * @param typeTrie critere de tri : {@code "Duree"}, {@code "DureeEstimee"} ou
+     *                 toute autre valeur pour un tri par distance
+     * @return la liste des resultats (nom, type, distance, duree, duree estimee),
+     *         triee ; vide si le sommet source est absent du graphe
      */
     public List<DistanceVers> distancesCroissantesVersTous(Sommet depart, String typeTrie) {
         List<DistanceVers> resultats = new ArrayList<>();
@@ -435,6 +493,14 @@ public class Graphe {
     
     
 
+    /**
+     * Renvoie une representation textuelle des cinq sommets les plus proches du
+     * sommet de depart (ou moins s'il y en a moins de cinq).
+     *
+     * @param depart le sommet source
+     * @return la liste (au plus 5) des sommets les plus proches sous forme de
+     *         chaines
+     */
     public List<String> top5Texte(Sommet depart) {
         List<DistanceVers> resultats = distancesCroissantesVersTous(depart,"");
         List<String> top = new ArrayList<>();
@@ -452,6 +518,12 @@ public class Graphe {
         return top;
     }
 
+    /**
+     * Compte le nombre de routes reellement presentes dans la matrice
+     * d'adjacence (cases non nulles).
+     *
+     * @return le nombre de routes effectives du graphe
+     */
     public int getNbRoutesEffectives() {
         int cpt = 0;
         if (this.tabR == null) {

@@ -6,11 +6,17 @@ package Outils;
 
 import Structure.DistanceVers;
 import Structure.Graphe;
+import Structure.Route;
 import Structure.Sommet;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Outil de partitionnement d'un graphe en deux zones de livraison (une par
+ * camion). La repartition cherche a equilibrer les deux groupes tout en
+ * minimisant les durees de trajet, a partir des plus courts chemins calcules par
+ * Dijkstra.
+ *
  * @author Theo Pipelier
  */
 public class DiviserGraphe {
@@ -74,6 +80,7 @@ public class DiviserGraphe {
 
                 int ecart = Math.abs(compteA - compteB);
                 double penaliteEquilibre = ecart * 100.0;
+
                 double coutTotalPondere = coutConfiguration + penaliteEquilibre;
 
                 if (coutTotalPondere < meilleurCoutGlobal) {
@@ -84,7 +91,6 @@ public class DiviserGraphe {
             }
         }
 
-        // 2. REPARTITION FINALE : C'est ici qu'on simplifie !
         List<Sommet> secteurA = new ArrayList<>();
         List<Sommet> secteurB = new ArrayList<>();
 

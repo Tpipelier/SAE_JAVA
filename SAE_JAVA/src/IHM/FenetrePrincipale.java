@@ -818,7 +818,6 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         if (e.getSource() == boutonViderCSV) {
             viderFichiersRendu();
             texteAlgo.setText("Fichiers de rendu vidées avec succès");
-
         }
     }
 

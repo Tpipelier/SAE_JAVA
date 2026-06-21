@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Calcule, par une heuristique gloutonne du plus proche voisin, l'ordre de
+ * visite des centres pour un camion. A chaque etape, on se rend au centre non
+ * encore visite le plus proche (en duree), via la classe {@link Recherche}.
  *
  * @author walid
  */
@@ -19,19 +22,47 @@ public class Glouton {
     private final Recherche recherche;
     private double coutTotalTrajet;
 
+    /**
+     * Construit l'outil glouton.
+     *
+     * @param recherche le moteur de recherche de plus courts chemins a utiliser
+     */
     public Glouton(Recherche recherche) {
         this.recherche = recherche;
     }
 
+    /**
+     * Renvoie le cout total (en duree) du dernier parcours calcule.
+     *
+     * @return le cout total du trajet
+     */
     public double getCoutTotalTrajet() {
         return this.coutTotalTrajet;
     }
 
+    /**
+     * Calcule l'ordre de visite de tous les sommets en partant du sommet donne.
+     *
+     * @param tabS   l'ensemble des sommets a desservir
+     * @param depart le sommet de depart (le depot)
+     * @return l'ordre de visite des sommets
+     */
     public List<Sommet> unCamion(Sommet[] tabS, Sommet depart) {
         return unCamionParType(tabS, depart, null);
     }
 
-    // si on met type à null, il traverse tout les sommet sinon on met un truc du genre : String[]{"M", "O"} et il fera que ces sommet là
+    /**
+     * Calcule l'ordre de visite des sommets en se limitant a certains types de
+     * centres. Si {@code types} vaut {@code null}, tous les sommets sont visites.
+     *
+     * @param tabS   l'ensemble des sommets a desservir
+     * @param depart le sommet de depart (le depot)
+     * @param types  les types de centres a desservir (1 ou 2 types), ou
+     *               {@code null} pour tous les visiter
+     * @return l'ordre de visite des sommets retenus
+     * @throws IllegalArgumentException si {@code types} ne contient pas 1 ou 2
+     *         types
+     */
     public List<Sommet> unCamionParType(Sommet[] tabS, Sommet depart, String[] types) {
         if (types != null && (types.length < 1 || types.length > 2)) {
             throw new IllegalArgumentException("Il faut choisir 1 ou 2 types parmi les 3.");

@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Implemente l'algorithme de Prim pour calculer l'Arbre Couvrant Minimum (ACM)
+ * d'un graphe, en utilisant la duree des routes comme poids.
  *
  * @author theop
  */
@@ -20,15 +22,22 @@ public class AlgorithmePrim {
 
     private Graphe graphe;
 
+    /**
+     * Construit l'outil de calcul d'ACM pour un graphe donne.
+     *
+     * @param graphe le graphe sur lequel calculer l'arbre couvrant minimum
+     */
     public AlgorithmePrim(Graphe graphe) {
         this.graphe = graphe;
     }
 
     /**
-     * Méthode qui calcule l'Arbre Couvrant Minimum (ACM) d'un graphe donné.
+     * Calcule l'Arbre Couvrant Minimum (ACM) du graphe associe, en partant du
+     * premier sommet et en ajoutant a chaque etape la route la moins couteuse
+     * (en duree) vers un sommet non encore visite.
      *
-     * @param graphe Le graphe d'origine
-     * @return Une liste de routes qui forment l'arbre couvrant minimum
+     * @return la liste des routes formant l'arbre couvrant minimum (vide si le
+     *         graphe est nul ou sans sommet)
      */
     public List<Route> determinerACM() {
         List<Route> acm = new ArrayList<>();
