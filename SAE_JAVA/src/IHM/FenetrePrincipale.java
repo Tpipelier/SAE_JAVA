@@ -8,6 +8,8 @@ import Outils.AlgorithmeChristofide;
 import Outils.DiviserGraphe;
 import Structure.Graphe;
 import Outils.Recherche;
+import Outils.Glouton;
+import Structure.Sommet;
 import java.awt.BorderLayout;
 import static java.awt.BorderLayout.EAST;
 import static java.awt.BorderLayout.WEST;
@@ -31,6 +33,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -86,24 +89,27 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private JScrollPane panneauDeroulantListe;
     private JTextArea texte;
     private JTextArea texteAlgo;
-
+    private JButton boutonViderCSV;
 
     /**
      * Constructeur de FenetrePrincipale
      *
      * @param nom nom de la fenetre
      */
-    public FenetrePrincipale(String nom) {
+    public FenetrePrincipale() {
 
-        super(nom);
+        super("MEDMAP");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // fermeture
         this.setLocationRelativeTo(null); // Position à l’écran
         this.setVisible(true);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         initComposants();
-        viderFichiersRendu();
         
+        
+        ImageIcon icon = new ImageIcon("Images/logo.png");
+            this.setIconImage(icon.getImage());
+
         this.setVisible(true);
 
     }
@@ -141,6 +147,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         boutonCalculerAlgo2Camions = new JButton("Christofide 2 Camions");
         boutonExporter1Camion = new JButton("Exporter avec 1 camion");
         boutonExporter2Camion = new JButton("Exporter avec 2 camion");
+        boutonViderCSV = new JButton("Vider les fichiers de rendu");
         panneauDeroulantListe = new JScrollPane();
         panneauGlobal = new JPanel();
         fileChooser = new JFileChooser();
@@ -165,7 +172,6 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         texteAlgo.setBackground(new Color(0xC2C2C2));
         texteAlgo.setForeground(Color.BLACK);
 
-
         depart = new JComboBox();
         depart.setBackground(new Color(0xC2C2C2));
         depart.setForeground(Color.BLACK);
@@ -189,6 +195,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         boutonCalculerAlgo2Camions.addActionListener(this);
         boutonExporter1Camion.addActionListener(this);
         boutonExporter2Camion.addActionListener(this);
+        boutonViderCSV.addActionListener(this);
 
         this.setContentPane(panneauGlobal);
 
@@ -203,6 +210,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         appliquerStyleBouton(boutonCalculerAlgo2Camions);
         appliquerStyleBouton(boutonExporter1Camion);
         appliquerStyleBouton(boutonExporter2Camion);
+        appliquerStyleBouton(boutonViderCSV);
         labelM.setForeground(Color.WHITE);
         labelN.setForeground(Color.WHITE);
         labelO.setForeground(Color.WHITE);
@@ -301,9 +309,11 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         panneauDeroulant.add(boutonExporter1Camion, gb);
         gb.gridy += 1;
         panneauDeroulant.add(boutonExporter2Camion, gb);
-        gb.insets = new java.awt.Insets(10, 0,10, 0);//padding
+        gb.insets = new java.awt.Insets(10, 0, 10, 0);//padding
         gb.gridy += 1;
         panneauDeroulant.add(texteAlgo, gb);
+        gb.gridy += 1;
+        panneauDeroulant.add(boutonViderCSV, gb);
 
         gb.fill = GridBagConstraints.BOTH;
         gb.weighty = 1;
@@ -740,13 +750,15 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             texte.setText(res + "\n Ce trajet prend : " + cout + " min");
         }
         if (e.getSource() == boutonCalculerAlgoGlouton) {
-
+            String[] resultatTotal = lancerGlouton();
+            texteAlgo.setText(resultatTotal[0]+"Durée total du trajet : "+resultatTotal[1]+ "min");
         }
         if (e.getSource() == boutonCalculerAlgoChristofide) {
             String texteResultat = "Résultat Christofide : \n" + lancerChristofide(graphe)[0];
             texteAlgo.setText(texteResultat);
         }
         if (e.getSource() == boutonCalculerAlgo2Camions) {
+            filtreTypes.setSelectedItem("Tout les centres");
             Graphe[] resultats = DiviserGraphe.diviserEnDeux(graphe);
             Graphe grapheCamion1 = resultats[0];
             Graphe grapheCamion2 = resultats[1];
@@ -755,9 +767,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             texteAlgo.setText(texteResultat);
         }
         if (e.getSource() == boutonExporter1Camion) {
-            String dureeGlouton = "0";
+            String dureeGlouton =  lancerGlouton()[1];
             String dureeChristofide;
-            String nomGraphe = "nomDuGraphe";
+            String nomGraphe = graphe.getNom();
             String toutIDSommets;
             String ligneEcrite;
 
@@ -778,9 +790,10 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             }
         }
         if (e.getSource() == boutonExporter2Camion) {
+            filtreTypes.setSelectedItem("Tout les centres");
             String dureeCamion1;
             String dureeCamion2;
-            String nomGraphe = "nomDuGraphe";
+            String nomGraphe = graphe.getNom();
             String toutIDSommets;
             String ligneEcrite;
 
@@ -806,11 +819,16 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 System.out.println("IOException : Erreur lors de l'export du fichier.");
             }
         }
+        if (e.getSource() == boutonViderCSV) {
+            viderFichiersRendu();
+            texteAlgo.setText("Fichiers de rendu vidées avec succès");
+            
+        }
     }
 
     private String[] lancerChristofide(Graphe graphe) {
         List<String> typesChoisis = new ArrayList<>();
-        switch(filtreTypes.getSelectedItem().toString()){
+        switch (filtreTypes.getSelectedItem().toString()) {
             case "Tout les centres":
                 typesChoisis.add("O");
                 typesChoisis.add("M");
@@ -826,7 +844,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 typesChoisis.add("M");
                 break;
         }
-        AlgorithmeChristofide ac = new AlgorithmeChristofide(grapheVisuel, graphe,  typesChoisis);
+        AlgorithmeChristofide ac = new AlgorithmeChristofide(grapheVisuel, graphe, typesChoisis);
         List<String> lst = ac.executerChristofide();
         String resultatTexte = new String("");
         String resultatCSV = new String("");
@@ -838,5 +856,35 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         resultatTexte = resultatTexte + "\n Ce trajet prend : " + cout + " min";
         String[] resultatRetourner = {resultatTexte, resultatCSV, cout};
         return resultatRetourner;
+    }
+    
+    private String[] lancerGlouton() {
+        Recherche recherche = new Recherche(grapheVisuel);
+            Glouton glouton = new Glouton(recherche);
+            String[] str = new String[1];
+            switch (filtreTypes.getSelectedItem().toString()) {
+                 case "Blocs opératoires":
+                    str[0] = "O";
+                    break;
+                case "Centres de nutrition":
+                    str[0] = "N";
+                    break;
+                case "Maternités":
+                    str[0] = "M";
+                    break;
+                default : 
+                    str = null;
+                    break;
+            }
+            
+            List<Sommet> lst = glouton.unCamionParType(graphe.getTabS(), graphe.getSommet(0),str);
+            String resultatTexte = "";
+            
+            for (int i = 0; i < lst.size(); i++) {
+                resultatTexte = resultatTexte + lst.get(i).getNom() + "\n";
+            }
+            String cout = ""+Math.round(glouton.getCoutTotalTrajet());
+            String[] resultatRetourner = {resultatTexte, cout};
+            return resultatRetourner;
     }
 }

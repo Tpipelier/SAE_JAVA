@@ -17,16 +17,19 @@ node{
 }
 
 node.maternite {
+    fill-image: url('../Images/BlocOperatoire.png');
     fill-color: #2ecc71;
 }
 
 /* Couleur pour le type O (ex: Bleu) */
 node.blocOperatoire {
+    fill-image: url('../Images/BlocOperatoire.png');
     fill-color: #3498db;
 }
 
 /* Couleur pour le type P (ex: Violet) */
 node.nutrition {
+    fill-image: url('../Images/CentreNutrition.png');
     fill-color: #9b59b6;
 }
 

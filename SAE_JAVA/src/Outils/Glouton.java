@@ -4,7 +4,7 @@
  */
 package Outils;
 
-
+import Structure.Itineraire;
 import Structure.Route;
 import Structure.Sommet;
 import java.util.ArrayList;
@@ -14,31 +14,38 @@ import java.util.List;
  *
  * @author walid
  */
-public class glouton {
+public class Glouton {
 
     private final Recherche recherche;
+    private double coutTotalTrajet;
 
-    public glouton(Recherche recherche){
+    public Glouton(Recherche recherche) {
         this.recherche = recherche;
     }
 
-    public List<Sommet> unCamion(Sommet[] tabS, Sommet depart){
+    public double getCoutTotalTrajet() {
+        return this.coutTotalTrajet;
+    }
+
+    public List<Sommet> unCamion(Sommet[] tabS, Sommet depart) {
         return unCamionParType(tabS, depart, null);
     }
-    
+
     // si on met type à null, il traverse tout les sommet sinon on met un truc du genre : String[]{"M", "O"} et il fera que ces sommet là
-    public List<Sommet> unCamionParType(Sommet[] tabS, Sommet depart, String[] types){
+    public List<Sommet> unCamionParType(Sommet[] tabS, Sommet depart, String[] types) {
         if (types != null && (types.length < 1 || types.length > 2)) {
             throw new IllegalArgumentException("Il faut choisir 1 ou 2 types parmi les 3.");
         }
 
         List<Sommet> parcours = new ArrayList<>();
-        parcours.add(depart);
+        if (types == null || contient(types, depart.getType())) {
+            parcours.add(depart);
+        }
 
         List<Sommet> aVisiter = new ArrayList<>();
         for (Sommet s : tabS) {
-            if (s != null && s != depart){
-                if (types == null || contient(types, s.getType())){
+            if (s != null && s != depart) {
+                if (types == null || contient(types, s.getType())) {
                     aVisiter.add(s);
                 }
             }
@@ -58,7 +65,7 @@ public class glouton {
         return parcours;
     }
 
-    private boolean contient(String[] tableau, String valeur){
+    private boolean contient(String[] tableau, String valeur) {
         for (String t : tableau) {
             if (valeur.equals(t)) {
                 return true;
@@ -67,16 +74,17 @@ public class glouton {
         return false;
     }
 
-    private Sommet plusProche(Sommet courant, List<Sommet> candidats){
+    private Sommet plusProche(Sommet courant, List<Sommet> candidats) {
         Sommet plusProche = null;
         double meilleurCout = Double.MAX_VALUE;
         for (Sommet candidat : candidats) {
-            Recherche.Itineraire it = recherche.plusCourtCheminDuree(courant.getNom(), candidat.getNom());
+            Itineraire it = recherche.plusCourtCheminDuree(courant.getNom(), candidat.getNom());
             if (it != null && it.getCout() < meilleurCout) {
                 meilleurCout = it.getCout();
-                plusProche = candidat;
+                plusProche = candidat;                
             }
         }
+        this.coutTotalTrajet += meilleurCout;
         return plusProche;
     }
 }

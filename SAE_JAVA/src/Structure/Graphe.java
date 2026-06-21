@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.Scanner;
 import Structure.Sommet;
 import Structure.Route;
+import java.io.File;
 import java.util.Comparator;
 
 /**
@@ -21,6 +22,7 @@ import java.util.Comparator;
  */
 public class Graphe {
 
+    String nom;
     int nbSommet;
     Sommet[] tabS;
     Route[][] tabR;
@@ -39,7 +41,6 @@ public class Graphe {
     }
 
     /**
-<<<<<<< HEAD
      * Deuxième constructeur : Permet de créer un sous-graphe vierge avec des
      * tableaux dimensionnés sans passer par un fichier CSV.
      *
@@ -53,8 +54,6 @@ public class Graphe {
     }
 
     /**
-=======
->>>>>>> origin/Walid
      *
      * @param nomFichier
      * @return cpt
@@ -79,6 +78,10 @@ public class Graphe {
 
         return cpt;
 
+    }
+    
+    public String getNom() {
+        return this.nom;
     }
 
     /**
@@ -166,6 +169,7 @@ public class Graphe {
      * @throws FileNotFoundException
      */
     public void chargerGraphes(String nomFichier) throws FileNotFoundException {
+        this.nom = new File(nomFichier).getName();
         this.nbSommet = compteSommet(nomFichier);
         this.tabS = new Sommet[nbSommet];
         this.tabR = new Route[nbSommet][nbSommet];
@@ -432,7 +436,7 @@ public class Graphe {
     
 
     public List<String> top5Texte(Sommet depart) {
-        List<DistanceVers> resultats = distancesCroissantesVersTous(depart);
+        List<DistanceVers> resultats = distancesCroissantesVersTous(depart,"");
         List<String> top = new ArrayList<>();
 
         int limite = 5;

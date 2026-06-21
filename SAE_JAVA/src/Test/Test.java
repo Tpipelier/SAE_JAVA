@@ -37,7 +37,7 @@ public class Test {
 //
 //        GrapheVisuel grapheVisuel = new GrapheVisuel("graphe1", g.getTabS(), g.getTabR());
 //        grapheVisuel.afficher();
-        FenetrePrincipale f = new FenetrePrincipale("Ma Fenetre");
+        FenetrePrincipale f = new FenetrePrincipale();
 //        Graphe g=new Graphe();
 //        g.genererGrapheAleatoire(20);
 //        GrapheVisuel grapheVisuel = new GrapheVisuel("Graphe charger", g.getTabS(), g.getTabR());
