@@ -5,6 +5,7 @@
 package Outils;
 
 import IHM.GrapheVisuel;
+import Structure.DistanceVers;
 import Structure.Graphe;
 import Structure.Itineraire;
 import Structure.Route;
@@ -67,22 +68,41 @@ public class AlgorithmeChristofide {
             grapheFiltre.ajouterSommet(i, sommetsValides.get(i));
         }
 
+        // On relie chaque paire de sommets retenus par le PLUS COURT CHEMIN (en duree)
+        // calcule sur le graphe complet. Le sous-graphe est ainsi toujours complet et
+        // connexe : l'ACM couvre tous les centres souhaites, meme ceux qui ne sont pas
+        // relies par une route directe.
         int n = grapheFiltre.getNbSommet();
+        int numRoute = 0;
         for (int i = 0; i < n; i++) {
             Sommet s1 = grapheFiltre.getSommet(i);
-            for (int j = 0; j < n; j++) {
-                if (i != j) {
-                    Sommet s2 = grapheFiltre.getSommet(j);
 
-                    Route r = global.getRoute(global.indexDeSommet(s1), global.indexDeSommet(s2));
-                    if (r == null) {
-                        r = global.getRoute(global.indexDeSommet(s2), global.indexDeSommet(s1));
-                    }
+            // Durees des plus courts chemins depuis s1 vers tous les autres sommets
+            List<DistanceVers> plusCourtsChemins = global.distancesCroissantesVersTous(s1, "Duree");
 
-                    if (r != null) {
-                        grapheFiltre.ajouterRoute(i, j, r);
-                        grapheFiltre.ajouterDuree(r, (int) r.getDuree());
+            for (int j = i + 1; j < n; j++) {
+                Sommet s2 = grapheFiltre.getSommet(j);
+
+                // Recherche de la duree du plus court chemin s1 -> s2
+                DistanceVers infoVersS2 = null;
+                for (int k = 0; k < plusCourtsChemins.size(); k++) {
+                    if (plusCourtsChemins.get(k).getSommet().equals(s2)) {
+                        infoVersS2 = plusCourtsChemins.get(k);
                     }
+                }
+
+                if (infoVersS2 != null) { // s2 est atteignable depuis s1
+                    Route routeVirtuelle = new Route(
+                            "RF" + numRoute,
+                            10, // fiabilite non utilisee par Christofides
+                            infoVersS2.getDistance(),
+                            infoVersS2.getDuree(),
+                            s1, s2);
+                    numRoute++;
+
+                    grapheFiltre.ajouterRoute(i, j, routeVirtuelle);
+                    grapheFiltre.ajouterRoute(j, i, routeVirtuelle);
+                    grapheFiltre.ajouterDuree(routeVirtuelle, infoVersS2.getDuree());
                 }
             }
         }
@@ -288,6 +308,7 @@ public class AlgorithmeChristofide {
 
                 if (i > 0 && !sousTrajet.getIdSommets().isEmpty()) {
                     sousTrajet.getIdSommets().remove(0);
+                    sousTrajet.getTypes().remove(0);
                 }
                 for (int j = 0; j < sousTrajet.getIdSommets().size(); j++) {
                     if (typesChoisis.contains(sousTrajet.getTypes().get(j))) {
