@@ -1,0 +1,45 @@
+graph {
+    fill-color: rgb(126, 126, 126);         /* Couleur du fond (Hexadécimal ou nom) */
+}
+
+edge {
+    fill-color: #ECF0F1;         /* Couleur de la ligne */
+    size: 2px;
+}
+
+node{
+	
+	
+	shape: circle;               /* Formes dispos : circle, box, diamond, cross, rounded-box */
+    size: 20px;
+    fill-color: #E74C3C;
+	
+}
+
+node.maternite {
+    fill-color: #98F5FF;
+}
+
+/* Couleur pour le type O (ex: Bleu) */
+node.blocOperatoire {
+    fill-color: #FF7474;
+}
+
+/* Couleur pour le type P (ex: Violet) */
+node.nutrition {
+    fill-color: #C9FF17;
+}
+
+edge.danger {
+    fill-color: #fca402;
+}
+
+edge.safe {
+     fill-color: #ECF0F1;
+     size: 2px;
+}
+
+edge.selectionnerPCC {
+    fill-color: #023cfc;
+    size: 5px;
+}

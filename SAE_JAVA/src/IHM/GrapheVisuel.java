@@ -17,7 +17,22 @@ public class GrapheVisuel extends SingleGraph {
         for (Sommet s : tabS) {
             if (s != null) {
                 Node n = addNode(s.getNom());
-                n.setAttribute("ui.label", s.getNom() + " (" + s.getType() + ")");
+                
+                String id = s.getNom();
+                String type = s.getType();
+                n.setAttribute("ui.label", id+ " ("+ type + ")");
+                
+                if ("M".equals(s.getType())) {
+                    n.setAttribute("ui.class", "maternite");
+                } else if ("O".equals(s.getType())) {
+                    n.setAttribute("ui.class", "blocOperatoire");
+                } else if ("N".equals(s.getType())) {
+                    n.setAttribute("ui.class", "nutrition");
+                }
+                n.setAttribute("type", s.getType());
+                n.setAttribute("id", s.getNom());
+                n.setAttribute("index", s.getIndex());
+                
             }
         }
 
@@ -27,11 +42,15 @@ public class GrapheVisuel extends SingleGraph {
                 if (r != null && i < j) {
                     String idArete = tabS[i].getNom() + "-" + tabS[j].getNom();
                     Edge e = addEdge(idArete, tabS[i].getNom(), tabS[j].getNom());
-                    e.setAttribute("ui.label", r.getDistance() + "km");
+                    
+                    
+                    e.setAttribute("distance", r.getDistance());
+                    
+                    e.setAttribute("fiabilite", r.getFiabilite());
                     // Poids utilises par la classe Recherche (Dijkstra)
-                    e.setAttribute("duree", r.getDurée());
+                    e.setAttribute("duree", r.getDuree());
                     // Duree estimee : penalisee quand la fiabilite est faible
-                    e.setAttribute("dureeEstimee", r.getDurée() * 10.0 / r.getFiabilité());
+                    e.setAttribute("dureeEstimee", r.getDuree() * 10.0 / r.getFiabilite());
                 }
             }
         }

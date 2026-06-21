@@ -3,12 +3,30 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+<<<<<<< HEAD
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/IHM/FenetrePrincipale.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/IHM/SommetClique.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Outils/AlgorithmeChristofide.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Outils/Recherche.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/IHM/GrapheVisuel.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/IHM/FenetreAlgorithmes.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Structure/DistanceVers.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Outils/AlgorithmePrim.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Outils/DiviserGraphe.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Outils/Glouton.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Structure/Graphe.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Structure/Itineraire.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Structure/Route.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Structure/Sommet.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/IHM/TableauSommet.java</file>
+=======
             <file>file:/C:/Users/walid/OneDrive/Documents/SAE/JAVA/SAE_JAVA_TEST/SAE_JAVA/src/Structure/Graphe.java</file>
             <file>file:/C:/Users/walid/OneDrive/Documents/SAE/JAVA/SAE_JAVA_TEST/SAE_JAVA/src/Structure/plusCourtTrajet.java</file>
             <file>file:/C:/Users/walid/OneDrive/Documents/SAE/JAVA/SAE_JAVA_TEST/SAE_JAVA/src/Structure/Recherche.java</file>
             <file>file:/C:/Users/walid/OneDrive/Documents/SAE/JAVA/SAE_JAVA_TEST/SAE_JAVA/src/Structure/glouton.java</file>
             <file>file:/C:/Users/walid/OneDrive/Documents/SAE/JAVA/SAE_JAVA_TEST/SAE_JAVA/src/Structure/Main.java</file>
             <file>file:/C:/Users/walid/OneDrive/Documents/SAE/JAVA/SAE_JAVA_TEST/SAE_JAVA/src/IHM/GrapheVisuel.java</file>
+>>>>>>> origin/Walid
         </group>
     </open-files>
 </project-private>

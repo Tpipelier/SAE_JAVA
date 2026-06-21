@@ -1,9 +1,11 @@
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Structure;
+package Outils;
 
+import Structure.Itineraire;
 import java.util.ArrayList;
 import java.util.List;
 import org.graphstream.algorithm.Dijkstra;
@@ -12,6 +14,9 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 
 /**
+ * Moteur de recherche de plus courts chemins, fonde sur l'algorithme de Dijkstra
+ * de la librairie GraphStream. Les poids des aretes ({@code "duree"} ou
+ * {@code "dureeEstimee"}) sont poses par {@code GrapheVisuel}.
  *
  * @author walid
  */
@@ -19,16 +24,37 @@ public class Recherche {
 
     private final Graph graphe;
 
+    /**
+     * Construit le moteur de recherche pour un graphe GraphStream donne.
+     *
+     * @param graphe le graphe GraphStream sur lequel effectuer les recherches
+     */
     public Recherche(Graph graphe) {
         this.graphe = graphe;
     }
 
-    /** Plus court chemin en durée standard (minutes). */
+    /**
+     * Calcule le plus court chemin en duree standard (minutes).
+     *
+     * @param depart  nom du centre de depart
+     * @param arrivee nom du centre d'arrivee
+     * @return l'itineraire le plus court, ou {@code null} si l'arrivee est
+     *         inatteignable
+     * @throws IllegalArgumentException si un des centres est inconnu
+     */
     public Itineraire plusCourtCheminDuree(String depart, String arrivee) {
         return chercher("duree", depart, arrivee);
     }
 
-    /** Plus court chemin en durée estimée (pondérée par la fiabilité). */
+    /**
+     * Calcule le plus court chemin en duree estimee (ponderee par la fiabilite).
+     *
+     * @param depart  nom du centre de depart
+     * @param arrivee nom du centre d'arrivee
+     * @return l'itineraire le plus court, ou {@code null} si l'arrivee est
+     *         inatteignable
+     * @throws IllegalArgumentException si un des centres est inconnu
+     */
     public Itineraire plusCourtCheminDureeEstimee(String depart, String arrivee) {
         return chercher("dureeEstimee", depart, arrivee);
     }
@@ -59,36 +85,13 @@ public class Recherche {
             return null;
         }
 
-        List<String> sommets = new ArrayList<>();
+        ArrayList<String> sommets = new ArrayList<>();
+        ArrayList<String> types = new ArrayList<>();
         for (Node n : chemin.getNodePath()) {
             sommets.add(n.getId());
+            types.add(n.getAttribute("type"));
         }
-        return new Itineraire(sommets, cout);
-    }
-
-    /** Résultat d'une recherche : les centres traversés et le coût total. */
-    public static class Itineraire {
-
-        private final List<String> sommets;
-        private final double cout;
-
-        public Itineraire(List<String> sommets, double cout) {
-            this.sommets = sommets;
-            this.cout = cout;
-        }
-
-        public List<String> getSommets() {
-            return sommets;
-        }
-
-        public double getCout() {
-            return cout;
-        }
-
-        @Override
-        public String toString() {
-            return sommets + " (" + Math.round(cout) + " min)";
-        }
+        return new Itineraire(sommets, types, cout);
     }
 }
 
