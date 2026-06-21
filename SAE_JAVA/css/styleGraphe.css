@@ -1,5 +1,5 @@
 graph {
-    fill-color: lightgray;         /* Couleur du fond (Hexadécimal ou nom) */
+    fill-color: rgb(126, 126, 126);         /* Couleur du fond (Hexadécimal ou nom) */
 }
 
 edge {
@@ -17,20 +17,17 @@ node{
 }
 
 node.maternite {
-    fill-image: url('../Images/BlocOperatoire.png');
-    fill-color: #2ecc71;
+    fill-color: #98F5FF;
 }
 
 /* Couleur pour le type O (ex: Bleu) */
 node.blocOperatoire {
-    fill-image: url('../Images/BlocOperatoire.png');
-    fill-color: #3498db;
+    fill-color: #FF7474;
 }
 
 /* Couleur pour le type P (ex: Violet) */
 node.nutrition {
-    fill-image: url('../Images/CentreNutrition.png');
-    fill-color: #9b59b6;
+    fill-color: #C9FF17;
 }
 
 edge.danger {
