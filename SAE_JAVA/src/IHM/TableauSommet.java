@@ -12,7 +12,7 @@ import javax.swing.JScrollPane;
 
 /**
  *
- * @author alexi
+ * @author Alexis Chazal
  */
 public class TableauSommet extends JFrame {
     private JTable tab;

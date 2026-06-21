@@ -62,7 +62,7 @@ import org.graphstream.ui.view.util.DefaultMouseManager;
 
 /**
  *
- * @author alexi
+ * @author Alexis Chazal
  */
 public class FenetrePrincipale extends JFrame implements ActionListener {
 
@@ -97,7 +97,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     /**
      * Constructeur de FenetrePrincipale
      *
-     * @param nom nom de la fenetre
+     * 
      */
     public FenetrePrincipale() {
 

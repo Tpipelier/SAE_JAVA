@@ -25,7 +25,7 @@ import org.graphstream.graph.Node;
 
 /**
  *
- * @author p2500558
+ * @author Alexis Chazal
  */
 public class SommetClique extends JDialog implements ActionListener {
 

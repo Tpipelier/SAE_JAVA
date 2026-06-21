@@ -26,7 +26,7 @@ public class DiviserGraphe {
      * (secteurs).
      *
      * @param grapheGlobal Le modèle complet
-     * @return Un tableau de deux List<Sommet> [SecteurCamion1, SecteurCamion2]
+     * @return Un tableau de deux Listes de Sommets [SecteurCamion1, SecteurCamion2]
      */
     public static List<Sommet>[] diviserEnDeuxSecteurs(Graphe grapheGlobal) {
         int totalSommets = grapheGlobal.getNbSommet();
