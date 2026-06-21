@@ -6,22 +6,27 @@ package Outils;
 
 import Structure.DistanceVers;
 import Structure.Graphe;
-import Structure.Route;
 import Structure.Sommet;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
  * @author Theo Pipelier
  */
 public class DiviserGraphe {
 
-    public static Graphe[] diviserEnDeux(Graphe grapheGlobal) {
+    /**
+     * Aligne les sommets du graphe global dans deux listes distinctes
+     * (secteurs).
+     *
+     * @param grapheGlobal Le modèle complet
+     * @return Un tableau de deux List<Sommet> [SecteurCamion1, SecteurCamion2]
+     */
+    public static List<Sommet>[] diviserEnDeuxSecteurs(Graphe grapheGlobal) {
         int totalSommets = grapheGlobal.getNbSommet();
         Sommet depot = grapheGlobal.getSommet(0); // Le Centre 1
 
-        // 1. Recherche des 2 meilleurs sommets 
+        // 1. Recherche des 2 meilleurs sommets piliers (Logique inchangée de Théo)
         Sommet meilleurA = grapheGlobal.getSommet(1);
         Sommet meilleurB = (totalSommets > 2) ? grapheGlobal.getSommet(2) : meilleurA;
         double meilleurCoutGlobal = Double.MAX_VALUE;
@@ -31,7 +36,6 @@ public class DiviserGraphe {
                 Sommet pilierA = grapheGlobal.getSommet(i);
                 Sommet pilierB = grapheGlobal.getSommet(j);
 
-                // On utilise Dijkstra pour calculer les vraies distances les plus courtes depuis les piliers
                 List<DistanceVers> cheminsDepuisA = grapheGlobal.distancesCroissantesVersTous(pilierA, "Duree");
                 List<DistanceVers> cheminsDepuisB = grapheGlobal.distancesCroissantesVersTous(pilierB, "Duree");
 
@@ -43,7 +47,6 @@ public class DiviserGraphe {
                     if (k != i && k != j) {
                         Sommet s = grapheGlobal.getSommet(k);
 
-                        // Trouver la durée réelle via Dijkstra pour A
                         int dA = Integer.MAX_VALUE;
                         for (int idx = 0; idx < cheminsDepuisA.size(); idx++) {
                             if (cheminsDepuisA.get(idx).getSommet().equals(s)) {
@@ -70,7 +73,7 @@ public class DiviserGraphe {
                 }
 
                 int ecart = Math.abs(compteA - compteB);
-                double penaliteEquilibre = ecart * 100.0; // Pénalité renforcée pour forcer le groupe
+                double penaliteEquilibre = ecart * 100.0;
                 double coutTotalPondere = coutConfiguration + penaliteEquilibre;
 
                 if (coutTotalPondere < meilleurCoutGlobal) {
@@ -81,14 +84,15 @@ public class DiviserGraphe {
             }
         }
 
-        // 2. Répartition finale basée sur le Dijkstra des deux piliers retenus
-        List<Sommet> listeA = new ArrayList<>();
-        List<Sommet> listeB = new ArrayList<>();
+        // 2. REPARTITION FINALE : C'est ici qu'on simplifie !
+        List<Sommet> secteurA = new ArrayList<>();
+        List<Sommet> secteurB = new ArrayList<>();
 
-        listeA.add(depot);
-        listeB.add(depot);
-        listeA.add(meilleurA);
-        listeB.add(meilleurB);
+        // On insère le dépôt et le pilier dans chaque secteur
+        secteurA.add(depot);
+        secteurB.add(depot);
+        secteurA.add(meilleurA);
+        secteurB.add(meilleurB);
 
         List<DistanceVers> cheminsFinauxA = grapheGlobal.distancesCroissantesVersTous(meilleurA, "Duree");
         List<DistanceVers> cheminsFinauxB = grapheGlobal.distancesCroissantesVersTous(meilleurB, "Duree");
@@ -112,49 +116,14 @@ public class DiviserGraphe {
                 }
 
                 if (dA < dB) {
-                    listeA.add(s);
+                    secteurA.add(s);
                 } else {
-                    listeB.add(s);
+                    secteurB.add(s);
                 }
             }
         }
 
-        Graphe g1 = new Graphe(listeA.size());
-        Graphe g2 = new Graphe(listeB.size());
-
-        for (int i = 0; i < listeA.size(); i++) {
-            g1.ajouterSommet(i, listeA.get(i));
-        }
-        for (int i = 0; i < listeB.size(); i++) {
-            g2.ajouterSommet(i, listeB.get(i));
-        }
-
-        remplirMatriceRoutes(g1, grapheGlobal);
-        remplirMatriceRoutes(g2, grapheGlobal);
-
-        return new Graphe[]{g1, g2};
-    }
-
-    private static void remplirMatriceRoutes(Graphe sousGraphe, Graphe grapheGlobal) {
-        int n = sousGraphe.getNbSommet();
-        for (int i = 0; i < n; i++) {
-            Sommet s1 = sousGraphe.getSommet(i);
-            for (int j = 0; j < n; j++) {
-                if (i != j) {
-                    Sommet s2 = sousGraphe.getSommet(j);
-
-                    Route r = grapheGlobal.getRoute(s1.getIndex(), s2.getIndex());
-                    if (r == null) {
-                        r = grapheGlobal.getRoute(s2.getIndex(), s1.getIndex());
-                    }
-
-                    if (r != null) {
-
-                        sousGraphe.ajouterRoute(i, j, r);
-                        sousGraphe.ajouterDuree(r, (int) r.getDuree());
-                    }
-                }
-            }
-        }
+        // On retourne directement le tableau contenant les deux listes de sommets propres
+        return new List[]{secteurA, secteurB};
     }
 }

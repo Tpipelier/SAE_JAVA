@@ -9,7 +9,10 @@ import Outils.DiviserGraphe;
 import Structure.Graphe;
 import Outils.Recherche;
 import Outils.Glouton;
+import Outils.RecuitSimule;
+import Structure.DistanceVers;
 import Structure.Sommet;
+import Structure.Itineraire;
 import java.awt.BorderLayout;
 import static java.awt.BorderLayout.EAST;
 import static java.awt.BorderLayout.WEST;
@@ -70,7 +73,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private JButton boutonCalculerItineraire;
     private JButton boutonCalculerItineraireEstimee;
     private JButton boutonCalculerAlgoGlouton;
-    private JButton boutonCalculerAlgoChristofide;
+    private JButton boutonCalculerAlgoRecuit;
     private JButton boutonCalculerAlgo2Camions;
     private JButton boutonExporter1Camion;
     private JButton boutonExporter2Camion;
@@ -105,10 +108,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 
         initComposants();
-        
-        
+
         ImageIcon icon = new ImageIcon("Images/logo.png");
-            this.setIconImage(icon.getImage());
+        this.setIconImage(icon.getImage());
 
         this.setVisible(true);
 
@@ -143,8 +145,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         boutonCalculerItineraire = new JButton("Calculer l'itinéraire");
         boutonCalculerItineraireEstimee = new JButton("Calculer l'itinéraire estimée");
         boutonCalculerAlgoGlouton = new JButton("Glouton");
-        boutonCalculerAlgoChristofide = new JButton("Christofide 1 Camion");
-        boutonCalculerAlgo2Camions = new JButton("Christofide 2 Camions");
+        boutonCalculerAlgoRecuit = new JButton("Recuit 1 Camion");
+        boutonCalculerAlgo2Camions = new JButton("Recuit 2 Camions");
         boutonExporter1Camion = new JButton("Exporter avec 1 camion");
         boutonExporter2Camion = new JButton("Exporter avec 2 camion");
         boutonViderCSV = new JButton("Vider les fichiers de rendu");
@@ -191,7 +193,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         boutonCalculerItineraire.addActionListener(this);
         boutonCalculerItineraireEstimee.addActionListener(this);
         boutonCalculerAlgoGlouton.addActionListener(this);
-        boutonCalculerAlgoChristofide.addActionListener(this);
+        boutonCalculerAlgoRecuit.addActionListener(this);
         boutonCalculerAlgo2Camions.addActionListener(this);
         boutonExporter1Camion.addActionListener(this);
         boutonExporter2Camion.addActionListener(this);
@@ -206,7 +208,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         appliquerStyleBouton(boutonCalculerItineraire);
         appliquerStyleBouton(boutonCalculerItineraireEstimee);
         appliquerStyleBouton(boutonCalculerAlgoGlouton);
-        appliquerStyleBouton(boutonCalculerAlgoChristofide);
+        appliquerStyleBouton(boutonCalculerAlgoRecuit);
         appliquerStyleBouton(boutonCalculerAlgo2Camions);
         appliquerStyleBouton(boutonExporter1Camion);
         appliquerStyleBouton(boutonExporter2Camion);
@@ -302,7 +304,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         gb.gridy += 1;
         panneauDeroulant.add(boutonCalculerAlgoGlouton, gb);
         gb.gridy += 1;
-        panneauDeroulant.add(boutonCalculerAlgoChristofide, gb);
+        panneauDeroulant.add(boutonCalculerAlgoRecuit, gb);
         gb.gridy += 1;
         panneauDeroulant.add(boutonCalculerAlgo2Camions, gb);
         gb.gridy += 1;
@@ -751,33 +753,31 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         }
         if (e.getSource() == boutonCalculerAlgoGlouton) {
             String[] resultatTotal = lancerGlouton();
-            texteAlgo.setText(resultatTotal[0]+"Durée total du trajet : "+resultatTotal[1]+ "min");
+            texteAlgo.setText(resultatTotal[0] + "Durée total du trajet : " + resultatTotal[1] + "min");
         }
-        if (e.getSource() == boutonCalculerAlgoChristofide) {
-            String texteResultat = "Résultat Christofide : \n" + lancerChristofide(graphe)[0];
+        if (e.getSource() == boutonCalculerAlgoRecuit) {
+            String texteResultat = "Résultat Recuit : \n" + lancerRecuit(graphe, null)[0];
             texteAlgo.setText(texteResultat);
         }
         if (e.getSource() == boutonCalculerAlgo2Camions) {
             filtreTypes.setSelectedItem("Tout les centres");
-            Graphe[] resultats = DiviserGraphe.diviserEnDeux(graphe);
-            Graphe grapheCamion1 = resultats[0];
-            Graphe grapheCamion2 = resultats[1];
-            String texteResultat = "Résultat camion 1 : \n" + lancerChristofide(grapheCamion1)[0];
-            texteResultat = texteResultat + "\n\nRésultat camion 2 : \n" + lancerChristofide(grapheCamion2)[0];
+            List<Sommet>[] resultats = DiviserGraphe.diviserEnDeuxSecteurs(graphe);
+            String texteResultat = "Résultat camion 1 : \n" + lancerRecuit(graphe, resultats[0])[0];
+            texteResultat = texteResultat + "\n\nRésultat camion 2 : \n" + lancerRecuit(graphe, resultats[1])[0];
             texteAlgo.setText(texteResultat);
         }
         if (e.getSource() == boutonExporter1Camion) {
-            String dureeGlouton =  lancerGlouton()[1];
-            String dureeChristofide;
+            String dureeGlouton = lancerGlouton()[1];
+            String dureeRecuit;
             String nomGraphe = graphe.getNom();
             String toutIDSommets;
             String ligneEcrite;
 
-            String[] resultatsChristofide = lancerChristofide(graphe);
+            String[] resultatsRecuit = lancerRecuit(graphe, null);
 
-            toutIDSommets = resultatsChristofide[1];
-            dureeChristofide = resultatsChristofide[2];
-            ligneEcrite = nomGraphe + ";" + dureeGlouton + ";" + dureeChristofide + toutIDSommets + "\n";
+            toutIDSommets = resultatsRecuit[1];
+            dureeRecuit = resultatsRecuit[2];
+            ligneEcrite = nomGraphe + ";" + dureeGlouton + ";" + dureeRecuit + toutIDSommets + "\n";
             try {
                 File fichier = new File("rendu/" + "resultats1camionEquipe1Groupe3.csv");
 
@@ -797,16 +797,12 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
             String toutIDSommets;
             String ligneEcrite;
 
-            Graphe[] resultats = DiviserGraphe.diviserEnDeux(graphe);
-            Graphe grapheCamion1 = resultats[0];
-            Graphe grapheCamion2 = resultats[1];
-
-            String[] resultatsChristofide1 = lancerChristofide(grapheCamion1);
-            String[] resultatsChristofide2 = lancerChristofide(grapheCamion2);
-
-            toutIDSommets = resultatsChristofide1[1] + resultatsChristofide2[1];
-            dureeCamion1 = resultatsChristofide1[2];
-            dureeCamion2 = resultatsChristofide2[2];
+            List<Sommet>[] resultats = DiviserGraphe.diviserEnDeuxSecteurs(graphe);
+            String[] resultatsRecuit1 = lancerRecuit(graphe, resultats[0]);
+            String[] resultatsRecuit2 = lancerRecuit(graphe, resultats[1]);
+            toutIDSommets = resultatsRecuit1[1] + resultatsRecuit2[1];
+            dureeCamion1 = resultatsRecuit1[2];
+            dureeCamion2 = resultatsRecuit2[2];
             ligneEcrite = nomGraphe + ";" + dureeCamion1 + ";" + dureeCamion2 + toutIDSommets + "\n";
             try {
                 File fichier = new File("rendu/" + "resultats2camionsEquipe1Groupe3.csv");
@@ -822,69 +818,81 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         if (e.getSource() == boutonViderCSV) {
             viderFichiersRendu();
             texteAlgo.setText("Fichiers de rendu vidées avec succès");
-            
+
         }
     }
 
-    private String[] lancerChristofide(Graphe graphe) {
-        List<String> typesChoisis = new ArrayList<>();
+    private String[] lancerRecuit(Graphe graphe, List<Sommet> sommetsAVisiter) {
+        String typeChoisi = new String();
         switch (filtreTypes.getSelectedItem().toString()) {
             case "Tout les centres":
-                typesChoisis.add("O");
-                typesChoisis.add("M");
-                typesChoisis.add("N");
+                typeChoisi="Tous";
                 break;
             case "Blocs opératoires":
-                typesChoisis.add("O");
+                typeChoisi="O";;
                 break;
             case "Centres de nutrition":
-                typesChoisis.add("N");
+               typeChoisi="N";
                 break;
             case "Maternités":
-                typesChoisis.add("M");
+                typeChoisi="M";
                 break;
         }
-        AlgorithmeChristofide ac = new AlgorithmeChristofide(grapheVisuel, graphe, typesChoisis);
-        List<String> lst = ac.executerChristofide();
+        int n = graphe.getNbSommet();
+        int[][] maMatriceDijkstra = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            List<DistanceVers> listDV = graphe.distancesCroissantesVersTous(graphe.getSommet(i), "Duree");
+            for (DistanceVers dv : listDV) {
+                int idxDest = graphe.indexDeSommet(dv.getSommet());
+                if (idxDest != -1) {
+                    maMatriceDijkstra[i][idxDest] = dv.getDuree();
+                }
+            }
+        }
+        RecuitSimule rs = new RecuitSimule();
+        Itineraire itineraire1Camion = rs.calculerTourneeOptimale(graphe, maMatriceDijkstra, sommetsAVisiter, typeChoisi);
+        
+        
+        List<String> lst = itineraire1Camion.getIdSommets();
         String resultatTexte = new String("");
         String resultatCSV = new String("");
         for (int i = 0; i < lst.size(); i++) {
             resultatTexte = resultatTexte + lst.get(i) + "\n";
             resultatCSV = resultatCSV + ";" + lst.get(i).substring(1);
         }
-        String cout = "" + Math.round(ac.getDuree());
+        String cout = "" + Math.round(itineraire1Camion.getCout());
         resultatTexte = resultatTexte + "\n Ce trajet prend : " + cout + " min";
         String[] resultatRetourner = {resultatTexte, resultatCSV, cout};
         return resultatRetourner;
     }
-    
+
     private String[] lancerGlouton() {
         Recherche recherche = new Recherche(grapheVisuel);
-            Glouton glouton = new Glouton(recherche);
-            String[] str = new String[1];
-            switch (filtreTypes.getSelectedItem().toString()) {
-                 case "Blocs opératoires":
-                    str[0] = "O";
-                    break;
-                case "Centres de nutrition":
-                    str[0] = "N";
-                    break;
-                case "Maternités":
-                    str[0] = "M";
-                    break;
-                default : 
-                    str = null;
-                    break;
-            }
-            
-            List<Sommet> lst = glouton.unCamionParType(graphe.getTabS(), graphe.getSommet(0),str);
-            String resultatTexte = "";
-            
-            for (int i = 0; i < lst.size(); i++) {
-                resultatTexte = resultatTexte + lst.get(i).getNom() + "\n";
-            }
-            String cout = ""+Math.round(glouton.getCoutTotalTrajet());
-            String[] resultatRetourner = {resultatTexte, cout};
-            return resultatRetourner;
+        Glouton glouton = new Glouton(recherche);
+        String[] str = new String[1];
+        switch (filtreTypes.getSelectedItem().toString()) {
+            case "Blocs opératoires":
+                str[0] = "O";
+                break;
+            case "Centres de nutrition":
+                str[0] = "N";
+                break;
+            case "Maternités":
+                str[0] = "M";
+                break;
+            default:
+                str = null;
+                break;
+        }
+
+        List<Sommet> lst = glouton.unCamionParType(graphe.getTabS(), graphe.getSommet(0), str);
+        String resultatTexte = "";
+
+        for (int i = 0; i < lst.size(); i++) {
+            resultatTexte = resultatTexte + lst.get(i).getNom() + "\n";
+        }
+        String cout = "" + Math.round(glouton.getCoutTotalTrajet());
+        String[] resultatRetourner = {resultatTexte, cout};
+        return resultatRetourner;
     }
 }
