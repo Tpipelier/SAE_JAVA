@@ -8,7 +8,6 @@
             <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Outils/AlgorithmeChristofide.java</file>
             <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Outils/Recherche.java</file>
             <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/IHM/GrapheVisuel.java</file>
-            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/IHM/FenetreAlgorithmes.java</file>
             <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Structure/DistanceVers.java</file>
             <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Outils/AlgorithmePrim.java</file>
             <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Outils/DiviserGraphe.java</file>
@@ -18,6 +17,11 @@
             <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Structure/Route.java</file>
             <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Structure/Sommet.java</file>
             <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/IHM/TableauSommet.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Test/Test.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/src/Outils/RecuitSimule.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/test/Outils/AlgorithmePrimTest.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/test/Outils/DiviserGrapheTest.java</file>
+            <file>file:/C:/Users/alexi/OneDrive/Desktop/SAE%20JAVA/SAE_JAVA/SAE_JAVA/test/Structure/DistanceVersTest.java</file>
         </group>
     </open-files>
 </project-private>
