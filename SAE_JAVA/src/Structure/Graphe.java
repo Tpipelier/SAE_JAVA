@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.Scanner;
 import Structure.Sommet;
 import Structure.Route;
+import java.util.Comparator;
 
 /**
  *
@@ -38,6 +39,7 @@ public class Graphe {
     }
 
     /**
+<<<<<<< HEAD
      * Deuxième constructeur : Permet de créer un sous-graphe vierge avec des
      * tableaux dimensionnés sans passer par un fichier CSV.
      *
@@ -51,6 +53,8 @@ public class Graphe {
     }
 
     /**
+=======
+>>>>>>> origin/Walid
      *
      * @param nomFichier
      * @return cpt
@@ -423,6 +427,25 @@ public class Graphe {
             }
         }
         return resultats;
+    }
+    
+    
+
+    public List<String> top5Texte(Sommet depart) {
+        List<DistanceVers> resultats = distancesCroissantesVersTous(depart);
+        List<String> top = new ArrayList<>();
+
+        int limite = 5;
+        if (resultats.size() < 5) {
+            limite = resultats.size();
+        }
+
+        for (int i = 0; i < limite; i++) {
+            DistanceVers d = resultats.get(i);
+            top.add(d.getNom() + d.getType() + d.getDistance());
+        }
+
+        return top;
     }
 
     public int getNbRoutesEffectives() {
