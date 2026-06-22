@@ -68,8 +68,9 @@ import org.graphstream.ui.view.util.DefaultMouseManager;
  * calcul d'itineraires (Dijkstra), calcul de tournees (glouton, recuit simule,
  * deux camions) et export des resultats au format CSV.
  *
- * <p>Cette classe implemente {@link ActionListener} pour reagir aux clics sur
- * les differents composants.</p>
+ * <p>
+ * Cette classe implemente {@link ActionListener} pour reagir aux clics sur les
+ * differents composants.</p>
  *
  * @author Alexis Chazal
  */
@@ -475,8 +476,8 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     /**
      * Traite les actions de l'utilisateur sur les composants de la fenetre.
      * Selon la source de l'evenement, charge ou genere un graphe, affiche ou
-     * masque des elements, calcule un itineraire ou une tournee, ou exporte
-     * les resultats.
+     * masque des elements, calcule un itineraire ou une tournee, ou exporte les
+     * resultats.
      *
      * @param e l'evenement declenche par le composant clique
      */
@@ -862,16 +863,17 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         String typeChoisi = new String();
         switch (filtreTypes.getSelectedItem().toString()) {
             case "Tout les centres":
-                typeChoisi="Tous";
+                typeChoisi = "Tous";
                 break;
             case "Blocs opératoires":
-                typeChoisi="O";;
+                typeChoisi = "O";
+                ;
                 break;
             case "Centres de nutrition":
-               typeChoisi="N";
+                typeChoisi = "N";
                 break;
             case "Maternités":
-                typeChoisi="M";
+                typeChoisi = "M";
                 break;
         }
         int n = graphe.getNbSommet();
@@ -887,8 +889,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         }
         RecuitSimule rs = new RecuitSimule();
         Itineraire itineraire1Camion = rs.calculerTourneeOptimale(graphe, maMatriceDijkstra, sommetsAVisiter, typeChoisi);
-        
-        
+
         List<String> lst = itineraire1Camion.getIdSommets();
         String resultatTexte = new String("");
         String resultatCSV = new String("");
