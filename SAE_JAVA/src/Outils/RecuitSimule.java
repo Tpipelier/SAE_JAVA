@@ -12,22 +12,30 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Algorithme de Recuit Simulé Hybride Multi-Seed pour le défi algo sur la
- * tournée des camions.
+ * Algorithme de Recuit Simule Hybride Multi-Seed pour le defi algo sur la
+ * tournee des camions. A partir d'une solution gloutonne de depart, il explore
+ * des permutations de l'ordre de visite en acceptant temporairement des
+ * solutions moins bonnes (selon une temperature decroissante) afin d'echapper
+ * aux minima locaux. La recherche est relancee avec plusieurs graines pour
+ * retenir le meilleur resultat.
+ *
+ * @author Walid Ferchach
  */
 public class RecuitSimule {
 
     /**
-     * Calcule la tournée optimale en s'appuyant sur une matrice de distances
-     * pré-calculée.
+     * Calcule la tournee optimale en s'appuyant sur une matrice de distances
+     * pre-calculee.
      *
-     * * @param graphe Le graphe complet de référence
-     * @param matriceDijkstra Le tableau des plus courts chemins pré-calculés
-     * [n][n]
-     * @param sommetsAVisiter La liste restreinte de sommets (Secteur Camion),
-     * ou null pour filtrer tout le graphe
-     * @param typeFiltre Le filtre demandé ("M", "O", "N" ou "Tous")
-     * @return L'itinéraire optimisé au maximum
+     * @param graphe          le graphe complet de reference
+     * @param matriceDijkstra le tableau {@code [n][n]} des plus courts chemins
+     *                        (durees) pre-calcules
+     * @param sommetsAVisiter la liste restreinte de sommets (secteur d'un
+     *                        camion), ou {@code null} pour filtrer tout le
+     *                        graphe
+     * @param typeFiltre      le filtre demande ({@code "M"}, {@code "O"},
+     *                        {@code "N"} ou {@code "Tous"})
+     * @return l'itineraire optimise
      */
     public Itineraire calculerTourneeOptimale(Graphe graphe, int[][] matriceDijkstra, List<Sommet> sommetsAVisiter, String typeFiltre) {
 

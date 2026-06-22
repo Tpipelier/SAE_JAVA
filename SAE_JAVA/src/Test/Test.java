@@ -25,14 +25,18 @@ import java.util.Scanner;
 import org.graphstream.graph.Graph;
 
 /**
+ * Classe de demarrage de l'application MEDMAP : son point d'entree cree et
+ * affiche la {@link FenetrePrincipale}.
  *
- * @author Tout le monde 
+ * @author Tout le monde
  */
 public class Test {
 
     /**
-     * @param args the command line arguments
-     * 
+     * Point d'entree du programme : lance l'interface graphique de
+     * l'application.
+     *
+     * @param args les arguments de la ligne de commande (non utilises)
      */
     public static void main(String[] args) {
 

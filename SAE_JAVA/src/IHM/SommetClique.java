@@ -24,6 +24,11 @@ import javax.swing.JTable;
 import org.graphstream.graph.Node;
 
 /**
+ * Boite de dialogue affichant les informations d'un sommet sur lequel
+ * l'utilisateur a fait un clic droit. Elle presente le type du centre, un
+ * tableau recapitulatif des centres les plus proches (par duree et par duree
+ * estimee) et donne acces, via deux boutons, aux tableaux detailles des
+ * distances et des durees vers tous les autres centres.
  *
  * @author Alexis Chazal
  */
@@ -39,6 +44,15 @@ public class SommetClique extends JDialog implements ActionListener {
     private JButton btDuree;
     private Graphe graphe;
 
+    /**
+     * Construit et affiche la boite de dialogue d'information pour le sommet
+     * clique.
+     *
+     * @param f      la fenetre principale parente
+     * @param n      le noeud GraphStream sur lequel l'utilisateur a clique
+     * @param graphe le graphe (modele de donnees) contenant les sommets et les
+     *               routes
+     */
     public SommetClique(FenetrePrincipale f, Node n, Graphe graphe) {
         super(f, "Sommet " + n.getId());
         this.nodeCliqué = n;
@@ -231,6 +245,12 @@ public class SommetClique extends JDialog implements ActionListener {
         return tab;
     }
 
+    /**
+     * Reagit aux clics sur les boutons : ouvre la fenetre du tableau des
+     * distances ou celle du tableau des durees selon le bouton actionne.
+     *
+     * @param e l'evenement declenche par le bouton clique
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == btDistance) {

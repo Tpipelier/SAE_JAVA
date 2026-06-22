@@ -6,8 +6,26 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
 
+/**
+ * Version visuelle d'un {@link Structure.Graphe}, fondee sur la librairie
+ * GraphStream.
+ * Cette classe construit un {@code SingleGraph} affichable a l'ecran a partir
+ * des sommets et des routes du modele : chaque sommet devient un noeud (colore
+ * selon son type) et chaque route une arete. Les aretes portent les attributs
+ * {@code distance}, {@code fiabilite}, {@code duree} et {@code dureeEstimee}
+ * utilises ensuite par les algorithmes de recherche (Dijkstra).
+ *
+ * @author Alexis Chazal
+ */
 public class GrapheVisuel extends SingleGraph {
 
+    /**
+     * Construit le graphe visuel a partir du modele de donnees.
+     *
+     * @param id   identifiant du graphe GraphStream
+     * @param tabS tableau des sommets a representer
+     * @param tabR matrice d'adjacence des routes a representer
+     */
     public GrapheVisuel(String id, Sommet[] tabS, Route[][] tabR) {
         super(id);
         construireGraphe(tabS, tabR);
@@ -56,6 +74,9 @@ public class GrapheVisuel extends SingleGraph {
         }
     }
 
+    /**
+     * Ouvre une fenetre GraphStream affichant ce graphe.
+     */
     public void afficher() {
         display();
     }

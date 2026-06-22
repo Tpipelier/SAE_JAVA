@@ -61,6 +61,15 @@ import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.util.DefaultMouseManager;
 
 /**
+ * Fenetre principale de l'application MEDMAP. Elle assemble l'interface
+ * graphique (boutons, cases a cocher, listes deroulantes, zones de texte) et
+ * orchestre les fonctionnalites : chargement d'une carte ou generation d'un
+ * graphe aleatoire, affichage interactif du graphe (deplacement et zoom),
+ * calcul d'itineraires (Dijkstra), calcul de tournees (glouton, recuit simule,
+ * deux camions) et export des resultats au format CSV.
+ *
+ * <p>Cette classe implemente {@link ActionListener} pour reagir aux clics sur
+ * les differents composants.</p>
  *
  * @author Alexis Chazal
  */
@@ -95,9 +104,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private JButton boutonViderCSV;
 
     /**
-     * Constructeur de FenetrePrincipale
-     *
-     * 
+     * Construit et affiche la fenetre principale de l'application. La fenetre
+     * est ouverte maximisee, son icone et ses composants sont initialises via
+     * {@link #initComposants()}.
      */
     public FenetrePrincipale() {
 
@@ -116,6 +125,10 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
     }
 
+    /**
+     * Vide le contenu des deux fichiers CSV de rendu (un camion et deux
+     * camions) en les reecrivant a vide.
+     */
     public void viderFichiersRendu() {
         try {
             File fichier1 = new File("rendu/" + "resultats1camionEquipe1Groupe3.csv");
@@ -136,7 +149,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     }
 
     /**
-     * Génère les composants de la FenetrePrincipale
+     * Cree et dispose tous les composants graphiques de la fenetre (boutons,
+     * cases a cocher, listes deroulantes, zones de texte, separateurs) et leur
+     * associe les ecouteurs d'evenements ainsi que la mise en page.
      */
     public void initComposants() {
 
@@ -344,10 +359,24 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         bouton.setFocusPainted(false);
     }
 
+    /**
+     * Renvoie le graphe (modele de donnees) actuellement charge dans la
+     * fenetre.
+     *
+     * @return le graphe courant, ou {@code null} si aucun n'est charge
+     */
     public Graphe getGraphe() {
         return graphe;
     }
 
+    /**
+     * Affiche le graphe visuel donne au centre de la fenetre, en remplacant
+     * celui eventuellement deja present. Active la navigation a la souris :
+     * clic droit sur un sommet pour ouvrir sa fiche, glisser pour deplacer la
+     * vue et molette pour zoomer.
+     *
+     * @param g le graphe visuel a afficher
+     */
     public void afficherGraphe(GrapheVisuel g) {
 
         if (grapheActuel != null) {
@@ -443,6 +472,14 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         panneauGlobal.repaint();    // Redessine les composants
     }
 
+    /**
+     * Traite les actions de l'utilisateur sur les composants de la fenetre.
+     * Selon la source de l'evenement, charge ou genere un graphe, affiche ou
+     * masque des elements, calcule un itineraire ou une tournee, ou exporte
+     * les resultats.
+     *
+     * @param e l'evenement declenche par le composant clique
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == boutonGrapheAleatoire) {
