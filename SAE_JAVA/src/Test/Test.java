@@ -26,7 +26,7 @@ import org.graphstream.graph.Graph;
 
 /**
  *
- * @author Theo Pipelier
+ * @author Tout le monde 
  */
 public class Test {
 
