@@ -22,10 +22,9 @@ import java.util.List;
 public class DiviserGraphe {
 
     /**
-     * Aligne les sommets du graphe global dans deux listes distinctes
-     * (secteurs).
+     * Aligne les sommets du graphe global dans deux listes distinctes (secteurs).
      *
-     * @param grapheGlobal Le modèle complet
+     * @param grapheGlobal graphe à diviser en 2
      * @return Un tableau de deux Listes de Sommets [SecteurCamion1, SecteurCamion2]
      */
     public static List<Sommet>[] diviserEnDeuxSecteurs(Graphe grapheGlobal) {

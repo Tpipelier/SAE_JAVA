@@ -14,7 +14,7 @@ import java.util.Objects;
  *
  * <p>L'egalite entre deux sommets ne repose que sur leur index.</p>
  *
- * @author Equipe SAE_JAVA
+ * @author Theo Pipelier
  */
 public class Sommet {
     private String nom;

@@ -13,10 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Classe non utilisé car l'algorithme de Christofide est moins optimisé que le glouton
  * Implemente l'algorithme de Prim pour calculer l'Arbre Couvrant Minimum (ACM)
  * d'un graphe, en utilisant la duree des routes comme poids.
  *
- * @author theop
+ * @author Theo Pipelier
  */
 public class AlgorithmePrim {
 

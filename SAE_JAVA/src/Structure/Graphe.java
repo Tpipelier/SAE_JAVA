@@ -25,7 +25,7 @@ import java.util.Comparator;
  * <p>Cette classe propose aussi des algorithmes de parcours : distances
  * croissantes, plus courts chemins (Dijkstra pondere par la duree), etc.</p>
  *
- * @author Theo Pipelier
+ * @author Theo Pipelier et Walid Ferchach
  */
 public class Graphe {
 

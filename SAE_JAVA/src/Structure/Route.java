@@ -9,7 +9,7 @@ package Structure;
  * un nom, une fiabilite, une distance (en km) et une duree de trajet (en min),
  * ainsi que ses sommets de depart et d'arrivee.
  *
- * @author Equipe SAE_JAVA
+ * @author Theo Pipelier
  */
 public class Route {
 

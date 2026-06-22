@@ -15,7 +15,7 @@ import org.graphstream.graph.implementations.SingleGraph;
  * {@code distance}, {@code fiabilite}, {@code duree} et {@code dureeEstimee}
  * utilises ensuite par les algorithmes de recherche (Dijkstra).
  *
- * @author Alexis Chazal
+ * @author Walid Ferchach
  */
 public class GrapheVisuel extends SingleGraph {
 

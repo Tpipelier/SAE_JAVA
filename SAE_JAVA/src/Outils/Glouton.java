@@ -15,7 +15,7 @@ import java.util.List;
  * visite des centres pour un camion. A chaque etape, on se rend au centre non
  * encore visite le plus proche (en duree), via la classe {@link Recherche}.
  *
- * @author walid
+ * @author Walid Ferchach
  */
 public class Glouton {
 
@@ -43,7 +43,7 @@ public class Glouton {
     /**
      * Calcule l'ordre de visite de tous les sommets en partant du sommet donne.
      *
-     * @param tabS   l'ensemble des sommets a desservir
+     * @param tabS   l'ensemble des sommets a visiter
      * @param depart le sommet de depart (le depot)
      * @return l'ordre de visite des sommets
      */
@@ -55,13 +55,12 @@ public class Glouton {
      * Calcule l'ordre de visite des sommets en se limitant a certains types de
      * centres. Si {@code types} vaut {@code null}, tous les sommets sont visites.
      *
-     * @param tabS   l'ensemble des sommets a desservir
+     * @param tabS   l'ensemble des sommets a visiter
      * @param depart le sommet de depart (le depot)
      * @param types  les types de centres a desservir (1 ou 2 types), ou
      *               {@code null} pour tous les visiter
      * @return l'ordre de visite des sommets retenus
-     * @throws IllegalArgumentException si {@code types} ne contient pas 1 ou 2
-     *         types
+     * @throws IllegalArgumentException si {@code types} ne contient pas 1 ou 2 types
      */
     public List<Sommet> unCamionParType(Sommet[] tabS, Sommet depart, String[] types) {
         if (types != null && (types.length < 1 || types.length > 2)) {

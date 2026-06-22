@@ -15,6 +15,7 @@ import java.util.List;
 import org.graphstream.graph.Graph;
 
 /**
+ * Classe non utilisé car l'algorithme de Christofide est moins optimisé que le glouton
  * Implemente une variante de l'algorithme de Christofides pour approcher une
  * tournee de cout minimal. Il combine un arbre couvrant minimum (Prim), un
  * couplage des sommets de degre impair, un parcours eulerien (Hierholzer) puis

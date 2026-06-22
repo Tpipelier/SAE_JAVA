@@ -19,7 +19,7 @@ import java.util.Random;
  * aux minima locaux. La recherche est relancee avec plusieurs graines pour
  * retenir le meilleur resultat.
  *
- * @author Walid Ferchach
+ * @author Theo Pipelier
  */
 public class RecuitSimule {
 

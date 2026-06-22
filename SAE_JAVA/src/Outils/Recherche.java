@@ -18,7 +18,7 @@ import org.graphstream.graph.Path;
  * de la librairie GraphStream. Les poids des aretes ({@code "duree"} ou
  * {@code "dureeEstimee"}) sont poses par {@code GrapheVisuel}.
  *
- * @author walid
+ * @author Walid Ferchach
  */
 public class Recherche {
 
