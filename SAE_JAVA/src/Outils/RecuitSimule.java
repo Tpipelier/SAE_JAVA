@@ -14,16 +14,16 @@ import java.util.Random;
 /**
  * Algorithme de Recuit Simule Hybride Multi-Seed pour le defi algo sur la
  * tournee des camions. A partir d'une solution gloutonne de depart, il explore
- * le voisinage par des mouvements <em>2-opt</em> (inversion d'un segment de la
+ * le voisinage par des mouvements 2-opt (inversion d'un segment de la
  * tournee) en acceptant temporairement des solutions moins bonnes (selon une
  * temperature decroissante) afin d'echapper aux minima locaux. La recherche est
  * relancee avec plusieurs graines pour retenir le meilleur resultat.
  *
- * <p>A chaque palier de temperature, le nombre de mouvements essayes est
+ * A chaque palier de temperature, le nombre de mouvements essayes est
  * proportionnel au nombre de centres (chaine de Markov) afin que l'effort
  * d'exploration s'adapte a la taille du graphe. Le cout d'un mouvement 2-opt est
  * evalue de maniere incrementale en O(1), ce qui rend cet effort abordable meme
- * sur de grands graphes (~150 sommets).</p>
+ * sur de grands graphes (~150 sommets).
  *
  * @author Walid Ferchach
  */
