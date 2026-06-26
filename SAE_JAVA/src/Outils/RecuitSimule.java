@@ -122,7 +122,7 @@ public class RecuitSimule {
                 pivot = choisi;
             }
 
-            // 3. METAHEURISTIQUE : RECUIT SIMULE
+            // 3.  RECUIT SIMULE
             List<Sommet> meilleureSolution = new ArrayList<>(solutionActuelle);
             double meilleurCout = calculerCoutCheminOuvert(depart, meilleureSolution, matriceDijkstra);
             // coutActuel suit le cout de solutionActuelle ; il est maintenu de
@@ -133,10 +133,7 @@ public class RecuitSimule {
             double t = 300.0;
             double tMin = 0.001;
             double alpha = 0.998;
-            // Longueur de la chaine de Markov : proportionnelle au nombre de
-            // centres, pour que l'effort d'exploration s'adapte a la taille du
-            // probleme (sinon, sur un grand graphe, le recuit ne fait rien et
-            // renvoie tel quel la solution gloutonne de depart).
+
             int longueurPalier = Math.max(1, solutionActuelle.size());
 
             while (t > tMin) {
