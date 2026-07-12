@@ -3,11 +3,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file://iutdoua-smb.univ-lyon1.fr/homes/p2500558/Mes%20documents/JAVA/SAE_JAVA_3/SAE_JAVA/src/Outils/RecuitSimule.java</file>
-            <file>file://iutdoua-smb.univ-lyon1.fr/homes/p2500558/Mes%20documents/JAVA/SAE_JAVA_3/SAE_JAVA/src/IHM/FenetrePrincipale.java</file>
-            <file>file://iutdoua-smb.univ-lyon1.fr/homes/p2500558/Mes%20documents/JAVA/SAE_JAVA_3/SAE_JAVA/src/Outils/Glouton.java</file>
-            <file>file://iutdoua-smb.univ-lyon1.fr/homes/p2500558/Mes%20documents/JAVA/SAE_JAVA_3/SAE_JAVA/test/Outils/GloutonTest.java</file>
-            <file>file://iutdoua-smb.univ-lyon1.fr/homes/p2500558/Mes%20documents/JAVA/SAE_JAVA_3/SAE_JAVA/src/Structure/Graphe.java</file>
+            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Test/Test.java</file>
+            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/IHM/FenetrePrincipale.java</file>
+            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Structure/Sommet.java</file>
+            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Outils/DiviserGraphe.java</file>
+            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Structure/Graphe.java</file>
+            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Outils/Glouton.java</file>
+            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Outils/RecuitSimule.java</file>
+            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Outils/Recherche.java</file>
+            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Structure/Route.java</file>
+            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Outils/AlgorithmeChristofide.java</file>
+            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Structure/Itineraire.java</file>
+            <file>file:/C:/Users/theop/OneDrive/Desktop/SAE_JAVA/SAE_JAVA/src/Structure/DistanceVers.java</file>
         </group>
     </open-files>
 </project-private>
