@@ -82,6 +82,28 @@ Nous avons mis en œuvre plusieurs algorithmes pour répondre au défi de l'opti
 * Chazal Alexis G3S2A
 * Ferchach Walid G3S2A
 
+## 📸 Aperçu de l'application
+
+Voici quelques captures d'écran illustrant les fonctionnalités de notre projet :
+
+### 1. Visualisation du District
+*Vue globale d'un graphe chargé dans l'application avec affichage des différents types de centres.*
+![Visualisation du graphe1](images/accueil.png)
+
+![Visualisation du graphe3](images/accueil1.png)
+
+### 2. Analyse des routes risquées
+*Visualisation des routes filtrées selon le seuil de fiabilité défini par l'utilisateur.*
+![Routes risquées](images/fiabilite.png)
+
+### 3. Calcul d'itinéraire
+*Comparaison des deux itinéraires : temps minimal vs chemin le plus fiable.*
+![Itinéraires](images/plusCourtChemin.png)
+
+### 4. Optimisation des tournées
+*Visualisation de la solution pour le défi algorithmique (tournée des camions).*
+![Tournées](images/tournee_camions.png)
+
 ---
 
 Projet universitaire réalisé à l'IUT Lyon 1 - BUT Informatique 2026.
