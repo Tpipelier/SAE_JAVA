@@ -2,11 +2,11 @@
 
 Projet réalisé dans le cadre de la **SAE S2 (2025-2026)** du BUT Informatique de l'IUT Lyon 1 (Université Claude Bernard Lyon 1). Ce projet mobilise les compétences acquises en développement orienté objet, algorithmique des graphes et gestion de projet.
 
-## 📋 Description du projet
+## Description du projet
 
 L'application MedMap est un outil d'aide à la décision pour le responsable d'un district de santé en zone défavorisée. Elle permet d'optimiser les flux logistiques (médicaments, patients, personnel) entre des centres de santé (Maternités, Blocs opératoires, Centres de nutrition) en tenant compte de la fiabilité, de la distance et de la durée des trajets.
 
-## 🛠 Stack Technique
+## Stack Technique
 
 * **Langage** : Java (JDK 21 LTS)
 
@@ -18,7 +18,7 @@ L'application MedMap est un outil d'aide à la décision pour le responsable d'u
 
 
 
-## 🚀 Fonctionnalités principales
+## Fonctionnalités principales
 
 * **Gestion de graphes** : Génération aléatoire de districts ou importation via fichiers `.csv`.
 
@@ -36,7 +36,7 @@ L'application MedMap est un outil d'aide à la décision pour le responsable d'u
 
 
 
-## 🧠 Stratégies Algorithmiques
+## Stratégies Algorithmiques
 
 Nous avons mis en œuvre plusieurs algorithmes pour répondre au défi de l'optimisation des tournées :
 
@@ -53,7 +53,7 @@ Nous avons mis en œuvre plusieurs algorithmes pour répondre au défi de l'opti
 
 
 
-## 🛠 Instructions d'installation
+## Instructions d'installation
 
 1. **Prérequis** : JDK 21 installé.
 2. **Clonage** : Cloner le dépôt sur votre machine.
@@ -64,7 +64,7 @@ Nous avons mis en œuvre plusieurs algorithmes pour répondre au défi de l'opti
 
 
 
-## 🏗 Qualité et Organisation
+## Qualité et Organisation
 
 * **Architecture** : Conception en packages respectant les principes du modèle MVC.
 
@@ -76,13 +76,13 @@ Nous avons mis en œuvre plusieurs algorithmes pour répondre au défi de l'opti
 
 
 
-## 👥 Équipe
+## Équipe
 
 * Pipelier Theo G3S2B
 * Chazal Alexis G3S2A
 * Ferchach Walid G3S2A
 
-## 📸 Aperçu de l'application
+## Aperçu de l'application
 
 Voici quelques captures d'écran illustrant les fonctionnalités de notre projet :
 
